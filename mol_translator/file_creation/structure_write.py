@@ -30,10 +30,7 @@ def write_mol_toxyz(mol, outname, label="tmp"):
 																			z=mol['xyz'][i][2])
 			print(string, file=f)
 
-
-# Write an nmrmol object to an nmredata file
-def write_mol_tonmredata(mol, outfile, label=""):
-
+def write_mol_tosdf(mol, outfile, label="tmp", stringsonly=False):
 	# Get periodic table
 	periodic_table = Get_periodic_table()
 
@@ -57,7 +54,7 @@ def write_mol_tonmredata(mol, outfile, label=""):
 	else:
 		lines.append(outfile.split('.')[0])
 	# print file and author
-	lines.append('auto-ENRICH - 2020 - Will Gerrard')
+	lines.append('auto-ENRICH - 2020 - ButtsGroup')
 	lines.append('')
 
 	# Structure section
@@ -84,34 +81,9 @@ def write_mol_tonmredata(mol, outfile, label=""):
 	# Terminate structure section
 	lines.append('M\tEND'.format())
 
-
-	# assignment section
-	lines.append('')
-	lines.append('> <NMREDATA_ASSIGNMENT>')
-	# Print chemical shifts with variance
-	for i, shift, type, var in zip(range(len(mol['types'])), mol['shift'], mol['types'], mol['shift_var']):
-		string = " {atom:<5d}, {shift:<15.8f}, {type:<5d}, {variance:<15.8f}\\".format(atom=i, shift=shift, type=type, variance=var)
-		lines.append(string)
-
-	lines.append('')
-	lines.append('> <NMREDATA_J>')
-	# Print couplings with variance and label
-	for i in range(len(mol['types'])):
-		for j in range(len(mol['types'])):
-			if i >= j:
-				continue
-			if mol['coupling_len'][i][j] == 0:
-				continue
-			label = labelmaker(i, j, mol)
-			string = " {a1:<10d}, {a2:<10d}, {coupling:<15.8f}, {label:<10s}, {var:<15.8f}".format(a1=i,
-																									a2=j,
-																									coupling=mol['coupling'][i][j],
-																									label=label,
-																									var=mol['coupling_var'][i][j])
-
-			lines.append(string)
-
-	# Print assembled lines to output file
-	with open(outfile, 'w') as f:
-		for line in lines:
-			print(line, file=f)
+	if stringsonly:
+		return lines
+	else:
+		with open(outfile, 'w') as f:
+			for line in lines:
+				print(line, file=f)
