@@ -19,24 +19,24 @@ import numpy as np
 from ..file_creation.structure_write import write_mol_tosdf
 
 # Write an nmrmol object to an nmredata file
-def write_nmredata(outfile, label="", mol,
-                    shift=None, coupling=None, shift_var=None, coupling_var=None,
-                    info=None):
+def write_nmredata(outfile, label, mol,
+					shift=None, coupling=None, shift_var=None, coupling_var=None,
+					info=None):
 
-    atoms = len(mol['types'])
-    if shift is None:
-        shift = np.zeros(atoms, dtype=np.float64)
-    if shift_var is None:
-        shift_var = np.zeros(atoms, dtype=np.float64)
-    if coupling is None:
-        coupling = np.zeros((atoms, atoms), dtype=np.float64)
-    if coupling_var is None:
-        coupling_var = np.zeros((atoms, atoms), dtype=np.float64)
+	atoms = len(mol['types'])
+	if shift is None:
+		shift = np.zeros(atoms, dtype=np.float64)
+	if shift_var is None:
+		shift_var = np.zeros(atoms, dtype=np.float64)
+	if coupling is None:
+		coupling = np.zeros((atoms, atoms), dtype=np.float64)
+	if coupling_var is None:
+		coupling_var = np.zeros((atoms, atoms), dtype=np.float64)
 
-    sdfstrings = write_mol_tosdf(mol, "", label, True)
+	sdfstrings = write_mol_tosdf(mol, "", label, True)
 
-    for line in sdfstrings:
-        line.append(line)
+	for line in sdfstrings:
+		line.append(line)
 	# assignment section
 	lines.append('')
 	lines.append('> <NMREDATA_ASSIGNMENT>')

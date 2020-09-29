@@ -16,11 +16,11 @@
 
 import pybel as pyb
 
-from .pybel_converter.pybel_converter import pybel_to_aemol, aemol_to_pybel
-import .file_creation.structure_write as strucwrt
+from .pybel_converter.pybel_converter import pybmol_to_aemol, aemol_to_pybmol
+from .file_creation import structure_write as strucwrt
 
-import .property_write as propwrt
-import .property_read as propread
+from .property_write import nmr_write as nmrwrt
+from .property_read import nmr_read as nmrread
 
 class aemol(object):
     """
@@ -48,15 +48,13 @@ class aemol(object):
 
 
     def from_pybel(self, pybmol):
-        types, xyz, conn = pybel_to_aemol(pybmol)
+        types, xyz, conn = pybmol_to_aemol(pybmol)
         self.structure['types'] = types
         self.structure['xyz'] = xyz
         self.structure['conn'] = conn
 
     def to_pybel(self):
-        strucwrt.write_mol_toxyz(self.structure, 'tmp.xyz')
-        pybmol = next(pyb.readfile('xyz', 'tmp.xyz'))
-        os.remove('tmp.xyz')
+        pybmol = aemol_to_pybmol(self.structure)
 
         return pybmol
 
@@ -75,6 +73,10 @@ class aemol(object):
         pybmol = next(pyb.readfile(ftype, file))
         self.from_pybel(pybmol)
 
+    def from_string(self, string, stype='smi'):
+        pybmol = pyb.readstring(stype, string)
+        self.from_pybel(pybmol)
+
     def to_file_ae(self, format, filename):
         if format == 'xyz':
             strucwrt.write_mol_toxyz(self.structure, filename)
@@ -90,7 +92,7 @@ class aemol(object):
 
         if prop == 'nmr':
             if format == 'nmredata':
-                propwrt.nmr_write.write_nmredata(outfile, label,
+                nmrwrt.write_nmredata(outfile, label,
                                             self.structure,
                                             shift=self.atom_properties['shift'],
                                             coupling=self.pair_properties['coupling'],
@@ -106,13 +108,13 @@ class aemol(object):
 
         if prop == 'nmr':
             if format == 'g09':
-                shift, coupling = propread.nmrread.g09_nmrread(filename)
+                shift, coupling = nmrread.g09_nmrread(filename)
             elif format == 'g16':
-                shift, coupling = propread.nmrread.g16_nmrread(filename)
+                shift, coupling = nmrread.g16_nmrread(filename)
             elif format == 'orca':
-                shift, coupling = propread.nmrread.orca_nmrread(filename)
+                shift, coupling = nmrread.orca_nmrread(filename)
             elif format == 'nmredata':
-                shift, _, coupling, _ = propread.nmrread.nmredata_nmrread(filename)
+                shift, _, coupling, _ = nmrread.nmredata_nmrread(filename)
             else:
                 raise_formaterror(format)
 
@@ -121,7 +123,7 @@ class aemol(object):
 
         elif prop == 'nmr_var':
             if format == 'nmredata':
-                _, shift_var, _, coupling_var = propread.nmrread.nmredata_nmrread(filename)
+                _, shift_var, _, coupling_var = nmrread.nmredata_nmrread(filename)
             else:
                 raise_formaterror(format)
 
@@ -132,4 +134,4 @@ class aemol(object):
     def raise_formaterror(format):
         print('Format not recognised or function not written yet !')
         print('you can use to_file_pyb to create/read structure files recognised by pybel')
-        raise ValueError('Cannot read/write format:' format)
+        raise ValueError('Cannot read/write format:', format)

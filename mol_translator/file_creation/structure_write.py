@@ -14,7 +14,7 @@
 #You should have received a copy of the GNU General Public License
 #along with autoenrich.  If not, see <https://www.gnu.org/licenses/>.
 
-from ..util.periodic_table import Get_periodic_table
+from mol_translator.util.periodic_table import Get_periodic_table
 
 
 def write_mol_toxyz(mol, outname, label="tmp"):

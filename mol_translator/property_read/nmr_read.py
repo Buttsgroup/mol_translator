@@ -173,7 +173,7 @@ def read_nmr(file):
 
 
 def g09_nmrread(file):
-    with open(file, 'r') as f:
+	with open(file, 'r') as f:
 		for line in f:
 			if 'NAtoms=' in line:
 				items = line.split()
@@ -236,7 +236,7 @@ def g09_nmrread(file):
 	return shift_array, couplings
 
 def g16_nmrread(file):
-    with open(file, 'r') as f:
+	with open(file, 'r') as f:
 		for line in f:
 			if 'NAtoms=' in line:
 				items = line.split()

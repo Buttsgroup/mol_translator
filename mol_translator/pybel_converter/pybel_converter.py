@@ -21,28 +21,33 @@ import os
 
 def pybmol_to_aemol(pybmol):
 
-    type_array = np.zeros(len(mol.atoms), dtype=np.int32)
-    xyz_array = np.zeros((len(mol.atoms),3), dtype=np.float64)
-    conn_array = np.zeros((len(mol.atoms), len(mol.atoms)), dtype=np.int32)
+	type_array = np.zeros(len(pybmol.atoms), dtype=np.int32)
+	xyz_array = np.zeros((len(pybmol.atoms),3), dtype=np.float64)
+	conn_array = np.zeros((len(pybmol.atoms), len(pybmol.atoms)), dtype=np.int32)
 
-    for i in range(len(mol.atoms)):
-        type_array[i] = int(mol.atoms[i].atomicnum)
-        xyz_array[i][0] = float(mol.atoms[i].coords[0])
-		xyz_array[i][1] = float(mol.atoms[i].coords[1])
-		xyz_array[i][2] = float(mol.atoms[i].coords[2])
+	for i in range(len(pybmol.atoms)):
+		type_array[i] = int(pybmol.atoms[i].atomicnum)
+		xyz_array[i][0] = float(pybmol.atoms[i].coords[0])
+		xyz_array[i][1] = float(pybmol.atoms[i].coords[1])
+		xyz_array[i][2] = float(pybmol.atoms[i].coords[2])
 
 
-        for j in range(len(mol.atoms)):
-            if i == j:
-                continue
+		for j in range(len(pybmol.atoms)):
+			if i == j:
+				continue
 
-            bond = mol.atoms[i].OBAtom.GetBond(mol.atoms[j].OBAtom)
-            if bond is not None:
-                conn_array[i][j] = int(bond.GetBondOrder())
-                conn_array[j][i] = int(bond.GetBondOrder())
+			bond = pybmol.atoms[i].OBAtom.GetBond(pybmol.atoms[j].OBAtom)
+			if bond is not None:
+				conn_array[i][j] = int(bond.GetBondOrder())
+				conn_array[j][i] = int(bond.GetBondOrder())
 
-    return type_array, xyz_array, conn_array
+	return type_array, xyz_array, conn_array
 
-def aemol_to_pybmol(aemol):
-
+def aemol_to_pybmol(structure):
     # Do this a cheat way for now, can probably do this properly
+
+    strucwrt.write_mol_toxyz(structure, 'tmp.xyz')
+    pybmol = next(pyb.readfile('xyz', 'tmp.xyz'))
+    os.remove('tmp.xyz')
+
+    return pybmol
