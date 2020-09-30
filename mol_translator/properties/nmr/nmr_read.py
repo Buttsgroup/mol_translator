@@ -21,6 +21,25 @@
 
 # nmredata g09, g16, orca
 
+def nmr_read(file, ftype, prop):
+	if prop = 'nmr':
+		if format == 'g09':
+			shift, coupling = g09_nmrread(filename)
+		elif format == 'g16':
+			shift, coupling = g16_nmrread(filename)
+		elif format == 'orca':
+			shift, coupling = orca_nmrread(filename)
+		elif format == 'nmredata':
+			shift, _, coupling, _ = nmredata_nmrread(filename)
+		return shift, coupling
+	if prop = 'nmr_var':
+		_, shift_var, _, coupling_var = nmredata_nmrread(filename)
+		return shift_var, coupling_var
+	else:
+		print('property not recognised or function not written yet !')
+        raise ValueError('Cannot output property: ', prop)
+
+
 # Read NMR information from ORCA NMR log files
 def orca_nmrread(file):
 

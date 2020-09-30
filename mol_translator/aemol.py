@@ -16,13 +16,13 @@
 
 import pybel as pyb
 
-from .pybel_converter.pybel_converter import pybmol_to_aemol, aemol_to_pybmol
-from .file_creation import structure_write as strucwrt
+from mol_translator.pybel_converter.pybel_converter import pybmol_to_aemol, aemol_to_pybmol
+from mol_translator.structure import structure_write as strucwrt
 
-from .property_write import nmr_write as nmrwrit
-from .property_read import nmr_read as nmrread
+import mol_translator.properties.property_io
 
-from .mol_operations import find_paths as pathfind
+from mol_translator.structure import find_paths as pathfind
+
 
 class aemol(object):
     """
@@ -39,8 +39,7 @@ class aemol(object):
 
         self.structure = {  'xyz': [],
                             'types': [],
-                            'conn': [],
-                            'cpl_len': []}
+                            'conn': []}
 
         self.atom_properties = {'shift': []}
 
@@ -89,48 +88,11 @@ class aemol(object):
         pybmol = self.to_pybel()
         pybmol.write(format, filename)
 
-
     def prop_tofile(self, filename, prop='nmr', format='nmredata'):
-
-        if prop == 'nmr':
-            if format == 'nmredata':
-                nmrwrit.write_nmredata(outfile, label,
-                                            self.structure,
-                                            shift=self.atom_properties['shift'],
-                                            coupling=self.pair_properties['coupling'],
-                                            shift_var=self.atom_properties['shift_var'],
-                                            coupling_var=self.atom_properties['coupling_var'])
-            else:
-                raise_formaterror(format)
-        else:
-            print('property not recognised or function not written yet !')
-            raise ValueError('Cannot output property: ', prop)
+        property_io.prop_write(self, filename, prop, format)
 
     def prop_fromfile(self, filename, ftype, prop):
-
-        if prop == 'nmr':
-            if format == 'g09':
-                shift, coupling = nmrread.g09_nmrread(filename)
-            elif format == 'g16':
-                shift, coupling = nmrread.g16_nmrread(filename)
-            elif format == 'orca':
-                shift, coupling = nmrread.orca_nmrread(filename)
-            elif format == 'nmredata':
-                shift, _, coupling, _ = nmrread.nmredata_nmrread(filename)
-            else:
-                raise_formaterror(format)
-
-            self.atom_properties['shift'] = shift
-            self.pair_properties['coupling'] = coupling
-
-        elif prop == 'nmr_var':
-            if format == 'nmredata':
-                _, shift_var, _, coupling_var = nmrread.nmredata_nmrread(filename)
-            else:
-                raise_formaterror(format)
-
-            self.atom_properties['shift_var'] = shift_var
-            self.pair_properties['coupling_var'] = coupling_var
+        property_io.prop_read(self, filename, prop, format)
 
     def get_all_paths(self, maxlen=5):
         pybmol = self.to_pybel()
@@ -140,11 +102,6 @@ class aemol(object):
         pybmol = self.to_pybel()
         self.structure['conn'] = pathfind.pybmol_get_bond_table(pybmol)
 
-    def get_cpl_lengths(self):
+    def get_path_lengths(self, maxlen=5):
         pybmol = self.to_pybel()
-        self.structure['cpl_len'] = pathfine.pybmol_get_coupling_lengths()
-
-    def raise_formaterror(format):
-        print('Format not recognised or function not written yet !')
-        print('you can use to_file_pyb to create/read structure files recognised by pybel')
-        raise ValueError('Cannot read/write format:', format)
+        self.structure['path_len'] = pathfind.pybmol_get_path_lengths(pybmol, maxlen)
