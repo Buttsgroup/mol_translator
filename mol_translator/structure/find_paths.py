@@ -17,7 +17,7 @@
 
 import numpy as np
 import openbabel
-from autoenrich.reference.periodic_table import Get_periodic_table
+from mol_translator.util.periodic_table import Get_periodic_table
 
 def pybmol_find_all_paths(pybmol, maxlen=5):
 	all_paths = []
@@ -82,7 +82,7 @@ def pybmol_get_bond_table(pybmol):
 
 	return bond_table
 
-def pybmol_get_coupling_lengths(pybmol, maxlen=6):
+def pybmol_get_path_lengths(pybmol, maxlen=5):
 	atoms = len(pybmol.atoms)
 	coupling_len = np.zeros((atoms, atoms), dtype=np.int32)
 	for atom1 in range(atoms):
