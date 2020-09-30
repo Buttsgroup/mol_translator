@@ -19,8 +19,10 @@ import pybel as pyb
 from .pybel_converter.pybel_converter import pybmol_to_aemol, aemol_to_pybmol
 from .file_creation import structure_write as strucwrt
 
-from .property_write import nmr_write as nmrwrt
+from .property_write import nmr_write as nmrwrit
 from .property_read import nmr_read as nmrread
+
+from .mol_operations import find_paths as pathfind
 
 class aemol(object):
     """
@@ -92,7 +94,7 @@ class aemol(object):
 
         if prop == 'nmr':
             if format == 'nmredata':
-                nmrwrt.write_nmredata(outfile, label,
+                nmrwrit.write_nmredata(outfile, label,
                                             self.structure,
                                             shift=self.atom_properties['shift'],
                                             coupling=self.pair_properties['coupling'],
@@ -130,6 +132,17 @@ class aemol(object):
             self.atom_properties['shift_var'] = shift_var
             self.pair_properties['coupling_var'] = coupling_var
 
+    def get_all_paths(self, maxlen=5):
+        pybmol = self.to_pybel()
+        self.structure['paths'] = pathfind.pybmol_find_all_paths(pybmol, maxlen)
+
+    def get_bonds(self):
+        pybmol = self.to_pybel()
+        self.structure['conn'] = pathfind.pybmol_get_bond_table(pybmol)
+
+    def get_cpl_lengths(self):
+        pybmol = self.to_pybel()
+        self.structure['cpl_len'] = pathfine.pybmol_get_coupling_lengths()
 
     def raise_formaterror(format):
         print('Format not recognised or function not written yet !')

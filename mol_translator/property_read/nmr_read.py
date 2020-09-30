@@ -88,7 +88,7 @@ def orca_nmrread(file):
 
 	return shift, coupling
 
-def read_nmr(file):
+def nmredata_nmrread(file):
 	# Input:
 	#	file: filename
 	#	atoms: number of atoms in molecule (read sdf part first)
