@@ -17,7 +17,9 @@
 
 import numpy as np
 import os
+import pybel as pyb
 
+from mol_translator.structure import structure_write as strucwrt
 
 def pybmol_to_aemol(pybmol):
 
