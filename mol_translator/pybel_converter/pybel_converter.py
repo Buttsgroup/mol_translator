@@ -17,7 +17,11 @@
 
 import numpy as np
 import os
+import pybel as pyb
+from rdkit import Chem
+from rdkit.Chem import AllChem
 
+from mol_translator.structure import structure_write as strucwrt
 
 def pybmol_to_aemol(pybmol):
 
@@ -51,3 +55,27 @@ def aemol_to_pybmol(structure):
     os.remove('tmp.xyz')
 
     return pybmol
+
+def rdmol_to_aemol(rdmol):
+
+	type_array = np.zeros(rdmol.GetNumAtoms(), dtype=np.int32)
+	xyz_array = np.zeros((rdmol.GetNumAtoms(),3), dtype=np.float64)
+	conn_array = np.zeros((rdmol.GetNumAtoms(), rdmol.GetNumAtoms()), dtype=np.int32)
+
+	for i, atoms in enumerate(rdmol.GetAtoms()):
+	    type_array[i] = atoms.GetAtomicNum()
+		xyz_array[i][0] = rdmol.GetConformer().GetAtomPosition(i).x
+		xyz_array[i][1] = rdmol.GetConformer().GetAtomPosition(i).y
+		xyz_array[i][2] = rdmol.GetConformer().GetAtomPosition(i).z
+
+
+		for j, batoms in enumerate(rdmol.GetAtoms()):
+			if i == j:
+				continue
+
+			bond = atoms.GetBonds(batoms)
+            if bond is not None:
+                conn_array[i][j] = int(bond.GetBondTypeAsDouble())
+                conn_array[j][i] = int(bond.GetBondTypeAsDouble())
+
+	return type_array, xyz_array, conn_array
