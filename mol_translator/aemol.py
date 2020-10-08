@@ -60,15 +60,19 @@ class aemol(object):
         return pybmol
 
     def from_rdkit(self, rdmol):
-        '''
-            Need to write this
-        '''
+        #assumes rdmol is already 3D with Hs included
+        types, xyz, conn = rdmol_to_aemol(rdmol)
+        self.structure['types'] = types
+        self.structure['xyz'] = xyz
+        self.structure['conn'] = conn
 
     def to_rdkit(self):
-        '''
-            Need to write this
-        '''
-        return rdmol
+        """
+        #still need to write to_rdkit
+        #rdmol = aemol_to_rdmol(self.structure)
+
+        #return rdmol
+        """
 
     def from_file(self, file, ftype='xyz'):
         pybmol = next(pyb.readfile(ftype, file))
