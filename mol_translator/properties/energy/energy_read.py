@@ -24,6 +24,8 @@ def energy_read(file, ftype, prop):
         elif format == 'orca':
             energy = orca_scfread(file)
 
+return energy
+
 
 def g09_scfread(file):
 	energy = -404
@@ -41,9 +43,9 @@ def g16_scfread(file):
 
 	with open(file, 'r') as f:
 		for line in f:
-			if 'Sum of electronic and thermal Free Energies' in line:
+			if 'SCF Done' in line:
 				items = line.split()
-				energy = float(items[7])
+				energy = float(items[4])
 
 	return energy
 
