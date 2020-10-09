@@ -24,16 +24,16 @@
 def nmr_read(file, ftype, prop):
 	if prop = 'nmr':
 		if format == 'g09':
-			shift, coupling = g09_nmrread(filename)
+			shift, coupling = g09_nmrread(file)
 		elif format == 'g16':
-			shift, coupling = g16_nmrread(filename)
+			shift, coupling = g16_nmrread(file)
 		elif format == 'orca':
-			shift, coupling = orca_nmrread(filename)
+			shift, coupling = orca_nmrread(file)
 		elif format == 'nmredata':
-			shift, _, coupling, _ = nmredata_nmrread(filename)
+			shift, _, coupling, _ = nmredata_nmrread(file)
 		return shift, coupling
 	if prop = 'nmr_var':
-		_, shift_var, _, coupling_var = nmredata_nmrread(filename)
+		_, shift_var, _, coupling_var = nmredata_nmrread(file)
 		return shift_var, coupling_var
 	else:
 		print('property not recognised or function not written yet !')
