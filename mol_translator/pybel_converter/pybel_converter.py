@@ -74,8 +74,17 @@ def rdmol_to_aemol(rdmol):
 				continue
 
 			bond = atoms.GetBonds(batoms)
-            if bond is not None:
+			if bond is not None:
                 conn_array[i][j] = int(bond.GetBondTypeAsDouble())
                 conn_array[j][i] = int(bond.GetBondTypeAsDouble())
 
 	return type_array, xyz_array, conn_array
+
+def aemol_to_rdmol(structure):
+
+	strucwrt.write_mol_tosdf(structure, 'tmp.sdf')
+	molblock = open('tmp.sdf', 'r').read()
+	rdmol = Chem.MolFromMolBlock(molblock)
+	os.remove('tmp.sdf')
+
+	return rdmol

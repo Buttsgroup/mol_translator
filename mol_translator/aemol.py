@@ -67,12 +67,9 @@ class aemol(object):
         self.structure['conn'] = conn
 
     def to_rdkit(self):
-        """
-        #still need to write to_rdkit
-        #rdmol = aemol_to_rdmol(self.structure)
+        rdmol = aemol_to_rdmol(self.structure)
 
-        #return rdmol
-        """
+        return rdmol
 
     def from_file(self, file, ftype='xyz'):
         pybmol = next(pyb.readfile(ftype, file))
