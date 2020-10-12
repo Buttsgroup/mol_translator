@@ -14,28 +14,29 @@
 #You should have received a copy of the GNU General Public License
 #along with autoenrich.  If not, see <https://www.gnu.org/licenses/>.
 
-import mol_translator.util.periodic_table.Get_periodic_table
+from mol_translator.util.periodic_table import Get_periodic_table
 
 def get_coupling_types(aemol, maxlen=6):
-    p_table = Get_periodic_table()
+	p_table = Get_periodic_table()
 
-	if 'path_len' not in structure.keys():
+	if 'path_len' not in aemol.structure.keys():
 		aemol.get_path_lengths()
 
-    cpl_types = []
-	for t, type in enumerate(mol.structure['types']):
-        tmp_types = []
-		for t2, type2 in enumerate(mol.structure['types']):
+	cpl_types = []
+	for t, type in enumerate(aemol.structure['types']):
+		tmp_types = []
+		for t2, type2 in enumerate(aemol.structure['types']):
 
 			if type > type2:
-				targetflag = str(mol.structure['path_len'][t][t2]) + 'J' + p_table[type] + p_table[type2]
+				targetflag = str(aemol.structure['path_len'][t][t2]) + 'J' + p_table[type] + p_table[type2]
 			else:
-				targetflag = str(mol.structure['path_len'][t][t2]) + 'J' + p_table[type2] + p_table[type]
+				targetflag = str(aemol.structure['path_len'][t][t2]) + 'J' + p_table[type2] + p_table[type]
 
-            tmp_types.append(targetflag)
-        cpl_types.append(tmp_types)
+			tmp_types.append(targetflag)
+		cpl_types.append(tmp_types)
 
-    return cpl_types
+
+	aemol.pair_properties['nmr_types'] = cpl_types
 
 
 

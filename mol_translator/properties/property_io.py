@@ -42,11 +42,11 @@ def prop_write(aemol, filename, prop, format):
 def prop_read(aemol, filename, prop, format):
     if prop == 'nmr':
         shift, coupling = nmr.nmr_read.nmr_read(filename, format, prop)
-        aemol.pair_properties['shift'] = shift
+        aemol.atom_properties['shift'] = shift
         aemol.pair_properties['coupling'] = coupling
     elif prop == 'nmr_var':
         shift_var, coupling_var = nmr.nmr_read.nmr_read(filename, format, prop)
-        aemol.pair_properties['shift_var'] = shift_var
+        aemol.atom_properties['shift_var'] = shift_var
         aemol.pair_properties['coupling_var'] = coupling_var
     else:
         print('property not recognised or function not written yet !')

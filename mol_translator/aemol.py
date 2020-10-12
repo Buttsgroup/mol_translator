@@ -19,7 +19,7 @@ import pybel as pyb
 from mol_translator.pybel_converter.pybel_converter import pybmol_to_aemol, aemol_to_pybmol, rdmol_to_aemol
 from mol_translator.structure import structure_write as strucwrt
 
-import mol_translator.properties.property_io
+import mol_translator.properties.property_io as prop_io
 
 from mol_translator.structure import find_paths as pathfind
 
@@ -41,9 +41,9 @@ class aemol(object):
                             'types': [],
                             'conn': []}
 
-        self.atom_properties = {'shift': []}
+        self.atom_properties = {}
 
-        self.pair_properties = {'coupling': []}
+        self.pair_properties = {}
 
         self.mol_properties = {'energy': -404.404}
 
@@ -89,10 +89,10 @@ class aemol(object):
         pybmol.write(format, filename)
 
     def prop_tofile(self, filename, prop='nmr', format='nmredata'):
-        property_io.prop_write(self, filename, prop, format)
+        prop_io.prop_write(self, filename, prop, format)
 
     def prop_fromfile(self, filename, ftype, prop):
-        property_io.prop_read(self, filename, prop, format)
+        prop_io.prop_read(self, filename, prop, ftype)
 
     def get_all_paths(self, maxlen=5):
         pybmol = self.to_pybel()

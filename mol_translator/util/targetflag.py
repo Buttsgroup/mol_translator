@@ -45,10 +45,10 @@ def target_to_flag(target):
 	p_table = Get_periodic_table()
 
 	if len(target) == 3:
-        if target[1] >= target[2]:
-		    flag = str(target[0]) + 'J' + str(p_table[target[1]]) + str(p_table[target[2]])
-        else:
-            flag = str(target[0]) + 'J' + str(p_table[target[2]]) + str(p_table[target[1]])
+		if target[1] >= target[2]:
+			flag = str(target[0]) + 'J' + str(p_table[target[1]]) + str(p_table[target[2]])
+		else:
+			flag = str(target[0]) + 'J' + str(p_table[target[2]]) + str(p_table[target[1]])
 	elif len(target) == 1:
 		flag = str(target[0]) + 'CS'
 	else:

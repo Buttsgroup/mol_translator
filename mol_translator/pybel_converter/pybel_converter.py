@@ -48,13 +48,13 @@ def pybmol_to_aemol(pybmol):
 	return type_array, xyz_array, conn_array
 
 def aemol_to_pybmol(structure):
-    # Do this a cheat way for now, can probably do this properly
+	# Do this a cheat way for now, can probably do this properly
 
-    strucwrt.write_mol_toxyz(structure, 'tmp.xyz')
-    pybmol = next(pyb.readfile('xyz', 'tmp.xyz'))
-    os.remove('tmp.xyz')
+	strucwrt.write_mol_toxyz(structure, 'tmp.xyz')
+	pybmol = next(pyb.readfile('xyz', 'tmp.xyz'))
+	os.remove('tmp.xyz')
 
-    return pybmol
+	return pybmol
 
 def rdmol_to_aemol(rdmol):
 
@@ -68,7 +68,16 @@ def rdmol_to_aemol(rdmol):
 		xyz_array[i][1] = rdmol.GetConformer().GetAtomPosition(i).y
 		xyz_array[i][2] = rdmol.GetConformer().GetAtomPosition(i).z
 
-	return type_array, xyz_array
+		for j, batoms in enumerate(rdmol.GetAtoms()):
+			if i == j:
+				continue
+
+			bond = atoms.GetBonds(batoms)
+			if bond is not None:
+				conn_array[i][j] = int(bond.GetBondTypeAsDouble())
+				conn_array[j][i] = int(bond.GetBondTypeAsDouble())
+
+	return type_array, xyz_array, conn_array
 
 def aemol_to_rdmol(structure):
 
