@@ -3,6 +3,12 @@ __pycache__/
 *.py[cod]
 *$py.class
 
+
+# REMOVE ANYTHING TEMP RELATED
+*tmp*
+*tmp
+tmp*
+
 # C extensions
 *.so
 
