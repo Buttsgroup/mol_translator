@@ -3,7 +3,7 @@ import os
 sys.path.append(os.path.realpath(os.path.dirname(__file__))+'/../')
 
 import mol_translator.aemol as aemol
-import pybel as pybel
+import pybel as pyb
 from rdkit import Chem
 from rdkit.Chem import AllChem
 
