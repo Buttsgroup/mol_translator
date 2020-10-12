@@ -12,13 +12,11 @@ from mol_translator.pybel_converter.pybel_converter import pybmol_to_aemol, aemo
 '''
     Write tests for every function and property of the aemol class
 '''
-test_mol = 'CCCC'
-mol = aemol(test_mol)
-pybmol_test = pyb.readstring('smi', test_mol)
-
 #def test_create_file(tmp_path):
 
 def test_init():
+    test_mol = 'CCCC'
+    mol = aemol(test_mol)
     assert mol.info['molid'] == test_mol
     assert mol.info['filepath'] == ""
 
@@ -30,27 +28,32 @@ def test_init():
     assert mol.pair_properties['coupling'] == []
     assert mol.mol_properties['energy'] == -404.404
 
-def test_from_pybel():
-
-    mol.to_pybel()
-    assert pybmol == pybmol_test
+#def test_from_pybel():
+    #test_mol = 'CCCC'
+    #mol = aemol(test_mol)
+    #mol.to_pybel()
+    #mol.from_pybel()
+    #assert pybmol == pybmol_test
 
 def test_from_rdkit():
+    test_mol = 'CCCC'
+    mol = aemol(test_mol)
     rdmol = Chem.MolFromSmiles(test_mol)
     rdmol = Chem.AddHs(rdmol)
     AllChem.EmbedMolecule(rdmol)
-    AllChem.MMFFOptimzeMolecule(rdmol)
 
     return mol.from_rdkit(rdmol)
     assert mol.structure['types'] == types
     assert mol.structure['xyz'] == xyz
-    assert mol.structure['conn'] ==conn
 
 #def test_to_rdkit():
 
 #def test_from_file():
 
 def test_from_string():
+    test_mol = 'CCCC'
+    mol = aemol(test_mol)
+    pybmol_test = pyb.readstring('smi', test_mol)
     return mol.from_string(test_mol)
     assert pybmol == pybmol_test
 
