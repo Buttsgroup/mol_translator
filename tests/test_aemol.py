@@ -4,6 +4,8 @@ sys.path.append(os.path.realpath(os.path.dirname(__file__))+'/../')
 
 import mol_translator.aemol as aemol
 import pybel as pybel
+from rdkit import Chem
+from rdkit.Chem import AllChem
 
 from mol_translator.pybel_converter.pybel_converter import pybmol_to_aemol, aemol_to_pybmol, rdmol_to_aemol
 
@@ -14,10 +16,7 @@ test_mol = 'CCCC'
 mol = aemol(test_mol)
 pybmol_test = pyb.readstring('smi', test_mol)
 
-def test_create_file(tmp_path):
-    testp = tmp_path / "sub"
-    testp.mkdir()
-    tmp_f = testp / "tmp_file.xyz"
+#def test_create_file(tmp_path):
 
 def test_init():
     assert mol.info['molid'] == test_mol
@@ -38,6 +37,7 @@ def test_from_pybel():
 
 def test_from_rdkit():
     rdmol = Chem.MolFromSmiles(test_mol)
+    rdmol = Chem.AddHs(rdmol)
     AllChem.EmbedMolecule(rdmol)
     AllChem.MMFFOptimzeMolecule(rdmol)
 

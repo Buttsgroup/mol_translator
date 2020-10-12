@@ -68,7 +68,6 @@ def rdmol_to_aemol(rdmol):
 		xyz_array[i][1] = rdmol.GetConformer().GetAtomPosition(i).y
 		xyz_array[i][2] = rdmol.GetConformer().GetAtomPosition(i).z
 
-
 		for j, batoms in enumerate(rdmol.GetAtoms()):
 			if i == j:
 				continue
