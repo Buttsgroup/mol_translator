@@ -18,8 +18,6 @@
 import numpy as np
 import os
 import pybel as pyb
-from rdkit import Chem
-from rdkit.Chem import AllChem
 
 from mol_translator.structure import structure_write as strucwrt
 
@@ -48,13 +46,13 @@ def pybmol_to_aemol(pybmol):
 	return type_array, xyz_array, conn_array
 
 def aemol_to_pybmol(structure):
-    # Do this a cheat way for now, can probably do this properly
+	# Do this a cheat way for now, can probably do this properly
 
-    strucwrt.write_mol_toxyz(structure, 'tmp.xyz')
-    pybmol = next(pyb.readfile('xyz', 'tmp.xyz'))
-    os.remove('tmp.xyz')
+	strucwrt.write_mol_toxyz(structure, 'tmp.xyz')
+	pybmol = next(pyb.readfile('xyz', 'tmp.xyz'))
+	os.remove('tmp.xyz')
 
-    return pybmol
+	return pybmol
 
 def rdmol_to_aemol(rdmol):
 
@@ -63,22 +61,12 @@ def rdmol_to_aemol(rdmol):
 	conn_array = np.zeros((rdmol.GetNumAtoms(), rdmol.GetNumAtoms()), dtype=np.int32)
 
 	for i, atoms in enumerate(rdmol.GetAtoms()):
-	    type_array[i] = atoms.GetAtomicNum()
+		type_array[i] = atoms.GetAtomicNum()
 		xyz_array[i][0] = rdmol.GetConformer().GetAtomPosition(i).x
 		xyz_array[i][1] = rdmol.GetConformer().GetAtomPosition(i).y
 		xyz_array[i][2] = rdmol.GetConformer().GetAtomPosition(i).z
 
-
-		for j, batoms in enumerate(rdmol.GetAtoms()):
-			if i == j:
-				continue
-
-			bond = atoms.GetBonds(batoms)
-			if bond is not None:
-                conn_array[i][j] = int(bond.GetBondTypeAsDouble())
-                conn_array[j][i] = int(bond.GetBondTypeAsDouble())
-
-	return type_array, xyz_array, conn_array
+	return type_array, xyz_array
 
 def aemol_to_rdmol(structure):
 

@@ -16,7 +16,7 @@
 
 import numpy as np
 
-from ..file_creation.structure_write import write_mol_tosdf
+from mol_translator.structure.structure_write import write_mol_tosdf
 
 # Write an nmrmol object to an nmredata file
 def write_nmredata(outfile, label, mol,

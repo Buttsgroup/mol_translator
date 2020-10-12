@@ -52,7 +52,7 @@ def pybmol_find_paths(pybmol, start, end, coupling_length, path=[]):
 			# check the neighbour is not already in the path, and that the path is not over the required length
 			if node not in path and len(path) <= coupling_length:
 				# get new paths for the neighbour
-				newpaths = pybmol_find_all_paths(pybmol, node, end, coupling_length, path)
+				newpaths = pybmol_find_paths(pybmol, node, end, coupling_length, path)
 				#for each new path, check for paths of correct length
 				for newpath in newpaths:
 					if len(newpath) == coupling_length+1 and newpath != []:
@@ -89,9 +89,9 @@ def pybmol_get_path_lengths(pybmol, maxlen=5):
 		for atom2 in range(atoms):
 			coupling_paths = []
 			for i in range(maxlen):
-				paths = pybmol_find_all_paths(pybmol, atom1, atom2, i)
+				paths = pybmol_find_paths(pybmol, atom1, atom2, i)
 				if len(paths) > 0:
-					coupling_paths.extend(pybmol_find_all_paths(pybmol, atom1, atom2, i))
+					coupling_paths.extend(paths)
 			length = 999
 			for path in coupling_paths:
 				if len(path) < length and len(path) != 0:
