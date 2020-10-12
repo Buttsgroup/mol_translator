@@ -16,7 +16,7 @@
 
 import pybel as pyb
 
-from mol_translator.pybel_converter.pybel_converter import pybmol_to_aemol, aemol_to_pybmol
+from mol_translator.pybel_converter.pybel_converter import pybmol_to_aemol, aemol_to_pybmol, rdmol_to_aemol
 from mol_translator.structure import structure_write as strucwrt
 
 import mol_translator.properties.property_io
@@ -61,10 +61,9 @@ class aemol(object):
 
     def from_rdkit(self, rdmol):
         #assumes rdmol is already 3D with Hs included
-        types, xyz, conn = rdmol_to_aemol(rdmol)
+        types, xyz = rdmol_to_aemol(rdmol)
         self.structure['types'] = types
         self.structure['xyz'] = xyz
-        self.structure['conn'] = conn
 
     def to_rdkit(self):
         rdmol = aemol_to_rdmol(self.structure)
