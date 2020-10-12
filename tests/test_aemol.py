@@ -7,7 +7,8 @@ import pybel as pyb
 from rdkit import Chem
 from rdkit.Chem import AllChem
 
-from mol_translator.pybel_converter.pybel_converter import pybmol_to_aemol, aemol_to_pybmol, rdmol_to_aemol
+from mol_translator.structure.pybel_converter import pybmol_to_aemol, aemol_to_pybmol
+from mol_translator.structure.rdkit_converter import rdmol_to_aemol
 
 '''
     Write tests for every function and property of the aemol class
@@ -24,8 +25,8 @@ def test_init():
     assert mol.structure['types'] == []
     assert mol.structure['conn'] == []
 
-    assert mol.atom_properties['shift'] == []
-    assert mol.pair_properties['coupling'] == []
+    assert mol.atom_properties == {}
+    assert mol.pair_properties == {}
     assert mol.mol_properties['energy'] == -404.404
 
 #def test_from_pybel():

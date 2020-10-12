@@ -2,7 +2,7 @@ import sys
 import os
 sys.path.append(os.path.realpath(os.path.dirname(__file__))+'/../')
 
-import mol_translator.pybel_converter
+import mol_translator.structure.pybel_converter
 
 
 '''

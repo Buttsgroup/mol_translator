@@ -16,7 +16,8 @@
 
 import pybel as pyb
 
-from mol_translator.pybel_converter.pybel_converter import pybmol_to_aemol, aemol_to_pybmol, rdmol_to_aemol
+from mol_translator.structure.pybel_converter import pybmol_to_aemol, aemol_to_pybmol
+from mol_translator.structure.rdkit_converter import rdmol_to_aemol
 from mol_translator.structure import structure_write as strucwrt
 
 import mol_translator.properties.property_io as prop_io
