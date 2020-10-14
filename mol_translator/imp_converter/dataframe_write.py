@@ -84,7 +84,7 @@ def make_atom_df(aemols, progress=False, write=False):
 		pbar.close()
 
 	if write:
-		pickle.dump(atoms, open('atoms.pkl', 'wb'))
+		atoms.to_pickle('atoms.pkl')
 	else:
 		return atoms
 
@@ -153,6 +153,6 @@ def make_pair_df(aemols, progress=False, max_bond_distance=4, write=False):
 		pbar.close()
 
 	if write:
-		pickle.dump(pairs, open('pairs.pkl', 'wb'))
+		pairs.to_pickle('pairs.pkl')
 	else:
 		return pairs
