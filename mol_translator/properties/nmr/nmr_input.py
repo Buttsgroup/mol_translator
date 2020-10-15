@@ -72,3 +72,58 @@ def make_orca_nmrin(prefs, molname, aemol, outfile):
 	with open(outfile, 'w') as f_handle:
 		for string in strings:
 			print(string, file=f_handle)
+
+
+def make_g09_nmrin(prefs, molname, aemol, outname):
+
+	# Get values from preferences
+	charge = prefs['mol']['charge']
+	multiplicity = prefs['mol']['multiplicity']
+	functional = prefs['NMR']['functional']
+	basis_set = prefs['NMR']['basisset']
+	solvent = prefs['NMR']['solvent']
+	solventmodel = prefs['NMR']['solventmodel']
+	mixed = prefs['NMR']['mixed']
+	direct_cmd_line_nmr = prefs['NMR']['custom_cmd_line']
+	processors = prefs['NMR']['processors']
+	memory = prefs['NMR']['memory']
+
+	Periodic_table = Get_periodic_table()
+	try:
+		int(memory)
+		int(processors)
+	except:
+		return
+
+	if mixed == "True":
+		instr='nmr(giao,spinspin,mixed)' + str(functional) + '/' + str(basis_set) + ' maxdisk=50GB'
+	else:
+		instr='nmr(giao,spinspin)' + str(functional) + '/' + str(basis_set) + ' maxdisk=50GB'
+
+	if solvent != 'none':
+		instr += ' scrf=(' + str(solventmodel) + ',solvent=' + str(solvent) + ')'
+
+	comfile = outname
+	chkfile = outname.strip('.com') + '.chk'
+
+	strings = []
+	strings.append("%Chk={0:<1s}".format(chkfile))
+	strings.append("%NoSave")
+	strings.append("%mem={0:<1d}GB".format(memory))
+	strings.append("NProcShared={0:<1d}".format(processors))
+	strings.append("#T {0:<1s}".format(instr))
+	strings.append("")
+	strings.append("{0:<1s} NMR".format(molname))
+	strings.append("")
+	strings.append("{0:<1d} {1:<1d}".format(charge, multiplicity))
+	for i in range(len(aemol.structure['xyz'])):
+		str_type = Periodic_table[aemol.structure['types'][i]]
+		strings.append(" {0:<2s}        {1:>10.6f}        {2:>10.6f}        {3:>10.6f}".format(str_type, aemol.structure['xyz'][i][0], aemol.structure['xyz'][i][1], aemol.structure['xyz'][i][2]))
+	for i in range(4):
+		strings.append("")
+
+	with open(comfile, 'w') as f:
+		for string in strings:
+			print(string, file=f)
+
+	return 0
