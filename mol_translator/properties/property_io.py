@@ -49,8 +49,8 @@ def prop_read(aemol, filename, prop, format):
         aemol.atom_properties['shift_var'] = shift_var
         aemol.pair_properties['coupling_var'] = coupling_var
     elif prop == 'scf':
-        energy = energy.energy_read(filename, format, prop)
-        aemol.mol_properties['energy'] = energy
+        scf = energy.energy_read.energy_read(filename, format, prop)
+        aemol.mol_properties['energy'] = scf
         
     else:
         print('property not recognised or function not written yet !')

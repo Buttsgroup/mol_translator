@@ -24,6 +24,8 @@ import mol_translator.properties.property_io as prop_io
 
 from mol_translator.structure import find_paths as pathfind
 
+from mol_translator.properties.nmr.nmr_write import write_nmredata
+
 
 class aemol(object):
     """

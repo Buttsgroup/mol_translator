@@ -14,6 +14,7 @@
 #You should have received a copy of the GNU General Public License
 #along with autoenrich.  If not, see <https://www.gnu.org/licenses/>.
 
+import numpy as np
 
 def calc_pops(aemols, temp=298):
 
