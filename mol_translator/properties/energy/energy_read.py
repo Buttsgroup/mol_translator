@@ -16,7 +16,7 @@
 
 
 def energy_read(file, ftype, prop):
-    if prop == 'SCF':
+    if prop == 'scf':
         if format == 'g09':
             energy = g09_scfread(file)
         elif format == 'g16':
