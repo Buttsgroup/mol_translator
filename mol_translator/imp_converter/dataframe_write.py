@@ -122,12 +122,6 @@ def make_pair_df(aemols, progress=False, max_bond_distance=4, write=False):
 				if aemol.structure['path_len'][t][t2] > max_bond_distance or aemol.structure['path_len'][t2][t] > max_bond_distance or aemol.structure['path_len'][t][t2] == 0:
 					continue
 
-				# Enforce label ordering, always 1JCH, never 1JHC for example
-				if type > type2:
-					targetflag = str(aemol.structure['path_len'][t][t2]) + 'J' + p_table[type] + p_table[type2]
-				else:
-					targetflag = str(aemol.structure['path_len'][t][t2]) + 'J' + p_table[type2] + p_table[type]
-
 				# Add pair values to lists
 				molecule_name.append(aemol.info['molid'])
 				atom_index_0.append(t)
@@ -135,7 +129,7 @@ def make_pair_df(aemols, progress=False, max_bond_distance=4, write=False):
 				dist.append(np.linalg.norm(aemol.structure['xyz'][t]-aemol.structure['xyz'][t2]))
 				bnd_dist.append(aemol.structure['path_len'][t][t2])
 				for p, prop in enumerate(aemol.pair_properties.keys()):
-					pair_props[p].append(aemol.pair_properties[prop][t])
+					pair_props[p].append(aemol.pair_properties[prop][t][t2])
 
 	# Construct dataframe
 	pairs = {	'molecule_name': molecule_name,
