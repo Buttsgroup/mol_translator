@@ -20,20 +20,24 @@ from mol_translator.structure.structure_write import write_mol_tosdf
 
 # Write an nmrmol object to an nmredata file
 def write_nmredata(outfile, aemol,
-					info=None):
+					info=None, count_from=0, print_predicted=False):
 
 	atoms = len(aemol.structure['types'])
 	props = {}
-	for label in ["shift", "shift_var"]:
+	for label in ["predicted_shift", "shift", "shift_var"]:
 		if label in aemol.atom_properties.keys():
 			props[label] = aemol.atom_properties[label]
 		else:
 			props[label] = np.zeros(atoms, dtype=np.float64)
-	for label in ["coupling", "coupling_var"]:
+	for label in ["predicted_coupling", "coupling", "coupling_var"]:
 		if label in aemol.pair_properties.keys():
 			props[label] = aemol.pair_properties[label]
 		else:
 			props[label] = np.zeros((atoms,atoms), dtype=np.float64)
+
+	if print_predicted:
+		props['shift'] == props['predicted_shift']
+		props['coupling'] == props['predicted_coupling']
 
 	sdfstrings = write_mol_tosdf(aemol, "", stringsonly=True)
 
@@ -45,7 +49,7 @@ def write_nmredata(outfile, aemol,
 	lines.append('> <NMREDATA_ASSIGNMENT>')
 	# Print chemical shifts with variance
 	for i, shift, type, var in zip(range(len(aemol.structure['types'])), props['shift'], aemol.structure['types'], props['shift_var']):
-		string = " {atom:<5d}, {shift:<15.8f}, {type:<5d}, {variance:<15.8f}\\".format(atom=i, shift=shift, type=type, variance=var)
+		string = " {atom:<5d}, {shift:<15.8f}, {type:<5d}, {variance:<15.8f}\\".format(atom=i+count_from, shift=shift, type=type, variance=var)
 		lines.append(string)
 
 	lines.append('')
@@ -57,8 +61,8 @@ def write_nmredata(outfile, aemol,
 				continue
 			if aemol.structure['path_len'][i][j] == 0:
 				continue
-			string = " {a1:<10d}, {a2:<10d}, {coupling:<15.8f}, {label:<10s}, {var:<15.8f}".format(a1=i,
-																									a2=j,
+			string = " {a1:<10d}, {a2:<10d}, {coupling:<15.8f}, {label:<10s}, {var:<15.8f}".format(a1=i+count_from,
+																									a2=j+count_from,
 																									coupling=props['coupling'][i][j],
 																									label=aemol.pair_properties['nmr_types'][i][j],
 																									var=props['coupling_var'][i][j])
