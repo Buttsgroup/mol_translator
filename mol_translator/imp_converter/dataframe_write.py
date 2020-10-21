@@ -115,13 +115,6 @@ def make_pair_df(aemols, progress=False, max_bond_distance=4, write=False):
 
 		for t, type in enumerate(aemol.structure['types']):
 			for t2, type2 in enumerate(aemol.structure['types']):
-				if t == t2:
-					continue
-
-				# Only include pairs up to 4 pairs away
-				if aemol.structure['path_len'][t][t2] > max_bond_distance or aemol.structure['path_len'][t2][t] > max_bond_distance or aemol.structure['path_len'][t][t2] == 0:
-					continue
-
 				# Add pair values to lists
 				molecule_name.append(aemol.info['molid'])
 				atom_index_0.append(t)
