@@ -99,7 +99,7 @@ def make_pair_df(aemols, progress=False, max_bond_distance=4, write=False):
 	atom_index_0 = []	# atom index for atom 1
 	atom_index_1 = []	# atom index for atom 2
 	dist = []			# distance between atoms
-	bnd_dist = []		# number of pairs between atoms (shortest path)
+	path_len = []		# number of pairs between atoms (shortest path)
 	pair_props = []
 	for propname in aemols[0].pair_properties.keys():
 		pair_props.append([])
@@ -127,7 +127,7 @@ def make_pair_df(aemols, progress=False, max_bond_distance=4, write=False):
 				atom_index_0.append(t)
 				atom_index_1.append(t2)
 				dist.append(np.linalg.norm(aemol.structure['xyz'][t]-aemol.structure['xyz'][t2]))
-				bnd_dist.append(aemol.structure['path_len'][t][t2])
+				path_len.append(aemol.structure['path_len'][t][t2])
 				for p, prop in enumerate(aemol.pair_properties.keys()):
 					pair_props[p].append(aemol.pair_properties[prop][t][t2])
 
@@ -136,7 +136,7 @@ def make_pair_df(aemols, progress=False, max_bond_distance=4, write=False):
 				'atom_index_0': atom_index_0,
 				'atom_index_1': atom_index_1,
 				'dist': dist,
-				'bond_dist': bnd_dist
+				'path_len': path_len
 			}
 	for p, propname in enumerate(aemol.pair_properties.keys()):
 		pairs[propname] = pair_props[p]

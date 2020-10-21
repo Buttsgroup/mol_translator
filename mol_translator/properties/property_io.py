@@ -48,6 +48,10 @@ def prop_read(aemol, filename, prop, format):
         shift_var, coupling_var = nmr.nmr_read.nmr_read(filename, format, prop)
         aemol.atom_properties['shift_var'] = shift_var
         aemol.pair_properties['coupling_var'] = coupling_var
+    elif prop == 'scf':
+        scf = energy.energy_read.energy_read(filename, format, prop)
+        aemol.mol_properties['energy'] = scf
+        
     else:
         print('property not recognised or function not written yet !')
         raise ValueError('Cannot read property: ', prop)

@@ -110,7 +110,7 @@ def make_g09_nmrin(prefs, molname, aemol, outname):
 	strings.append("%Chk={0:<1s}".format(chkfile))
 	strings.append("%NoSave")
 	strings.append("%mem={0:<1d}GB".format(memory))
-	strings.append("NProcShared={0:<1d}".format(processors))
+	strings.append("%NProcShared={0:<1d}".format(processors))
 	strings.append("#T {0:<1s}".format(instr))
 	strings.append("")
 	strings.append("{0:<1s} NMR".format(molname))

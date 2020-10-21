@@ -19,47 +19,53 @@ import numpy as np
 from mol_translator.structure.structure_write import write_mol_tosdf
 
 # Write an nmrmol object to an nmredata file
-def write_nmredata(outfile, label, mol,
-					shift=None, coupling=None, shift_var=None, coupling_var=None,
-					info=None):
+def write_nmredata(outfile, aemol,
+					info=None, count_from=0, print_predicted=False):
 
-	atoms = len(mol['types'])
-	if shift is None:
-		shift = np.zeros(atoms, dtype=np.float64)
-	if shift_var is None:
-		shift_var = np.zeros(atoms, dtype=np.float64)
-	if coupling is None:
-		coupling = np.zeros((atoms, atoms), dtype=np.float64)
-	if coupling_var is None:
-		coupling_var = np.zeros((atoms, atoms), dtype=np.float64)
+	atoms = len(aemol.structure['types'])
+	props = {}
+	for label in ["predicted_shift", "shift", "shift_var"]:
+		if label in aemol.atom_properties.keys():
+			props[label] = aemol.atom_properties[label]
+		else:
+			props[label] = np.zeros(atoms, dtype=np.float64)
+	for label in ["predicted_coupling", "coupling", "coupling_var"]:
+		if label in aemol.pair_properties.keys():
+			props[label] = aemol.pair_properties[label]
+		else:
+			props[label] = np.zeros((atoms,atoms), dtype=np.float64)
 
-	sdfstrings = write_mol_tosdf(mol, "", label, True)
+	if print_predicted:
+		props['shift'] == props['predicted_shift']
+		props['coupling'] == props['predicted_coupling']
 
+	sdfstrings = write_mol_tosdf(aemol, "", stringsonly=True)
+
+	lines = []
 	for line in sdfstrings:
-		line.append(line)
+		lines.append(line)
 	# assignment section
 	lines.append('')
 	lines.append('> <NMREDATA_ASSIGNMENT>')
 	# Print chemical shifts with variance
-	for i, shift, type, var in zip(range(len(mol['types'])), mol['shift'], mol['types'], mol['shift_var']):
-		string = " {atom:<5d}, {shift:<15.8f}, {type:<5d}, {variance:<15.8f}\\".format(atom=i, shift=shift, type=type, variance=var)
+	for i, shift, type, var in zip(range(len(aemol.structure['types'])), props['shift'], aemol.structure['types'], props['shift_var']):
+		string = " {atom:<5d}, {shift:<15.8f}, {type:<5d}, {variance:<15.8f}\\".format(atom=i+count_from, shift=shift, type=type, variance=var)
 		lines.append(string)
 
 	lines.append('')
 	lines.append('> <NMREDATA_J>')
 	# Print couplings with variance and label
-	for i in range(len(mol['types'])):
-		for j in range(len(mol['types'])):
+	for i in range(len(aemol.structure['types'])):
+		for j in range(len(aemol.structure['types'])):
 			if i >= j:
 				continue
-			if mol['coupling_len'][i][j] == 0:
+			if aemol.structure['path_len'][i][j] == 0:
 				continue
-			label = labelmaker(i, j, mol)
-			string = " {a1:<10d}, {a2:<10d}, {coupling:<15.8f}, {label:<10s}, {var:<15.8f}".format(a1=i,
-																									a2=j,
-																									coupling=mol['coupling'][i][j],
-																									label=label,
-																									var=mol['coupling_var'][i][j])
+			string = " {a1:<10d}, {a2:<10d}, {coupling:<15.8f}, {label:<10s}, {var:<15.8f}".format(a1=i+count_from,
+																									a2=j+count_from,
+																									coupling=props['coupling'][i][j],
+																									label=aemol.pair_properties['nmr_types'][i][j],
+																									var=props['coupling_var'][i][j])
 
 			lines.append(string)
 
