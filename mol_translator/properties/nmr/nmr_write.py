@@ -19,7 +19,7 @@ import numpy as np
 from mol_translator.structure.structure_write import write_mol_tosdf
 
 # Write an nmrmol object to an nmredata file
-def write_nmredata(outfile, aemol,
+def write_nmredata(outfile, aemol, write_zeros=False,
 					info=None, count_from=0, print_predicted=False):
 
 	atoms = len(aemol.structure['types'])
@@ -36,8 +36,8 @@ def write_nmredata(outfile, aemol,
 			props[label] = np.zeros((atoms,atoms), dtype=np.float64)
 
 	if print_predicted:
-		props['shift'] == props['predicted_shift']
-		props['coupling'] == props['predicted_coupling']
+		props['shift'] = props['predicted_shift']
+		props['coupling'] = props['predicted_coupling']
 
 	sdfstrings = write_mol_tosdf(aemol, "", stringsonly=True)
 
@@ -60,6 +60,8 @@ def write_nmredata(outfile, aemol,
 			if i >= j:
 				continue
 			if aemol.structure['path_len'][i][j] == 0:
+				continue
+			if props['coupling'][i][j] == 0 and not write_zeros:
 				continue
 			string = " {a1:<10d}, {a2:<10d}, {coupling:<15.8f}, {label:<10s}, {var:<15.8f}".format(a1=i+count_from,
 																									a2=j+count_from,
