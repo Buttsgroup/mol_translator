@@ -56,8 +56,6 @@ def test_to_pybel():
     assert (mol_test.structure['types'] == mol_ref.structure['types']).all() == True
     assert (mol_test.structure['conn'] == mol_ref.structure['conn']).all() == True
 
-
-
 def test_from_rdkit():
     test_mol = 'CCCC'
     mol = aemol(test_mol)
