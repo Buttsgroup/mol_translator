@@ -53,26 +53,3 @@ def aemol_to_pybmol(structure):
 	os.remove('tmp.xyz')
 
 	return pybmol
-
-def rdmol_to_aemol(rdmol):
-
-	type_array = np.zeros(rdmol.GetNumAtoms(), dtype=np.int32)
-	xyz_array = np.zeros((rdmol.GetNumAtoms(),3), dtype=np.float64)
-	conn_array = np.zeros((rdmol.GetNumAtoms(), rdmol.GetNumAtoms()), dtype=np.int32)
-
-	for i, atoms in enumerate(rdmol.GetAtoms()):
-		type_array[i] = atoms.GetAtomicNum()
-		xyz_array[i][0] = rdmol.GetConformer().GetAtomPosition(i).x
-		xyz_array[i][1] = rdmol.GetConformer().GetAtomPosition(i).y
-		xyz_array[i][2] = rdmol.GetConformer().GetAtomPosition(i).z
-
-	return type_array, xyz_array
-
-def aemol_to_rdmol(structure):
-
-	strucwrt.write_mol_tosdf(structure, 'tmp.sdf')
-	molblock = open('tmp.sdf', 'r').read()
-	rdmol = Chem.MolFromMolBlock(molblock)
-	os.remove('tmp.sdf')
-
-	return rdmol
