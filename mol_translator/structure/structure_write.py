@@ -1,4 +1,4 @@
-# Copyright 2020 Will Gerrard
+# Copyright 2020 Will Gerrard, Calvin Yiu
 #This file is part of autoenrich.
 
 #autoenrich is free software: you can redistribute it and/or modify
@@ -79,7 +79,7 @@ def write_mol_tosdf(aemol, outfile, stringsonly=False):
 																				bond=aemol.structure['conn'][at1][at2])
 				lines.append(string)
 	# Terminate structure section
-	lines.append('M\tEND'.format())
+	lines.append('M  END'.format())
 
 	if stringsonly:
 		return lines
