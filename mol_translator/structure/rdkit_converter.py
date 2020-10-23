@@ -1,4 +1,4 @@
-# Copyright 2020 Will Gerrard
+# Copyright 2020 Will Gerrard, Calvin Yiu
 #This file is part of autoenrich.
 
 #autoenrich is free software: you can redistribute it and/or modify
@@ -37,9 +37,9 @@ def rdmol_to_aemol(rdmol):
 
 	return type_array, xyz_array
 
-def aemol_to_rdmol(structure):
+def aemol_to_rdmol(aemol):
 
-	strucwrt.write_mol_tosdf(structure, 'tmp.sdf')
+	strucwrt.write_mol_tosdf(aemol, 'tmp.sdf')
 	molblock = open('tmp.sdf', 'r').read()
 	rdmol = Chem.MolFromMolBlock(molblock)
 	os.remove('tmp.sdf')
