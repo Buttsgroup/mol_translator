@@ -1,5 +1,6 @@
 import sys
 import os
+from pathlib import Path
 sys.path.append(os.path.realpath(os.path.dirname(__file__))+'/../')
 
 import mol_translator.aemol as aemol
@@ -57,9 +58,10 @@ def test_to_pybel():
     assert (mol_test.structure['conn'] == mol_ref.structure['conn']).all() == True
 
 def test_from_rdkit():
-    test_mol = 'CCCC'
+    test_mol = 'from_rd_test'
     mol = aemol(test_mol)
-    rdmol = Chem.MolFromSmiles(test_mol)
+    smiles = ' CCCC'
+    rdmol = Chem.MolFromSmiles(smiles)
     rdmol = Chem.AddHs(rdmol)
     AllChem.EmbedMolecule(rdmol)
 
@@ -80,7 +82,15 @@ def test_to_rdkit():
     test_rd = mol.to_rdkit()
     assert test_rd is not None
 
-#def test_from_file():
+def test_from_file():
+    test_mol = 'to_rd_test'
+    test_xyz = './test_dataset/test_xyz.xyz'
+    mol = aemol(test_mol)
+
+    mol.from_file(test_xyz)
+    assert mol.structure['types'] is not []
+    assert mol.structure['xyz'] is not []
+    assert mol.structure['conn'] is not []
 
 def test_from_string():
     test_mol = 'CCCC'
@@ -89,13 +99,27 @@ def test_from_string():
     return mol.from_string(test_mol)
     assert pybmol == pybmol_test
 
-#def test_to_file_ae():
+def test_to_file_ae():
+    test_mol = 'to_file_ae_test'
+    test_mol = aemol(test_mol)
+    ref_xyz = './test_dataset/test_xyz.xyz'
 
-    #mol.to_file_ae(xyz, "tmp_file.xyz")
+    test_mol.from_file(ref_xyz)
+    tmp_file = Path("./tmp_test.xyz")
+    test_mol.to_file_ae('xyz', 'tmp_test.xyz')
+    assert tmp_file.is_file() == True
+    os.remove(tmp_file)
 
-#def test_to_file_pyb():
-    #mol.to_file_pyb(xyz, "test_file")
-    #check test_file contains pybmol object
+def test_to_file_pyb():
+    test_mol = 'to_file_pyb_test'
+    test_mol = aemol(test_mol)
+    ref_xyz = './test_dataset/test_xyz.xyz'
+
+    test_mol.from_file(ref_xyz)
+    tmp_file = Path("./tmp_pyb.smi")
+    test_mol.to_file_pyb('smi', 'tmp_pyb.smi')
+    assert tmp_file.is_file() == True
+    os.remove(tmp_file)
 
 #def test_prop_tofile():
 
