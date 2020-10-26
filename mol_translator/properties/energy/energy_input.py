@@ -16,7 +16,7 @@
 
 from mol_translator.util.periodic_table import Get_periodic_table
 
-def make_optin(prefs, molname, aemol, outfile):
+def make_orca_optin(prefs, molname, aemol, outfile):
 	# Input:
 	#	prefs: preferences dictionary
 	#	molname: name of molecule
@@ -71,3 +71,67 @@ def make_optin(prefs, molname, aemol, outfile):
 	with open(outfile, 'w') as f_handle:
 		for string in strings:
 			print(string, file=f_handle)
+
+
+def make_g09_optin(prefs, molname, aemol, outfile):
+## Inputs:
+	#  molname      = molecule name, string. 'Progesterone'
+	#  xyz          = xyz coordinates, Nx3 numpy array.
+	#  type         = atom types, list(or 1D array) length N.
+	#  charge       = molecule charge, integer.
+	#  multiplicity = multiplcity of molecule, integer.
+	#  memory       = memory value to use for gaussian, integer.
+	#  processors   = number of processoers to use for gaussian, integer.
+	#  instr        = instruction line for gaussian, string. 'opt=tight freq mpw1pw91/6-311g(d,p) scrf=(iefpcm,solvent=chloroform) geom=distance MaxDisk=50GB'
+	Periodic_table = Get_periodic_table()
+	
+	charge = prefs['mol']['charge']
+	multiplicity = prefs['mol']['multiplicity']
+	memory = prefs['optimisation']['memory']
+	processors = prefs['optimisation']['processors']
+	opt = prefs['optimisation']['opt']
+	functional = prefs['optimisation']['functional']
+	basis_set = prefs['optimisation']['basisset']
+	solvent = prefs['optimisation']['solvent']
+	
+	
+	try:
+		int(memory)
+		int(processors)
+	except:
+		return
+
+	if freq == "True":
+		instr = 'opt=' + str(opt) + ' freq ' + str(functional) + '/' + str(basis_set) + ' integral=' + str(grid) + ' MaxDisk=50GB'
+	else:
+		instr = 'opt=' + str(opt) + ' ' + str(functional) + '/' + str(basis_set) + ' integral=' + str(grid) + ' MaxDisk=50GB'
+
+	if solvent != 'none':
+		instr += ' scrf=(' + str(solventmodel) + ',solvent=' + str(solvent) + ')'
+
+	comfile = directory.strip() + molname.strip() + '_OPT.com'
+
+
+	with open(comfile, 'w') as f_handle:
+		strings = []
+		strings.append("%Chk={0:<1s}_OPT1".format(molname))
+		if twostep == 'False':
+			strings.append("%NoSave")
+		strings.append("%mem={0:<1d}GB".format(memory))
+		strings.append("%NProcShared={0:<1d}".format(processors))
+		strings.append("# {0:<1s}".format(instr))
+		strings.append("")
+		strings.append("{0:<1s} OPT".format(molname))
+		strings.append("")
+		strings.append("{0:<1d} {1:<1d}".format(charge, multiplicity))
+		for string in strings:
+			print(string, file=f_handle)
+		for i in range(len(aemol.structure['xyz'])):
+			str_type = Periodic_table[aemol.structure['types'][i]]
+			string = " {0:<2s}        {1:>10.5f}        {2:>10.5f}        {3:>10.5f}".format(str_type, aemol.structure['xyz'][i][0], aemol.structure['xyz'][i][1], aemol.structure['xyz'][i][2])
+			print(string, file=f_handle)
+		for i in range(4):
+			print("", file=f_handle)
+		strings = []
+
+	return comfile
