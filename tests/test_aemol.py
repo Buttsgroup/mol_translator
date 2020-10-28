@@ -28,7 +28,7 @@ def test_init():
 
 def test_from_pybel():
     test_mol = 'from_pyb_test'
-    test_xyz = './test_dataset/test_xyz.xyz'
+    test_xyz = 'tests/test_dataset/test_xyz.xyz'
     mol = aemol(test_mol)
     pybmol = next(pyb.readfile('xyz', test_xyz))
 
@@ -46,7 +46,7 @@ def test_to_pybel():
     ref_mol = 'ref'
     mol_ref = aemol(ref_mol)
 
-    test_xyz = './test_dataset/test_xyz.xyz'
+    test_xyz = 'tests/test_dataset/test_xyz.xyz'
     pybmol_ref = next(pyb.readfile('xyz', test_xyz))
     mol_ref.from_pybel(pybmol_ref)
 
@@ -71,7 +71,7 @@ def test_from_rdkit():
 
 def test_to_rdkit():
     test_mol = 'to_rd_test'
-    test_xyz = './test_dataset/test_xyz.xyz'
+    test_xyz = 'tests/test_dataset/test_xyz.xyz'
 
     mol = aemol(test_mol)
     mol.from_file(test_xyz)
@@ -84,7 +84,7 @@ def test_to_rdkit():
 
 def test_from_file():
     test_mol = 'to_rd_test'
-    test_xyz = './test_dataset/test_xyz.xyz'
+    test_xyz = 'tests/test_dataset/test_xyz.xyz'
     mol = aemol(test_mol)
 
     mol.from_file(test_xyz)
@@ -102,7 +102,7 @@ def test_from_string():
 def test_to_file_ae():
     test_mol = 'to_file_ae_test'
     test_mol = aemol(test_mol)
-    ref_xyz = './test_dataset/test_xyz.xyz'
+    ref_xyz = 'tests/test_dataset/test_xyz.xyz'
 
     test_mol.from_file(ref_xyz)
     tmp_file = Path("./tmp_test.xyz")
@@ -113,7 +113,7 @@ def test_to_file_ae():
 def test_to_file_pyb():
     test_mol = 'to_file_pyb_test'
     test_mol = aemol(test_mol)
-    ref_xyz = './test_dataset/test_xyz.xyz'
+    ref_xyz = 'tests/test_dataset/test_xyz.xyz'
 
     test_mol.from_file(ref_xyz)
     tmp_file = Path("./tmp_pyb.smi")

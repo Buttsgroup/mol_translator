@@ -23,7 +23,9 @@ def pybmol_find_all_paths(pybmol, maxlen=5):
 	all_paths = []
 	for atom1 in range(len(pybmol.atoms)):
 		for atom2 in range(len(pybmol.atoms)):
-			if np.linalg.norm(pybmol.atoms[atom1].coords-pybmol.atoms[atom2].coords) > 2.5*maxlen:
+			coords1 = np.asarray(pybmol.atoms[atom1].coords)
+			coords2 = np.asarray(pybmol.atoms[atom2].coords)
+			if np.linalg.norm(coords1-coords2) > 2.5*maxlen:
 				continue
 			for length in range(1, maxlen):
 				paths = pybmol_find_paths(pybmol, atom1, atom2, length)
@@ -85,22 +87,21 @@ def pybmol_get_bond_table(pybmol):
 def pybmol_get_path_lengths(pybmol, maxlen=5):
 	atoms = len(pybmol.atoms)
 	coupling_len = np.zeros((atoms, atoms), dtype=np.int32)
+	
+	allpaths = pybmol_find_all_paths(pybmol, maxlen=maxlen)
+	
 	for atom1 in range(atoms):
 		for atom2 in range(atoms):
-			coupling_paths = []
-			for i in range(maxlen):
-				paths = pybmol_find_paths(pybmol, atom1, atom2, i)
-				if len(paths) > 0:
-					coupling_paths.extend(paths)
-			length = 999
-			for path in coupling_paths:
-				if len(path) < length and len(path) != 0:
-					length = len(path) - 1
-
-			if length > maxlen+1:
-				length = 0
-
-			coupling_len[atom1][atom2] = length
-			coupling_len[atom2][atom1] = length
+			if atom1 == atom2:
+				shortest = 0
+			else:
+				shortest = maxlen+1
+			for path in allpaths:
+				if path[0] == atom1 and path[-1] == atom2:
+					if len(path)-1 < shortest:
+						shortest = len(path) - 1
+						
+			coupling_len[atom1][atom2] = shortest
+			coupling_len[atom2][atom1] = shortest
 
 	return coupling_len
