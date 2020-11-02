@@ -18,6 +18,7 @@
 # Functions to manage write/read of properties
 from . import nmr as nmr
 from . import energy as energy
+from . import binding as binding
 
 def prop_write(aemol, filename, prop, format):
     if prop == 'nmr':
@@ -51,7 +52,9 @@ def prop_read(aemol, filename, prop, format):
     elif prop == 'scf':
         scf = energy.energy_read.energy_read(filename, format, prop)
         aemol.mol_properties['energy'] = scf
-        
+    elif prop == 'ic50':
+        ic50 = binding.binding_read.pchembl_read(filename, format, aemol.info['molid'])
+        aemol.mol_properties['ic50'] = ic50
     else:
         print('property not recognised or function not written yet !')
         raise ValueError('Cannot read property: ', prop)
