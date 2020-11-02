@@ -36,7 +36,7 @@ def test_dataframe_readwrite():
 def test_prep_mol():
     test_mol = aemol(0)
     test_mol.from_file('tests/test_mols/qm9_8.nmredata.sdf', ftype='sdf')
-    test_mol = dataframe_prep.prep_mol(test_mol, nmr_file='tests/test_mols/qm9_8.nmredata.sdf', nmr_type='nmredata')
+    test_mol = dataframe_prep.prep_mol_nmr(test_mol, nmr_file='tests/test_mols/qm9_8.nmredata.sdf', nmr_type='nmredata')
     
     assert np.array_equal(test_mol.atom_properties['shift'], np.asarray([ 46.06039042, 327.955,   3.76051871,   3.76014554,
          3.59063345,  -0.6359735 ]))
@@ -80,7 +80,7 @@ def test_dataframe_write():
         f = int(file.split('_')[-1].split('.')[0])
         test_mol = aemol(f)
         test_mol.from_file(file, ftype='sdf')
-        test_mol = dataframe_prep.prep_mol(test_mol, nmr_file=file, nmr_type='nmredata')
+        test_mol = dataframe_prep.prep_mol_nmr(test_mol, nmr_file=file, nmr_type='nmredata')
         mols.append(test_mol)
         
     atom_df = dataframe_write.make_atom_df(mols)
