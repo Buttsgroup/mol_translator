@@ -19,7 +19,6 @@ import pybel as pyb
 from mol_translator.structure.pybel_converter import pybmol_to_aemol, aemol_to_pybmol
 from mol_translator.structure.rdkit_converter import rdmol_to_aemol, aemol_to_rdmol
 from mol_translator.structure import structure_write as strucwrt
-from mol_translator.structure.find_num_bonds import rdmol_find_num_bonds
 
 import mol_translator.properties.property_io as prop_io
 
@@ -120,11 +119,3 @@ class aemol(object):
         rdmol = self.to_rdkit()
         fp = Chem.GetMorganFingerprintAsBitVect(rdmol,radius=radius, nBits=nBits)
         self.mol_properties['ecfp4'] = fp
-
-    def check_rdkit_num_bonds(self, file):
-        rdmol = self.to_rdkit()
-        num_bond_dict = rdmol_find_num_bonds(rdmol)
-        for num_bonds in num_bond_dict.values():
-            if len(num_bonds)>1:
-                print(f"Unexpected number of bonds in molecule, please check file {file}")
-            else continue
