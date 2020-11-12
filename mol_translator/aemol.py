@@ -65,9 +65,10 @@ class aemol(object):
 
     def from_rdkit(self, rdmol):
         #assumes rdmol is already 3D with Hs included
-        types, xyz = rdmol_to_aemol(rdmol)
+        types, xyz, conn = rdmol_to_aemol(rdmol)
         self.structure['types'] = types
         self.structure['xyz'] = xyz
+        self.structure['conn'] = conn
 
     def to_rdkit(self, removeHs=False):
         rdmol = aemol_to_rdmol(self, removeHs)
