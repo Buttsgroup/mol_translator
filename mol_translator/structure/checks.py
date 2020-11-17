@@ -41,8 +41,16 @@ def check_missing_H(aemol):
 def check_bonds_are_plausible(aemol):
     check = True
     
+    plausible_bonds = {"1": [MIN_VALUE, MAX_VALUE]}
+    .
+    .
+    .
+    
     # is every bond within a plausible distance range
     
     return True
     
-def 
+def check_atoms_dont_overlap(aemol):
+    
+    
+    
