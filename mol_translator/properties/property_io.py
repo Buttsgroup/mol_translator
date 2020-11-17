@@ -22,8 +22,8 @@ from . import binding as binding
 
 def prop_write(aemol, filename, prop, format):
     if prop == 'nmr':
-        if 'coupling_type' not in aemol.bond_properties.keys():
-            aemol.bond_properties['coupling_type'] = nmr.nmr_ops.get_coupling_types(aemol)
+        if 'coupling_type' not in aemol.pair_properties.keys():
+            aemol.pair_properties['coupling_type'] = nmr.nmr_ops.get_coupling_types(aemol)
 
 
         if format == 'nmredata':
