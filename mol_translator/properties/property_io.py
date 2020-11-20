@@ -27,7 +27,7 @@ def prop_write(aemol, outfile, prop, format):
 
 
         if format == 'nmredata':
-            nmr.nmr_write.write_nmredata(outfile, aemol, write_zeros=True, count_from=0)
+            nmr.nmr_write.write_nmredata(outfile, aemol, write_zeros=False, count_from=0)
         else:
             raise_formaterror(format)
     else:

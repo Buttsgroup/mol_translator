@@ -117,7 +117,7 @@ class aemol(object):
         
     def get_rdkit_fingerprint(self, radius=2, nBits=2048):
         rdmol = self.to_rdkit()
-        fp = Chem.GetMorganFingerprintAsBitVect(rdmol,radius=radius, nBits=nBits)
+        fp = Chem.GetMorganFingerprintAsBitVect(rdmol, radius=radius, nBits=nBits)
         self.mol_properties['ecfp4'] = fp
         
         
