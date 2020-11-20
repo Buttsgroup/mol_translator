@@ -15,7 +15,8 @@
 #along with autoenrich.  If not, see <https://www.gnu.org/licenses/>.
 from mol_translator.aemol import aemol
 from mol_translator.structure.find_num_bonds import rdmol_find_num_bonds
-from rdkit import Chem.rdMolTransforms as Chem
+from rdkit.Chem import rdMolTransforms as Chem
+import numpy as np
 
 def run_all_checks(aemol):
 
@@ -23,7 +24,7 @@ def run_all_checks(aemol):
         return False
     if not check_missing_H(aemol):
         return False
-    if not check_bonds_are_plausible(aemol):
+    if not check_bonds_are_plausible_and_atom_overlap(aemol):
         return False
     return True
 
@@ -42,7 +43,7 @@ def check_valence(aemol):
 def check_missing_H(aemol):
     # everything should have hydrogens in it
 
-    if aemol.structure['types']['H'] == 0:
+    if aemol.structure['types'][1] == 0:
         return False
         #print(f"No Hs in mol, {aemol.info['molid']}")
     else:
@@ -64,13 +65,13 @@ def check_bonds_are_plausible_and_atom_overlap(aemol):
                 else:
                     return False
             else:
-                i_atom_pos = [rdmol.GetConformer().GetAtomPosition(i_idx).x,
-                              rdmol.GetConformer().GetAtomPosition(i_idx).y,
-                              rdmol.GetConformer().GetAtomPosition(i_idx).z]
+                i_atom_pos = np.array([rdmol.GetConformer().GetAtomPosition(i_idx).x,
+                                       rdmol.GetConformer().GetAtomPosition(i_idx).y,
+                                       rdmol.GetConformer().GetAtomPosition(i_idx).z])
 
-                j_atom_pos = [rdmol.GetConformer().GetAtomPosition(j_idx).x,
-                              rdmol.GetConformer().GetAtomPosition(j_idx).y,
-                              rdmol.GetConformer().GetAtomPosition(j_idx).z]
+                j_atom_pos = np.array([rdmol.GetConformer().GetAtomPosition(j_idx).x,
+                                       rdmol.GetConformer().GetAtomPosition(j_idx).y,
+                                       rdmol.GetConformer().GetAtomPosition(j_idx).z])
                 average_dist = np.linalg.norm(i_atom_pos - j_atom_pos)
                 if average_dist < 1.0:
                     return False
