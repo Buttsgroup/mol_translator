@@ -69,7 +69,7 @@ def check_bonds_are_plausible_and_atom_overlap(aemol):
                                        rdmol.GetConformer().GetAtomPosition(j_idx).y,
                                        rdmol.GetConformer().GetAtomPosition(j_idx).z])
                 average_dist = np.linalg.norm(i_atom_pos - j_atom_pos)
-                if average_dist < 1.0:
+                if average_dist < 1.4:
                     return False
 
     return True
