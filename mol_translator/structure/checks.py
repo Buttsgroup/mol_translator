@@ -36,18 +36,14 @@ def check_valence(aemol):
         if len(num_bonds)>1:
             return False
             #print(f"Unexpected number of valence electrons in mol, {aemol.info['molid']}")
-        else:
-            continue
     return True
 
 def check_missing_H(aemol):
     # everything should have hydrogens in it
-
-    if aemol.structure['types'][1] == 0:
+    if 1 not in aemol.structure['types']:
         return False
         #print(f"No Hs in mol, {aemol.info['molid']}")
-    else:
-        return True
+    return True
 
 def check_bonds_are_plausible_and_atom_overlap(aemol):
 
