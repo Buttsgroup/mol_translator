@@ -19,7 +19,15 @@ import os.path
 import numpy as np
 
 # Gets the necessary info for aemol to turn it into an IMP dataframe
-def prep_mol(aemol, nmr_file="", nmr_type=""):
+def prep_mol(aemol):
+    
+    aemol.get_bonds()
+    aemol.get_path_lengths()
+    get_coupling_types(aemol)
+
+    return aemol
+
+def prep_mol_nmr(aemol, nmr_file="", nmr_type=""):
     
     aemol.get_bonds()
     aemol.get_path_lengths()
@@ -29,4 +37,16 @@ def prep_mol(aemol, nmr_file="", nmr_type=""):
     else:
         aemol.atom_properties['shift'] = np.zeros(len(aemol.structure['types']), dtype=np.float64)
         aemol.pair_properties['coupling'] = np.zeros((len(aemol.structure['types']), len(aemol.structure['types'])), dtype=np.float64)
+    return aemol
+
+def prep_mol_ic50(aemol, ic50_file="", ic50_type=""):
+    aemol.get_bonds()
+    aemol.get_path_lengths()
+    get_coupling_types(aemol)
+    if os.path.isfile(ic50_file):
+        aemol.prop_fromfile(ic50_file, ic50_type, 'ic50')
+        aemol.atom_properties['ic50'] = np.full(len(aemol.structure['types']), aemol.mol_properties['ic50'], dtype=np.float64)
+    else:
+        aemol.atom_properties['ic50'] = np.zeros(len(aemol.structure['types']), dtype=np.float64)
+    
     return aemol
