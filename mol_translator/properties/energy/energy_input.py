@@ -93,6 +93,7 @@ def make_g09_optin(prefs, molname, aemol, outfile):
 	functional = prefs['optimisation']['functional']
 	basis_set = prefs['optimisation']['basisset']
 	solvent = prefs['optimisation']['solvent']
+	freq = True # Without this the energies we get arent useful for boltzmann weighting
 	
 	
 	try:
