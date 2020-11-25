@@ -26,6 +26,8 @@ from mol_translator.structure import find_paths as pathfind
 
 from mol_translator.properties.nmr.nmr_write import write_nmredata
 
+from mol_translator.structure.checks import run_all_checks
+
 from rdkit.Chem import AllChem as Chem
 
 class aemol(object):
@@ -126,3 +128,6 @@ class aemol(object):
         rdmol = Chem.AddHs(rdmol)
         rdmol = Chem.EmbedMolecule(rdmol)
         self.from_rdkit(rdmol)
+
+    def check_mol(self):
+        return run_all_checks(self)

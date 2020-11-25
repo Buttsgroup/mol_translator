@@ -13,7 +13,7 @@
 
 #You should have received a copy of the GNU General Public License
 #along with autoenrich.  If not, see <https://www.gnu.org/licenses/>.
-from mol_translator.aemol import aemol
+import mol_translator.aemol as aemol
 from mol_translator.structure.find_num_bonds import rdmol_find_num_bonds
 from rdkit.Chem import rdMolTransforms as Chem
 import numpy as np

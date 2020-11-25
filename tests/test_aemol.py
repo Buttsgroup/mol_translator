@@ -3,7 +3,7 @@ import os
 from pathlib import Path
 sys.path.append(os.path.realpath(os.path.dirname(__file__))+'/../')
 
-import mol_translator.aemol as aemol
+from mol_translator.aemol import aemol
 import pybel as pyb
 from rdkit import Chem
 from rdkit.Chem import AllChem
@@ -120,6 +120,20 @@ def test_to_file_pyb():
     test_mol.to_file_pyb('smi', 'tmp_pyb.smi')
     assert tmp_file.is_file() == True
     os.remove(tmp_file)
+
+def test_check_mol():
+    test_molid = 'test'
+    test_file = 'tests/test_dataset/test_xyz.xyz'
+    test_mol = aemol(test_molid)
+    test_mol.from_file(test_file)
+
+    test_bad_molid = 'bad_test'
+    test_bad_file = 'tests/test_dataset/test_bad_mol.xyz'
+    test_bad_mol = aemol(test_bad_molid)
+    test_bad_mol.from_file(test_bad_file)
+
+    assert aemol.check_mol(test_mol) == True
+    assert aemol.check_mol(test_bad_mol) == False
 
 #def test_prop_tofile():
 
