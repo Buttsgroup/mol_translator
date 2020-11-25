@@ -24,6 +24,7 @@ def energy_read(file, format, prop):
 			energy = g16_scfread(file)
 		elif format == 'orca':
 			energy = orca_scfread(file)
+
 		else:
 			print('format not recognised:', format)
 			sys.exit(0)
@@ -41,10 +42,12 @@ def g09_scfread(file):
 		for line in f:
 			if 'SCF Done' in line:
 				items = line.split()
+				
 				try:
 					energy = float(items[4])
 				except:
 					continue
+				energy = float(items[4])
 
 	return energy
 

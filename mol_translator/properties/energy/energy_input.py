@@ -90,8 +90,10 @@ def make_g09_optin(prefs, molname, aemol, outfile):
 	memory = prefs['optimisation']['memory']
 	processors = prefs['optimisation']['processors']
 	opt = prefs['optimisation']['opt']
+	freq = prefs['optimisation']['freq']
 	functional = prefs['optimisation']['functional']
 	basis_set = prefs['optimisation']['basisset']
+	grid = prefs['optimisation']['grid']
 	solvent = prefs['optimisation']['solvent']
 	freq = True # Without this the energies we get arent useful for boltzmann weighting
 	
@@ -110,14 +112,13 @@ def make_g09_optin(prefs, molname, aemol, outfile):
 	if solvent != 'none':
 		instr += ' scrf=(' + str(solventmodel) + ',solvent=' + str(solvent) + ')'
 
-	comfile = directory.strip() + molname.strip() + '_OPT.com'
+	comfile = outfile
 
 
 	with open(comfile, 'w') as f_handle:
 		strings = []
 		strings.append("%Chk={0:<1s}_OPT1".format(molname))
-		if twostep == 'False':
-			strings.append("%NoSave")
+		strings.append("%NoSave")
 		strings.append("%mem={0:<1d}GB".format(memory))
 		strings.append("%NProcShared={0:<1d}".format(processors))
 		strings.append("# {0:<1s}".format(instr))
