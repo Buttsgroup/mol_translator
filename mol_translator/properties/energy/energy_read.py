@@ -15,7 +15,7 @@
 #along with autoenrich.  If not, see <https://www.gnu.org/licenses/>.
 
 
-def energy_read(file, ftype, prop):
+def energy_read(file, format, prop):
 	if prop == 'scf':
 		if format == 'g09':
 			energy = g09_scfread(file)
@@ -23,6 +23,8 @@ def energy_read(file, ftype, prop):
 			energy = g16_scfread(file)
 		elif format == 'orca':
 			energy = orca_scfread(file)
+			
+	return energy
 
 
 def g09_scfread(file):
@@ -30,9 +32,9 @@ def g09_scfread(file):
 
 	with open(file, 'r') as f:
 		for line in f:
-			if 'Sum of electronic and thermal Free Energies' in line:
+			if 'SCF Done' in line:
 				items = line.split()
-				energy = float(items[7])
+				energy = float(items[4])
 
 	return energy
 
