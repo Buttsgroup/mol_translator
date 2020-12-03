@@ -13,7 +13,7 @@
 
 #You should have received a copy of the GNU General Public License
 #along with autoenrich.  If not, see <https://www.gnu.org/licenses/>.
-from mol_translator.aemol import aemol
+import mol_translator.aemol as aemol
 from mol_translator.structure.find_num_bonds import rdmol_find_num_bonds
 from rdkit.Chem import rdMolTransforms as Chem
 import numpy as np
@@ -40,7 +40,9 @@ def check_valence(aemol):
 
 def check_missing_H(aemol):
     # everything should have hydrogens in it
-    if 1 not in aemol.structure['types']:
+    atom_num_array = aemol.structure['types']
+    atom_num_list = list(atom_num_array)
+    if 1 not in atom_num_list:
         return False
         #print(f"No Hs in mol, {aemol.info['molid']}")
     return True
