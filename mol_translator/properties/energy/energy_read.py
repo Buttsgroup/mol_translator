@@ -40,14 +40,9 @@ def g09_scfread(file):
 
 	with open(file, 'r') as f:
 		for line in f:
-			if 'SCF Done' in line:
+			if 'Sum of electronic and thermal Free Energies' in line:
 				items = line.split()
-				
-				try:
-					energy = float(items[4])
-				except:
-					continue
-				energy = float(items[4])
+				energy = float(items[7])
 
 	return energy
 

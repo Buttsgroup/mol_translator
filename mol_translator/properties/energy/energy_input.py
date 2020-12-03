@@ -104,10 +104,12 @@ def make_g09_optin(prefs, molname, aemol, outfile):
 	except:
 		return
 
-	if freq == "True":
+	if freq:
 		instr = 'opt=' + str(opt) + ' freq ' + str(functional) + '/' + str(basis_set) + ' integral=' + str(grid) + ' MaxDisk=50GB'
 	else:
 		instr = 'opt=' + str(opt) + ' ' + str(functional) + '/' + str(basis_set) + ' integral=' + str(grid) + ' MaxDisk=50GB'
+
+	instr = 'opt=' + str(opt) + ' freq ' + str(functional) + '/' + str(basis_set) + ' integral=' + str(grid) + ' MaxDisk=50GB'
 
 	if solvent != 'none':
 		instr += ' scrf=(' + str(solventmodel) + ',solvent=' + str(solvent) + ')'
