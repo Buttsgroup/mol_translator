@@ -93,10 +93,10 @@ class aemol(object):
         pybmol.write(format, filename)
 
     def prop_tofile(self, filename, prop='nmr', format='nmredata'):
-        prop_io.prop_write(self, filename, prop, format)
+        prop_io.prop_write(self, filename, prop=prop, format=format)
 
-    def prop_fromfile(self, filename, ftype, prop):
-        prop_io.prop_read(self, filename, prop, ftype)
+    def prop_fromfile(self, filename, format, prop):
+        prop_io.prop_read(self, filename, prop=prop, format=format)
 
     def get_all_paths(self, maxlen=5):
         pybmol = self.to_pybel()

@@ -14,8 +14,9 @@
 #You should have received a copy of the GNU General Public License
 #along with autoenrich.  If not, see <https://www.gnu.org/licenses/>.
 
+import sys
 
-def energy_read(file, ftype, prop):
+def energy_read(file, format, prop):
 	if prop == 'scf':
 		if format == 'g09':
 			energy = g09_scfread(file)
@@ -23,6 +24,15 @@ def energy_read(file, ftype, prop):
 			energy = g16_scfread(file)
 		elif format == 'orca':
 			energy = orca_scfread(file)
+
+		else:
+			print('format not recognised:', format)
+			sys.exit(0)
+	else:
+		print('Prop not recognised:', prop)
+		sys.exit(0)
+		
+	return energy
 
 
 def g09_scfread(file):
