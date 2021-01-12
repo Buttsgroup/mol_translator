@@ -172,7 +172,6 @@ def nmredata_nmrread(file):
 					int(items[0])
 				except:
 					continue
-				print(items)
 				shift_array[int(items[0])] = float(items[2])
 				shift_var[int(items[0])] = float(items[6])
 			# If coupling assignment label found, process coupling rows
