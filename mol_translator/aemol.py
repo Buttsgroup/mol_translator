@@ -41,19 +41,28 @@ class aemol(object):
         self.info = {   'molid': molid,
                         'filepath': filepath}
 
-        self.structure = {  'xyz': [],
+        self.structure = {  'size': 0,
+                            'xyz': [],
                             'types': [],
                             'conn': []}
 
+        # numpy arrays with 1 value per atom
+        # atom referencing matches self.structure
         self.atom_properties = {}
-
+        # 2D numpy array with 2 values per pair
+        # dont be lazy, order might matter later
         self.pair_properties = {}
+        # 3D numpy array
+        self.trip_properties = {}
+        # 4D numpy array
+        self.quad_properties = {}
 
         self.mol_properties = {'energy': -404.404}
 
 
     def from_pybel(self, pybmol):
         types, xyz, conn = pybmol_to_aemol(pybmol)
+        self.structure['size'] = len(types)
         self.structure['types'] = types
         self.structure['xyz'] = xyz
         self.structure['conn'] = conn
@@ -97,6 +106,9 @@ class aemol(object):
 
     def prop_fromfile(self, filename, ftype, prop):
         prop_io.prop_read(self, filename, prop, ftype)
+        
+    def prop_infer(self, prop):
+        prop_io.prop_infer(self, prop)
 
     def get_all_paths(self, maxlen=5):
         pybmol = self.to_pybel()

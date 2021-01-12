@@ -7,7 +7,5 @@ import mol_translator.aemol as aemol
 
 
 '''
-    Write tests for property io
-    yeah but like actually do it though. . .
+    placeholder, currently everything covered by specific tests
 '''
-    

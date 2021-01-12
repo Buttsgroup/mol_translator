@@ -13,6 +13,7 @@ def test_getpchembl():
     mols = []
     for file in files:
         molid = file.split('/')[-1].split('.')[0]
+        print(file, molid)
         test_mol = aemol(molid)
         test_mol.from_file(file, ftype='sdf')
         test_mol.prop_fromfile('tests/test_mols/test_pchembl/test_ic50.tsv', prop='ic50', ftype='tsv')
@@ -21,8 +22,8 @@ def test_getpchembl():
         
     assert mols[0].info['molid'] == "CHEMBL460962"
     assert mols[0].mol_properties['ic50'] == 8.92
-    assert mols[1].info['molid'] == "CHEMBL2179015"
-    assert mols[1].mol_properties['ic50'] == 7.54
+    assert mols[1].info['molid'] == "CHEMBL2179452"
+    assert mols[1].mol_properties['ic50'] == 7.55
 
 def test_pchemblimp():
     

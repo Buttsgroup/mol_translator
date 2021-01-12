@@ -19,6 +19,7 @@
 from . import nmr as nmr
 from . import energy as energy
 from . import binding as binding
+from . import structure as structure
 
 def prop_write(aemol, outfile, prop, format):
     if prop == 'nmr':
@@ -53,3 +54,14 @@ def prop_read(aemol, filename, prop, format):
     else:
         print('property not recognised or function not written yet !')
         raise ValueError('Cannot read property: ', prop)
+
+def prop_infer(aemol, prop):
+    if prop == 'bond_angle':
+        bond_angle = structure.bond_angle.get_bond_angles(aemol)
+        aemol.trip_properties['bond_angle'] = bond_angle
+    elif prop == 'dihedral_angle':
+        dihedral_angle = structure.dihedral_angle.get_dihedral_angle(aemol)
+        aemol.quad_properties['dihedral_angle'] = dihedral_angle
+    else:
+        print('property not recognised or function not written yet !')
+        raise ValueError('Cannot infer property: ', prop)

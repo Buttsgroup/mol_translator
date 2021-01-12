@@ -28,6 +28,8 @@ def test_init():
 
     assert mol.atom_properties == {}
     assert mol.pair_properties == {}
+    assert mol.trip_properties == {}
+    assert mol.quad_properties == {}
     assert mol.mol_properties['energy'] == -404.404
 
 def test_from_pybel():
