@@ -38,8 +38,16 @@ def get_coupling_types(aemol, maxlen=6):
 
 	aemol.pair_properties['nmr_types'] = cpl_types
 
+def scale_chemical_shifts(aemol, scaling={6: [-1.0399, 187.136], 1: [-1.0719, 32.1254]}):
+	# default scaling values are for functional: wb97xd, basis_set: 6-311g(d,p)
 
-
+	for t, type in enumerate(aemol.structure['types']):
+		if type not in scaling.keys():
+			continue
+			
+		aemol.atom_properties['shift'][t] = (aemol.atom_properties['shift'][t] - scaling[type][1]) / scaling[type][0] 
+		
+		
 
 
 
