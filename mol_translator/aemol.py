@@ -126,7 +126,7 @@ class aemol(object):
     def get_rdkit_3D_mol(self):
         rdmol = self.to_rdkit()
         rdmol = Chem.AddHs(rdmol)
-        rdmol = Chem.EmbedMolecule(rdmol)
+        Chem.EmbedMolecule(rdmol)
         self.from_rdkit(rdmol)
 
     def check_mol(self):
