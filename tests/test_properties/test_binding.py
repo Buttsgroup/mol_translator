@@ -19,8 +19,8 @@ def test_getpchembl():
         
         mols.append(test_mol)
         
-    assert mols[0].info['molid'] == "CHEMBL460962"
-    assert mols[0].mol_properties['ic50'] == 8.92
+    assert mols[0].info['molid'] == "CHEMBL2153191"
+    assert mols[0].mol_properties['ic50'] == 8.7
     assert mols[1].info['molid'] == "CHEMBL2179015"
     assert mols[1].mol_properties['ic50'] == 7.54
 
