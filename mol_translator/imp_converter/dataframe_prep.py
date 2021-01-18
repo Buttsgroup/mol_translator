@@ -47,6 +47,7 @@ def prep_mol_ic50(aemol, ic50_file="", ic50_type=""):
         aemol.prop_fromfile(ic50_file, ic50_type, 'ic50')
         aemol.atom_properties['ic50'] = np.full(len(aemol.structure['types']), aemol.mol_properties['ic50'], dtype=np.float64)
     else:
+        print('Setting fake ic50 values', ic50_file)
         aemol.atom_properties['ic50'] = np.zeros(len(aemol.structure['types']), dtype=np.float64)
     
     return aemol
