@@ -135,6 +135,27 @@ def test_check_mol():
     assert aemol.check_mol(test_mol) == True
     assert aemol.check_mol(test_bad_mol) == False
 
+def test_rd_neutralise():
+    test_file = ['tests/test_mols/charged_mol1.sdf',
+                 'tests/test_mols/charged_mol2.sdf']
+
+    for idx, file in enumerate(test_file):
+        test_mol = aemol(idx)
+        test_mol.from_file(file, ftype = 'sdf')
+        test_mol.rd_neutralise()
+        assert aemol.check_mol(test_mol) == True
+
+def test_pyb_neutralise():
+    test_file = ['tests/test_mols/charged_mol1.sdf',
+                 'tests/test_mols/charged_mol2.sdf']
+
+    for idx, file in enumerate(test_file):
+        test_mol = aemol(idx)
+        test_mol.from_file(file, ftype = 'sdf')
+        test_mol.pyb_neutralise()
+        assert aemol.check_mol(test_mol) == True
+
+
 #def test_prop_tofile():
 
 #def test_prop_fromfile():
