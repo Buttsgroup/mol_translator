@@ -4,6 +4,7 @@ import numpy as np
 def get_bond_angles(aemol):
     bond_angles = np.zeros((aemol.structure['size'], aemol.structure['size'], aemol.structure['size']))
     
+    # i,j,k NEED TO BE CONNECTED
     for i in range(aemol.structure['size']):
         for j in range(aemol.structure['size']):
             ba_vec = aemol.structure['xyz'][i] - aemol.structure['xyz'][j]

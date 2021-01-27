@@ -3,6 +3,7 @@ import numpy as np
 def get_dihedral_angle(aemol):
     dihedral_angle = np.zeros((aemol.structure['size'], aemol.structure['size'], aemol.structure['size'], aemol.structure['size']))
     
+    # NEED FOR x,y,z,q TO BE CONNECTED
     for x in range(aemol.structure['size']):
         for y in range(aemol.structure['size']):
             ab_vec = aemol.structure['xyz'][y] - aemol.structure['xyz'][x]
