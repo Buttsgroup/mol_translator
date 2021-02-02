@@ -28,7 +28,10 @@ from mol_translator.properties.nmr.nmr_write import write_nmredata
 
 from mol_translator.structure.checks import run_all_checks
 
-from rdkit.Chem import AllChem as Chem
+from rdkit.Chem import AllChem
+from rdkit import Chem
+
+from mol_translator.properties.charge.charge_ops import rdkit_neutralise, pybel_neutralise
 
 class aemol(object):
     """
@@ -120,14 +123,29 @@ class aemol(object):
 
     def get_rdkit_fingerprint(self, radius=2, nBits=2048):
         rdmol = self.to_rdkit()
-        fp = Chem.GetMorganFingerprintAsBitVect(rdmol,radius=radius, nBits=nBits)
+        fp = AllChem.GetMorganFingerprintAsBitVect(rdmol,radius=radius, nBits=nBits)
         self.mol_properties['ecfp4'] = fp
 
     def get_rdkit_3D_mol(self):
         rdmol = self.to_rdkit()
-        rdmol = Chem.AddHs(rdmol)
-        Chem.EmbedMolecule(rdmol)
+        rdmol = AllChem.AddHs(rdmol)
+        AllChem.EmbedMolecule(rdmol)
         self.from_rdkit(rdmol)
 
     def check_mol(self):
         return run_all_checks(self)
+
+    def rd_neutralise(self, opt=True):
+        rdmol = self.to_rdkit()
+        rdmol = rdkit_neutralise(rdmol)
+        if opt:
+            rdmol = AllChem.AddHs(rdmol)
+            AllChem.EmbedMolecule(rdmol)
+        self.from_rdkit(rdmol)
+
+    def pyb_neutralise(self, opt=True):
+        pybmol = self.to_pybel()
+        pybmol = pybel_neutralise(pybmol)
+        self.from_pybel(pybmol)
+        if opt:
+            self.get_rdkit_3D_mol()
