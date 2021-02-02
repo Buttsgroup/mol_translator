@@ -18,33 +18,46 @@ from mol_translator.structure.find_num_bonds import rdmol_find_num_bonds
 from rdkit.Chem import rdMolTransforms as Chem
 import numpy as np
 
-def run_all_checks(aemol):
+def run_all_checks(aemol, post_check = False):
 
     if not check_valence(aemol):
         return False
-    if not check_missing_H(aemol):
+    if not check_missing_H(aemol, post_check):
         return False
     if not check_bonds_are_plausible_and_atom_overlap(aemol):
         return False
     return True
 
 def check_valence(aemol):
-
+    '''
+    Might be redundant since loading molecule into rdkit already checks this
+    '''
     rdmol = aemol.to_rdkit()
     num_bond_dict = rdmol_find_num_bonds(rdmol)
     for num_bonds in num_bond_dict.values():
         if len(num_bonds)>1:
+            print(f"Unexpected number of valence electrons in mol, {aemol.info['molid']}")
             return False
-            #print(f"Unexpected number of valence electrons in mol, {aemol.info['molid']}")
     return True
 
-def check_missing_H(aemol):
-    # everything should have hydrogens in it
+def check_missing_H(aemol, post_check):
+    '''
+    everything reasonable should have hydrogens in it.
+    Post check finds missing hydrogens
+    '''
     atom_num_array = aemol.structure['types']
     atom_num_list = list(atom_num_array)
     if 1 not in atom_num_list:
+        print(f"No Hs in mol, {aemol.info['molid']}")
         return False
-        #print(f"No Hs in mol, {aemol.info['molid']}")
+
+    if post_check:
+        rdmol = aemol.to_rdkit()
+        for atom in rdmol.GetAtoms():
+            if atom.GetNumImplicitHs() != 0 :
+                print(f"Hs Missing on mol {aemol.info['molid']}")
+                return False
+
     return True
 
 def check_bonds_are_plausible_and_atom_overlap(aemol):
