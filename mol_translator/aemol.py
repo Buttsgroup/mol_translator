@@ -199,6 +199,8 @@ class aemol(object):
 
         Args:
             self: aemol object
+            format: The output file extension
+            filename: The name of the output file
 
         Returns:
             Null: Stores interal information to aemol object
@@ -212,6 +214,9 @@ class aemol(object):
 
         Args:
             self: aemol object
+            filename: The name of the output file
+            prop: The input property data type
+            format: The output file extension
 
         Returns:
             Null: Stores interal information to aemol object
@@ -224,6 +229,10 @@ class aemol(object):
 
         Args:
             self: aemol object
+            filename: The name of the input file
+            prop: The input property data type
+            format: The output file extension
+
 
         Returns:
             Null: Stores interal information to aemol object
@@ -236,6 +245,7 @@ class aemol(object):
 
         Args:
             self: aemol object
+            maxlen = defines the max distance to generate paths
 
         Returns:
             Null: Stores interal information to aemol object
@@ -262,6 +272,7 @@ class aemol(object):
 
         Args:
             self: aemol object
+            maxlen: defines to the max distance to generate paths
 
         Returns:
             Null: Stores interal information to aemol object
@@ -269,26 +280,29 @@ class aemol(object):
         pybmol = self.to_pybel()
         self.structure['path_len'] = pathfind.pybmol_get_path_lengths(pybmol, maxlen)
 
-    def get_pyb_fingerprint(self, fingerprint):
+    def get_pyb_fingerprint(self, fingerprint='ecfp6'):
         """
         Uses pybel/openbabel to generate a fingerprint of the aemol object
 
         Args:
             self: aemol object
+            fingerprint: the type of fingerprint to be generated,
+            available fingerprints: ['ecfp0', 'ecfp10', 'ecfp2', 'ecfp4', 'ecfp6', 'ecfp8', 'fp2', 'fp3', 'fp4', 'maccs']
 
         Returns:
             Null: Stores interal information to aemol object
         """
         pybmol = self.to_pybel()
         self.mol_properties[fingerprint] = pybmol.calcfp(fingerprint)
-        # available fingerprints: ['ecfp0', 'ecfp10', 'ecfp2', 'ecfp4', 'ecfp6', 'ecfp8', 'fp2', 'fp3', 'fp4', 'maccs']
 
     def get_rdkit_fingerprint(self, radius=2, nBits=2048):
         """
-        Uses rdkit to generate a fingerprint of the aemol object
+        Uses rdkit to generate an ecfp fingerprint of the aemol object
 
         Args:
             self: aemol object
+            radius: The distance to identify unique fragments
+            nBits: The total length of the fingerprint generated
 
         Returns:
             Null: Stores interal information to aemol object
@@ -312,7 +326,7 @@ class aemol(object):
         AllChem.EmbedMolecule(rdmol)
         self.from_rdkit(rdmol)
 
-    def check_mol(self):
+    def check_mol(self, post_check=False):
         """
         Checks the validity of aemol via basic checks:
             Valence electrons
@@ -322,11 +336,12 @@ class aemol(object):
 
         Args:
             self: aemol object
+            post_check: A post DFT calculated check for missing Hs
 
         Returns:
             Null: Stores interal information to aemol object
         """
-        return run_all_checks(self)
+        return run_all_checks(self, post_check=post_check)
 
     def rd_neutralise(self, opt=True):
         """
@@ -334,6 +349,7 @@ class aemol(object):
 
         Args:
             self: aemol object
+            opt: Quick conversion of molecule to 3D and apply forcefield based energy minimisation via rdkit
 
         Returns:
             Null: Stores interal information to aemol object
@@ -351,6 +367,7 @@ class aemol(object):
 
         Args:
             self: aemol object
+            opt: Quick conversion of molecule to 3D and apply forcefield based energy minimisation via rdkit
 
         Returns:
             Null: Stores interal information to aemol object

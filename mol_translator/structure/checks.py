@@ -18,11 +18,11 @@ from mol_translator.structure.find_num_bonds import rdmol_find_num_bonds
 from rdkit.Chem import rdMolTransforms as Chem
 import numpy as np
 
-def run_all_checks(aemol, post_check = False):
+def run_all_checks(aemol, post_check=False):
 
     if not check_valence(aemol):
         return False
-    if not check_missing_H(aemol, post_check):
+    if not check_missing_H(aemol, post_check=post_check):
         return False
     if not check_bonds_are_plausible_and_atom_overlap(aemol):
         return False
@@ -40,7 +40,7 @@ def check_valence(aemol):
             return False
     return True
 
-def check_missing_H(aemol, post_check):
+def check_missing_H(aemol, post_check=False):
     '''
     everything reasonable should have hydrogens in it.
     Post check finds missing hydrogens
