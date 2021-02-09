@@ -22,17 +22,11 @@ from . import binding as binding
 
 def prop_write(aemol, filename, prop, format):
     if prop == 'nmr':
-        if 'coupling_type' not in aemol.bond_properties.keys():
-            aemol.bond_properties['coupling_type'] = nmr.nmr_ops.get_coupling_types(aemol)
-
+        if 'nmr_type' not in aemol.pair_properties.keys():
+            aemol.pair_properties['nmr_type'] = nmr.nmr_ops.get_coupling_types(aemol)
 
         if format == 'nmredata':
-            nmr.nmr_write.write_nmredata(outfile, label,
-                                        aemol.structure,
-                                        shift=aemol.atom_properties['shift'],
-                                        coupling=aemol.pair_properties['coupling'],
-                                        shift_var=aemol.atom_properties['shift_var'],
-                                        coupling_var=aemol.atom_properties['coupling_var'])
+            nmr.nmr_write.write_nmredata(outfile=filename, aemol=aemol)
         else:
             raise_formaterror(format)
     else:
