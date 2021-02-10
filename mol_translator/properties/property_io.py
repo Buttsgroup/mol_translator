@@ -20,13 +20,13 @@ from . import nmr as nmr
 from . import energy as energy
 from . import binding as binding
 
-def prop_write(aemol, filename, prop, format):
+def prop_write(aemol, outfile, prop, format):
     if prop == 'nmr':
         if 'nmr_type' not in aemol.pair_properties.keys():
             aemol.pair_properties['nmr_type'] = nmr.nmr_ops.get_coupling_types(aemol)
 
         if format == 'nmredata':
-            nmr.nmr_write.write_nmredata(outfile=filename, aemol=aemol)
+            nmr.nmr_write.write_nmredata(outfile, aemol, write_zeros=False, count_from=0)
         else:
             raise_formaterror(format)
     else:

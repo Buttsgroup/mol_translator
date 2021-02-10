@@ -7,7 +7,11 @@ from mol_translator.aemol import aemol
 import pybel as pyb
 from rdkit import Chem
 from rdkit.Chem import AllChem
+import numpy as np
+
 from mol_translator.structure.pybel_converter import pybmol_to_aemol, aemol_to_pybmol
+
+from mol_translator.properties.nmr.nmr_ops import get_coupling_types
 '''
     Write tests for every function and property of the aemol class
 '''
@@ -154,10 +158,33 @@ def test_pyb_neutralise():
         test_mol.from_file(file, ftype = 'sdf')
         test_mol.pyb_neutralise()
         assert aemol.check_mol(test_mol) == True
+        
+def test_prop_tofile():
+    test_mol = 'to_file_pyb_test'
+    test_mol = aemol(test_mol)
+    ref_xyz = 'tests/test_mols/qm9_1.nmredata.sdf'
+    assert os.path.isfile(ref_xyz)
+    test_mol.from_file(ref_xyz, 'sdf')
+    test_mol.get_bonds()
+    test_mol.get_path_lengths()
+    get_coupling_types(test_mol)
 
 
-#def test_prop_tofile():
 
+    atoms = len(test_mol.structure['types'])
+    test_mol.pair_properties['coupling'] = np.random.randn(atoms, atoms)
+    test_mol.atom_properties['shift'] = np.random.randn(atoms)
+
+    check1 = test_mol.pair_properties['coupling']
+    check2 = test_mol.atom_properties['shift']
+
+    test_mol.prop_tofile('test.nmredata.sdf', 'nmr', 'nmredata')
+
+    checkmol = aemol('test')
+    checkmol.from_file('test.nmredata.sdf', 'sdf')
+    checkmol.prop_fromfile('test.nmredata.sdf', 'nmredata', 'nmr')
+
+    os.remove('test.nmredata.sdf')
 #def test_prop_fromfile():
 
 #def test_get_all_paths():
