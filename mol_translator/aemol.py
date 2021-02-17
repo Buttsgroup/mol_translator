@@ -95,7 +95,7 @@ class aemol(object):
         Returns:
             pybmol (object): pybel/openbabel mol object
         """
-        pybmol = aemol_to_pybmol(self.structure)
+        pybmol = aemol_to_pybmol(self.structure, self.info['molid'])
 
         return pybmol
 
@@ -128,7 +128,7 @@ class aemol(object):
         Returns:
             rdmol (object): rdkit object
         """
-        rdmol = aemol_to_rdmol(self, sanitize, removeHs)
+        rdmol = aemol_to_rdmol(self, self.info['molid'], sanitize, removeHs)
 
         return rdmol
 
