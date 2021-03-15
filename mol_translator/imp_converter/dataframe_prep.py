@@ -20,7 +20,7 @@ import numpy as np
 
 # Gets the necessary info for aemol to turn it into an IMP dataframe
 def prep_mol(aemol):
-    
+
     aemol.get_bonds()
     aemol.get_path_lengths()
     get_coupling_types(aemol)
@@ -28,7 +28,7 @@ def prep_mol(aemol):
     return aemol
 
 def prep_mol_nmr(aemol, nmr_file="", nmr_type=""):
-    
+
     aemol.get_bonds()
     aemol.get_path_lengths()
     get_coupling_types(aemol)
@@ -49,5 +49,13 @@ def prep_mol_ic50(aemol, ic50_file="", ic50_type=""):
     else:
         print('Setting fake ic50 values', ic50_file)
         aemol.atom_properties['ic50'] = np.zeros(len(aemol.structure['types']), dtype=np.float64)
-    
+
+    return aemol
+
+def prep_mol_ecfp4(aemol):
+    aemol.get_bonds()
+    aemol.get_path_lengths()
+    get_coupling_types(aemol)
+    aemol.atom_properties['ecfp4'] = aemol.mol_properties['ecfp4']
+
     return aemol

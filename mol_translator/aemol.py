@@ -15,6 +15,7 @@
 #along with autoenrich.  If not, see <https://www.gnu.org/licenses/>.
 
 import pybel as pyb
+import numpy as np
 
 from mol_translator.structure.pybel_converter import pybmol_to_aemol, aemol_to_pybmol
 from mol_translator.structure.rdkit_converter import rdmol_to_aemol, aemol_to_rdmol
@@ -29,6 +30,7 @@ from mol_translator.properties.nmr.nmr_write import write_nmredata
 from mol_translator.structure.checks import run_all_checks
 
 from rdkit.Chem import AllChem
+from rdkit.Chem import DataStructs
 from rdkit import Chem
 
 from mol_translator.properties.charge.charge_ops import rdkit_neutralise, pybel_neutralise
@@ -280,7 +282,7 @@ class aemol(object):
         pybmol = self.to_pybel()
         self.structure['path_len'] = pathfind.pybmol_get_path_lengths(pybmol, maxlen)
 
-    def get_pyb_fingerprint(self, fingerprint='ecfp6'):
+    def get_pyb_fingerprint(self, fingerprint='ecfp4'):
         """
         Uses pybel/openbabel to generate a fingerprint of the aemol object
 
@@ -295,7 +297,7 @@ class aemol(object):
         pybmol = self.to_pybel()
         self.mol_properties[fingerprint] = pybmol.calcfp(fingerprint)
 
-    def get_rdkit_fingerprint(self, radius=2, nBits=2048):
+    def get_rdkit_fingerprint(self, radius=2, nBits=2048, to_numpy=True):
         """
         Uses rdkit to generate an ecfp fingerprint of the aemol object
 
@@ -309,7 +311,12 @@ class aemol(object):
         """
         rdmol = self.to_rdkit()
         fp = AllChem.GetMorganFingerprintAsBitVect(rdmol,radius=radius, nBits=nBits)
-        self.mol_properties['ecfp4'] = fp
+        if to_numpy:
+            arr = np.zeros(0,)
+            DataStructs.ConvertToNumpyArray(fp, arr)
+            self.mol_properties['ecfp4'] = arr
+        else:
+            self.mol_properties['ecfp4'] = fp
 
     def get_rdkit_3D_mol(self):
         """
