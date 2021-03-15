@@ -45,11 +45,11 @@ def pybmol_to_aemol(pybmol):
 
 	return type_array, xyz_array, conn_array
 
-def aemol_to_pybmol(structure):
+def aemol_to_pybmol(structure, id):
 	# Do this a cheat way for now, can probably do this properly
 
-	strucwrt.write_mol_toxyz(structure, 'tmp.xyz')
-	pybmol = next(pyb.readfile('xyz', 'tmp.xyz'))
-	os.remove('tmp.xyz')
+	strucwrt.write_mol_toxyz(structure, f'tmp{id}.xyz')
+	pybmol = next(pyb.readfile('xyz', f'tmp{id}.xyz'))
+	os.remove(f'tmp{id}.xyz')
 
 	return pybmol
