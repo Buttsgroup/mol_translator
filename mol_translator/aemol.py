@@ -27,6 +27,7 @@ import mol_translator.properties.property_io as prop_io
 from mol_translator.structure import find_paths as pathfind
 # Rdkit for fingerprint generation
 from rdkit.Chem import AllChem as Chem
+from rdkit.Chem import DataStructs
 
 class aemol(object):
     """
@@ -63,19 +64,20 @@ class aemol(object):
         self.structure['conn'] = conn
     # Create pybel molecule object from aemol object
     def to_pybel(self):
-        pybmol = aemol_to_pybmol(self.structure)
+        pybmol = aemol_to_pybmol(self.structure, self.info['molid'])
         return pybmol
 
     # Create aemol molecule object from rdkit molecule object
     def from_rdkit(self, rdmol):
         # !!! assumes rdmol is already 3D with Hs included !!!
-        types, xyz = rdmol_to_aemol(rdmol)
+        types, xyz, conn = rdmol_to_aemol(rdmol)
         self.structure['types'] = types
         self.structure['xyz'] = xyz
+        self.structure['conn'] = conn
 
     # Create rdkit mol object from aemol object
-    def to_rdkit(self):
-        rdmol = aemol_to_rdmol(self)
+    def to_rdkit(self, removeHs=False):
+        rdmol = aemol_to_rdmol(self, self.info['molid'], removeHs)
         return rdmol
 
     # Create aemol object from file (using pybel import)
@@ -121,23 +123,12 @@ class aemol(object):
         self.mol_properties[fingerprint] = pybmol.calcfp(fingerprint)
         # available fingerprints: ['ecfp0', 'ecfp10', 'ecfp2', 'ecfp4', 'ecfp6', 'ecfp8', 'fp2', 'fp3', 'fp4', 'maccs']
 
-    def get_rdkit_fingerprint(self, radius=2, nBits=2048):
+    def get_rdkit_fingerprint(self, radius=2, nBits=2048, to_numpy=True):
         rdmol = self.to_rdkit()
         fp = Chem.GetMorganFingerprintAsBitVect(rdmol,radius=radius, nBits=nBits)
-        self.mol_properties['ecfp4'] = fp
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+        if to_numpy:
+            arr = np.zeros(0,)
+            DataStructs.ConvertToNumpyArray(fp, arr)
+            self.mol_properties['ecfp4'] = arr
+        else:
+            self.mol_properties['ecfp4'] = fp

@@ -35,13 +35,22 @@ def rdmol_to_aemol(rdmol):
 		xyz_array[i][1] = rdmol.GetConformer().GetAtomPosition(i).y
 		xyz_array[i][2] = rdmol.GetConformer().GetAtomPosition(i).z
 
-	return type_array, xyz_array
+		for j, atoms in enumerate(rdmol.GetAtoms()):
+			if i == j:
+				continue
 
-def aemol_to_rdmol(aemol):
+			bond = rdmol.GetBondBetweenAtoms(i,j)
+			if bond is not None:
+				conn_array[i][j] = int(bond.GetBondTypeAsDouble())
+				conn_array[j][i] = int(bond.GetBondTypeAsDouble())
 
-	strucwrt.write_mol_tosdf(aemol, 'tmp.sdf')
-	molblock = open('tmp.sdf', 'r').read()
-	rdmol = Chem.MolFromMolBlock(molblock)
-	os.remove('tmp.sdf')
+	return type_array, xyz_array, conn_array
+
+def aemol_to_rdmol(aemol, id, removeHs):
+
+	strucwrt.write_mol_tosdf(aemol, f'tmp{id}.sdf')
+	molblock = open(f'tmp{id}.sdf', 'r').read()
+	rdmol = Chem.MolFromMolBlock(molblock, removeHs=removeHs)
+	os.remove(f'tmp{id}.sdf')
 
 	return rdmol
