@@ -3,6 +3,7 @@ __pycache__/
 *.py[cod]
 *$py.class
 
+.DF_Store
 
 # REMOVE ANYTHING TEMP RELATED
 *tmp*
