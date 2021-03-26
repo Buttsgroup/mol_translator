@@ -41,7 +41,7 @@ def aemol_to_rdmol(aemol):
 
 	strucwrt.write_mol_tosdf(aemol, 'tmp.sdf')
 	molblock = open('tmp.sdf', 'r').read()
-	rdmol = Chem.MolFromMolBlock(molblock)
+	rdmol = Chem.MolFromMolBlock(molblock, sanitize=True)
 	os.remove('tmp.sdf')
 
 	return rdmol

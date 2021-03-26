@@ -27,6 +27,9 @@ from mol_translator.structure import find_paths as pathfind
 from mol_translator.properties.nmr.nmr_write import write_nmredata
 
 from rdkit.Chem import AllChem as Chem
+from rdkit.Chem import DataStructs
+
+import numpy as np
 
 class aemol(object):
     """
@@ -114,25 +117,26 @@ class aemol(object):
         pybmol = self.to_pybel()
         self.mol_properties[fingerprint] = pybmol.calcfp(fingerprint)
         # available fingerprints: ['ecfp0', 'ecfp10', 'ecfp2', 'ecfp4', 'ecfp6', 'ecfp8', 'fp2', 'fp3', 'fp4', 'maccs']
-        
+
     def get_rdkit_fingerprint(self, radius=2, nBits=2048):
         rdmol = self.to_rdkit()
         fp = Chem.GetMorganFingerprintAsBitVect(rdmol,radius=radius, nBits=nBits)
+        arr = np.zeros(0,)
+        DataStructs.ConvertToNumpyArray(fp, arr)
         self.mol_properties['ecfp4'] = fp
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
