@@ -318,7 +318,7 @@ class aemol(object):
         else:
             self.mol_properties['ecfp4'] = fp
 
-    def get_rdkit_3D_mol(self):
+    def get_rdkit_3D_mol(self, opt=True):
         """
         Uses rdkit to convert the aemol object into 3D with molecular dynamics energy minimisation
 
@@ -330,7 +330,8 @@ class aemol(object):
         """
         rdmol = self.to_rdkit()
         rdmol = AllChem.AddHs(rdmol)
-        AllChem.EmbedMolecule(rdmol)
+        if opt:
+            AllChem.EmbedMolecule(rdmol)
         self.from_rdkit(rdmol)
 
     def check_mol(self, post_check=False):
