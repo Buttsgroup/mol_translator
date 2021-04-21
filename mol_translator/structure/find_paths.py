@@ -16,7 +16,8 @@
 
 
 import numpy as np
-import openbabel
+from openbabel import pybel as pyb
+from openbabel import openbabel as ob
 from mol_translator.util.periodic_table import Get_periodic_table
 
 def pybmol_find_all_paths(pybmol, maxlen=5):
@@ -48,7 +49,7 @@ def pybmol_find_paths(pybmol, start, end, coupling_length, path=[]):
 		# define new path
 		paths = []
 		# loop over neighbouring atoms
-		for nbr_atom in openbabel.OBAtomAtomIter(pybmol.atoms[start].OBAtom):
+		for nbr_atom in ob.OBAtomAtomIter(pybmol.atoms[start].OBAtom):
 			# get ID of neighbour
 			node = nbr_atom.GetId()
 			# check the neighbour is not already in the path, and that the path is not over the required length
@@ -71,7 +72,7 @@ def pybmol_get_bond_table(pybmol):
 	for atom1 in range(atoms):
 		for atom2 in range(atom1, atoms):
 
-			for nbr_atom in openbabel.OBAtomAtomIter(pybmol.atoms[atom1].OBAtom):
+			for nbr_atom in ob.OBAtomAtomIter(pybmol.atoms[atom1].OBAtom):
 				check = nbr_atom.GetId()
 				if atom2 != check:
 					continue
@@ -87,9 +88,9 @@ def pybmol_get_bond_table(pybmol):
 def pybmol_get_path_lengths(pybmol, maxlen=5):
 	atoms = len(pybmol.atoms)
 	coupling_len = np.zeros((atoms, atoms), dtype=np.int32)
-	
+
 	allpaths = pybmol_find_all_paths(pybmol, maxlen=maxlen)
-	
+
 	for atom1 in range(atoms):
 		for atom2 in range(atoms):
 			if atom1 == atom2:
@@ -100,7 +101,7 @@ def pybmol_get_path_lengths(pybmol, maxlen=5):
 				if path[0] == atom1 and path[-1] == atom2:
 					if len(path)-1 < shortest:
 						shortest = len(path) - 1
-						
+
 			coupling_len[atom1][atom2] = shortest
 			coupling_len[atom2][atom1] = shortest
 

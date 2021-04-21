@@ -14,7 +14,8 @@
 #You should have received a copy of the GNU General Public License
 #along with autoenrich.  If not, see <https://www.gnu.org/licenses/>.
 
-import pybel as pyb
+from openbabel import pybel as pyb
+from openbabel import openbabel as ob
 import numpy as np
 
 from mol_translator.structure.pybel_converter import pybmol_to_aemol, aemol_to_pybmol

@@ -4,7 +4,8 @@ from pathlib import Path
 sys.path.append(os.path.realpath(os.path.dirname(__file__))+'/../')
 
 from mol_translator.aemol import aemol
-import pybel as pyb
+from openbabel import pybel as pyb
+from openbabel import openbabel as ob
 from rdkit import Chem
 from rdkit.Chem import AllChem
 import numpy as np
@@ -158,7 +159,7 @@ def test_pyb_neutralise():
         test_mol.from_file(file, ftype = 'sdf')
         test_mol.pyb_neutralise()
         assert aemol.check_mol(test_mol) == True
-        
+
 def test_prop_tofile():
     test_mol = 'to_file_pyb_test'
     test_mol = aemol(test_mol)

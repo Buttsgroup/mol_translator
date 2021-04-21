@@ -14,7 +14,8 @@
 #You should have received a copy of the GNU General Public License
 #along with autoenrich.  If not, see <https://www.gnu.org/licenses/>.
 
-import pybel as pyb
+from openbabel import pybel as pyb
+from openbabel import openbabel as ob
 from autoenrich.pybel_helpers import pybel_bonds, pybel_read
 import numpy as np
 

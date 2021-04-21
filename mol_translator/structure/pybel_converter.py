@@ -17,7 +17,8 @@
 
 import numpy as np
 import os
-import pybel as pyb
+from openbabel import pybel as pyb
+from openbabel import openbabel as ob
 
 from mol_translator.structure import structure_write as strucwrt
 
