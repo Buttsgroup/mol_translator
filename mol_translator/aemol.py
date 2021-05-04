@@ -283,7 +283,7 @@ class aemol(object):
         pybmol = self.to_pybel()
         self.structure['path_len'] = pathfind.pybmol_get_path_lengths(pybmol, maxlen)
 
-    def get_pyb_fingerprint(self, fingerprint='ecfp4'):
+    def get_pyb_fingerprint(self, fingerprint='fp4'):
         """
         Uses pybel/openbabel to generate a fingerprint of the aemol object
 
@@ -334,6 +334,21 @@ class aemol(object):
         if opt:
             AllChem.EmbedMolecule(rdmol)
         self.from_rdkit(rdmol)
+
+    def get_pyb_3D_mol(self, refine=False):
+        """
+        Uses pybel to convert 2D aemol molecule to 3D aemol molecule
+
+        By default does 50 steps of MMFF94 MD to optimize, setting refine to True increases this to 500 steps
+        """
+        pybmol = self.to_pybel()
+        if refine:
+            pybmol.addh()
+            pybmol.localopt()
+        else:
+            pybmol.addh()
+            pybmol.make3D()
+        self.from_pybel(pybmol)
 
     def check_mol(self, post_check=False):
         """
