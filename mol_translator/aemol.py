@@ -29,9 +29,11 @@ from mol_translator.properties.nmr.nmr_write import write_nmredata
 
 from mol_translator.structure.checks import run_all_checks
 
+from rdkit import Chem
 from rdkit.Chem import AllChem
 from rdkit.Chem import DataStructs
-from rdkit import Chem
+from rdkit.Chem.MolStandardize import rdMolStandardize as mol_std
+
 
 from mol_translator.properties.charge.charge_ops import rdkit_neutralise, pybel_neutralise
 
@@ -134,7 +136,7 @@ class aemol(object):
 
         return rdmol
 
-    def from_file(self, file, ftype='xyz'):
+    def from_file_pyb(self, file, ftype='xyz'):
         """
         Converts a file of filetype 'ftype' into an aemol object via pybel/openbabel
 
@@ -147,11 +149,12 @@ class aemol(object):
             Null: Stores interal information to aemol object
         """
         pybmol = next(pyb.readfile(ftype, file))
-        self.from_pybel(pybmol)
+        return pybmol
 
-    def batch_from_file(self, path):
+    def from_file_rdkit(self, path):
         """
-        Mass converts all filetypes within a folder into a rdkit object list
+        Mass converts sdf files within a folder into a rdkit object list.
+        If passing a single SDF file containing multiple molecules call rdkit independently
 
         Args:
             self: aemol object
@@ -160,8 +163,13 @@ class aemol(object):
         Returns:
             suppl (list): list of rdkit mol objects
         """
-        suppl = SDMolSupplier(path)
-        return suppl
+        suppl = Chem.SDMolSupplier(path)
+        for rdmol in suppl:
+            if rdmol is not None:
+                if rdmol.GetProp('_Name') is None: rdmol.SetProp('_Name',self.info['molid'])
+                return rdmol
+            else: continue
+
 
     def from_string(self, string, stype='smi'):
         """
@@ -282,34 +290,34 @@ class aemol(object):
         pybmol = self.to_pybel()
         self.structure['path_len'] = pathfind.pybmol_get_path_lengths(pybmol, maxlen)
 
-    def get_pyb_fingerprint(self, fingerprint='ecfp4'):
+    def get_pyb_fingerprint(self, pybmol, fingerprint='ecfp4'):
         """
         Uses pybel/openbabel to generate a fingerprint of the aemol object
 
         Args:
             self: aemol object
+            pybmol: pybel molecule object
             fingerprint: the type of fingerprint to be generated,
             available fingerprints: ['ecfp0', 'ecfp10', 'ecfp2', 'ecfp4', 'ecfp6', 'ecfp8', 'fp2', 'fp3', 'fp4', 'maccs']
 
         Returns:
             Null: Stores interal information to aemol object
         """
-        pybmol = self.to_pybel()
         self.mol_properties[fingerprint] = pybmol.calcfp(fingerprint)
 
-    def get_rdkit_fingerprint(self, radius=2, nBits=2048, to_numpy=True):
+    def get_rdkit_fingerprint(self, rdmol, radius=2, nBits=2048, to_numpy=True):
         """
         Uses rdkit to generate an ecfp fingerprint of the aemol object
 
         Args:
             self: aemol object
+            rdmol: rdkit molecule object
             radius: The distance to identify unique fragments
             nBits: The total length of the fingerprint generated
 
         Returns:
             Null: Stores interal information to aemol object
         """
-        rdmol = self.to_rdkit()
         fp = AllChem.GetMorganFingerprintAsBitVect(rdmol,radius=radius, nBits=nBits)
         if to_numpy:
             arr = np.zeros(0,)
@@ -318,23 +326,42 @@ class aemol(object):
         else:
             self.mol_properties['ecfp4'] = fp
 
-    def get_rdkit_3D_mol(self, opt=True):
+    def get_rdkit_3D(self, rdmol, opt=True):
         """
         Uses rdkit to convert the aemol object into 3D with molecular dynamics energy minimisation
 
         Args:
             self: aemol object
+            rdmol: rdkit molecule object
+            opt: True/False, whether or not to run quick energy minimization
 
         Returns:
             Null: Stores interal information to aemol object
         """
-        rdmol = self.to_rdkit()
         rdmol = AllChem.AddHs(rdmol)
-        if opt:
-            AllChem.EmbedMolecule(rdmol)
-        self.from_rdkit(rdmol)
+        if opt: AllChem.EmbedMolecule(rdmol)
 
-    def check_mol(self, post_check=False):
+        return rdmol
+
+    def get_pyb_3D(self, pybmol, refine=True):
+        """
+        Use Openbabel/Pybel wrapper to convert aemol object into 3D thorough H addition and MMFF energy minimisation
+
+        Args:
+            self: aemol object
+            refine: whether to run local energy optimisation
+
+        Returns:
+            Null: stores new geometry and atoms in internal aemol object
+        """
+        pybmol.addh()
+
+        if refine: pybmol.localopt()
+        else: pybmol.make3D()
+
+        return pybmol
+
+    def check_mol_aemol(self, post_check=False):
         """
         Checks the validity of aemol via basic checks:
             Valence electrons
@@ -351,7 +378,40 @@ class aemol(object):
         """
         return run_all_checks(self, post_check=post_check)
 
-    def rd_neutralise(self, opt=True):
+    def check_mol_rdkit(self, rdmol, clean=False):
+        """
+        Checks validity of rdmol molecule against internal rules
+            Valence electrons
+            Bond order
+            Charge
+            Fragments
+
+        Args:
+            self: aemol object
+            rdmol: rdkit molecule object
+
+        Returns:
+            if clean = True: returns cleaned molecule
+            else: returns null
+        """
+        rdkit_vm = mol_std.RDKitValidation()
+        molvs_vm = mol_std.MolVSValidation()
+
+        rdkit_vm.validate(rdmol)
+        molvs_vm.validate(rdmol)
+
+        if clean:
+            lfc = mol_stf.LargestFragmentChooser()
+            idx = rdmol.GetProp('_Name')
+
+            rdmol = lfc.choose(rdmol)
+            mol_std.Cleanup(rdmol)
+            rdmol.SetProp('_Name', idx)
+
+            return rdmol
+
+
+    def rd_neutralise(self, rdmol, opt=True):
         """
         Uses rdkit to neutralise any charged atoms
 
@@ -360,16 +420,13 @@ class aemol(object):
             opt: Quick conversion of molecule to 3D and apply forcefield based energy minimisation via rdkit
 
         Returns:
-            Null: Stores interal information to aemol object
+            rdmol: rdkit molecule object
         """
-        rdmol = self.to_rdkit()
         rdmol = rdkit_neutralise(rdmol)
-        if opt:
-            rdmol = AllChem.AddHs(rdmol)
-            AllChem.EmbedMolecule(rdmol)
-        self.from_rdkit(rdmol)
+        if opt: return self.get_rdkit_3D(rdmol)
+        else: return rdmol
 
-    def pyb_neutralise(self, opt=True):
+    def pyb_neutralise(self, pybmol, opt=True):
         """
         Uses pybel/openbabel to neutralise any charged atoms
 
@@ -378,10 +435,8 @@ class aemol(object):
             opt: Quick conversion of molecule to 3D and apply forcefield based energy minimisation via rdkit
 
         Returns:
-            Null: Stores interal information to aemol object
+            pybmol: pybel molecule object
         """
-        pybmol = self.to_pybel()
         pybmol = pybel_neutralise(pybmol)
-        self.from_pybel(pybmol)
-        if opt:
-            self.get_rdkit_3D_mol()
+        if opt: return self.get_pyb_3D(pybmol)
+        else: return pybmol

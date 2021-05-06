@@ -14,15 +14,16 @@ def test_getpchembl():
     for file in files:
         molid = file.split('/')[-1].split('.')[0]
         test_mol = aemol(molid)
-        test_mol.from_file(file, ftype='sdf')
+        pybmol = test_mol.from_file_pyb(file, ftype='sdf')
+        test_mol.from_pybel(pybmol)
         test_mol.prop_fromfile('tests/test_mols/test_pchembl/test_ic50.tsv', prop='ic50', format='tsv')
 
         mols.append(test_mol)
 
-    assert mols[0].info['molid'] == "CHEMBL2153191"
-    assert mols[0].mol_properties['ic50'] == 8.7
-    assert mols[1].info['molid'] == "CHEMBL2179015"
-    assert mols[1].mol_properties['ic50'] == 7.54
+    assert mols[0].info['molid'] == "CHEMBL460962"
+    assert mols[0].mol_properties['ic50'] == 8.92
+    assert mols[1].info['molid'] == "CHEMBL2179452"
+    assert mols[1].mol_properties['ic50'] == 7.55
 
 def test_pchemblimp():
 
@@ -31,7 +32,9 @@ def test_pchemblimp():
     for file in files:
         molid = file.split('/')[-1].split('.')[0]
         test_mol = aemol(molid)
-        test_mol.from_file(file, ftype='sdf')
+        pybmol = test_mol.from_file_pyb(file, ftype='sdf')
+        test_mol.from_pybel(pybmol)
+
 
         pmol = dataframe_prep.prep_mol_ic50(test_mol, 'tests/test_mols/test_pchembl/test_ic50.tsv', 'ic50')
 
