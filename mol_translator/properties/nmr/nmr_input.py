@@ -95,7 +95,7 @@ def make_g09_nmrin(prefs, molname, aemol, outname):
 	except:
 		return
 
-	if mixed == "True":
+	if mixed == True:
 		instr='nmr(giao,spinspin,mixed)' + str(functional) + '/' + str(basis_set) + ' maxdisk=50GB'
 	else:
 		instr='nmr(giao,spinspin)' + str(functional) + '/' + str(basis_set) + ' maxdisk=50GB'
