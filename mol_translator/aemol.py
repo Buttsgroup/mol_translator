@@ -16,16 +16,16 @@
 
 import pybel as pyb
 
+# Conversion functions for rdkit, pybel
 from mol_translator.structure.pybel_converter import pybmol_to_aemol, aemol_to_pybmol
 from mol_translator.structure.rdkit_converter import rdmol_to_aemol, aemol_to_rdmol
+# Structure writer
 from mol_translator.structure import structure_write as strucwrt
-
+# Property input/output
 import mol_translator.properties.property_io as prop_io
-
+# Path finder
 from mol_translator.structure import find_paths as pathfind
-
-from mol_translator.properties.nmr.nmr_write import write_nmredata
-
+# Rdkit for fingerprint generation
 from rdkit.Chem import AllChem as Chem
 from rdkit.Chem import DataStructs
 
@@ -33,54 +33,61 @@ import numpy as np
 
 class aemol(object):
     """
-        molecule object
-
+        molecule object class
         molecular information is stored in a set of dictionaries containing strings and numpy arrays
+
+        input output functions for popular structure formats
+        functions to derive common structural info (file paths, fingerprints, etc)
+
+
 
     """
 
     def __init__(self, molid, filepath=""):
-
+        # object information, trying to ween off filepath usage
         self.info = {   'molid': molid,
                         'filepath': filepath}
-
+        # Structural information
         self.structure = {  'xyz': [],
                             'types': [],
                             'conn': []}
-
+        # Atom based properties: Chemical shift, Charge, etc
         self.atom_properties = {}
-
+        # Pair properties: Coupling constant, distances, etc
         self.pair_properties = {}
-
+        # Mol properties: Binding affinity, energy, etc
         self.mol_properties = {'energy': -404.404}
 
-
+    # Create aemol molecule object from pybel molecule object
     def from_pybel(self, pybmol):
         types, xyz, conn = pybmol_to_aemol(pybmol)
         self.structure['types'] = types
         self.structure['xyz'] = xyz
         self.structure['conn'] = conn
-
+    # Create pybel molecule object from aemol object
     def to_pybel(self):
-        pybmol = aemol_to_pybmol(self.structure)
-
+        pybmol = aemol_to_pybmol(self.structure, self.info['molid'])
         return pybmol
 
+    # Create aemol molecule object from rdkit molecule object
     def from_rdkit(self, rdmol):
-        #assumes rdmol is already 3D with Hs included
-        types, xyz = rdmol_to_aemol(rdmol)
+        # !!! assumes rdmol is already 3D with Hs included !!!
+        types, xyz, conn = rdmol_to_aemol(rdmol)
         self.structure['types'] = types
         self.structure['xyz'] = xyz
+        self.structure['conn'] = conn
 
-    def to_rdkit(self):
-        rdmol = aemol_to_rdmol(self)
-
+    # Create rdkit mol object from aemol object
+    def to_rdkit(self, removeHs=False):
+        rdmol = aemol_to_rdmol(self, self.info['molid'], removeHs)
         return rdmol
 
+    # Create aemol object from file (using pybel import)
     def from_file(self, file, ftype='xyz'):
         pybmol = next(pyb.readfile(ftype, file))
         self.from_pybel(pybmol)
 
+    # Create aemol object from file (using pybel import)
     def from_string(self, string, stype='smi'):
         pybmol = pyb.readstring(stype, string)
         self.from_pybel(pybmol)
@@ -118,25 +125,12 @@ class aemol(object):
         self.mol_properties[fingerprint] = pybmol.calcfp(fingerprint)
         # available fingerprints: ['ecfp0', 'ecfp10', 'ecfp2', 'ecfp4', 'ecfp6', 'ecfp8', 'fp2', 'fp3', 'fp4', 'maccs']
 
-    def get_rdkit_fingerprint(self, radius=2, nBits=2048):
+    def get_rdkit_fingerprint(self, radius=2, nBits=2048, to_numpy=True):
         rdmol = self.to_rdkit()
         fp = Chem.GetMorganFingerprintAsBitVect(rdmol,radius=radius, nBits=nBits)
-        arr = np.zeros(0,)
-        DataStructs.ConvertToNumpyArray(fp, arr)
-        self.mol_properties['ecfp4'] = fp
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+        if to_numpy:
+            arr = np.zeros(0,)
+            DataStructs.ConvertToNumpyArray(fp, arr)
+            self.mol_properties['ecfp4'] = arr
+        else:
+            self.mol_properties['ecfp4'] = fp
