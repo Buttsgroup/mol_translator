@@ -15,6 +15,7 @@
 # along with autoenrich.  If not, see <https://www.gnu.org/licenses/>.
 
 import sys
+import numpy as np
 
 def charge_read(file, format, prop):
     if prop ==  'mc':
@@ -51,7 +52,7 @@ def g09_mcread(file):
                 if "" in line:
                     items = line.split()
                     try:
-                        num = int(items[0])
+                        num = int(items[2])
                     except:
                         continue
                     # Mulliken charge is the 3rd item (0, 1, 2)
