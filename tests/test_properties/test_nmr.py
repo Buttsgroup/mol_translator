@@ -12,8 +12,8 @@ import mol_translator.aemol as aemol
 
 def test_getcouplingtypes():
     test_mol = aemol(0)
-    pybmol = test_mol.from_file_pyb('tests/test_mols/qm9_9.nmredata.sdf', ftype='sdf')
-    test_mol.from_pybel(pybmol)
+    test_mol.from_file_pyb('tests/test_mols/qm9_9.nmredata.sdf', ftype='sdf')
+    test_mol.from_pybel(test_mol.pybmol)
     nmr.nmr_ops.get_coupling_types(test_mol)
 
     assert test_mol.pair_properties['nmr_types'] ==[['0JCC', '1JCC', '2JCC', '1JCH', '1JCH', '1JCH', '3JCH'],

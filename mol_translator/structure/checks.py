@@ -32,8 +32,8 @@ def check_valence(aemol):
     '''
     Might be redundant since loading molecule into rdkit already checks this
     '''
-    rdmol = aemol.to_rdkit()
-    num_bond_dict = rdmol_find_num_bonds(rdmol)
+    aemol.to_rdkit()
+    num_bond_dict = rdmol_find_num_bonds(aemol.rdmol)
     for num_bonds in num_bond_dict.values():
         if len(num_bonds)>1:
             print(f"Unexpected number of valence electrons in mol, {aemol.info['molid']}")
@@ -52,8 +52,8 @@ def check_missing_H(aemol, post_check=False):
         return False
 
     if post_check:
-        rdmol = aemol.to_rdkit()
-        for atom in rdmol.GetAtoms():
+        aemol.to_rdkit()
+        for atom in aemol.rdmol.GetAtoms():
             if atom.GetNumImplicitHs() != 0 :
                 print(f"Hs Missing on mol {aemol.info['molid']}")
                 return False
@@ -62,7 +62,8 @@ def check_missing_H(aemol, post_check=False):
 
 def check_bonds_are_plausible_and_atom_overlap(aemol):
 
-    rdmol = aemol.to_rdkit()
+    aemol.to_rdkit()
+    rdmol = aemol.rdmol
     for i_idx, i_atom in enumerate(rdmol.GetAtoms()):
         for j_idx, j_atom in enumerate(rdmol.GetAtoms()):
             if i_idx == j_idx:

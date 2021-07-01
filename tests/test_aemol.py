@@ -54,7 +54,8 @@ def test_to_pybel():
     pybmol_ref = next(pyb.readfile('xyz', test_xyz))
     mol_ref.from_pybel(pybmol_ref)
 
-    test_pybmol = mol_ref.to_pybel()
+    mol_ref.to_pybel()
+    test_pybmol = mol_ref.pybmol
     mol_test.from_pybel(test_pybmol)
 
     assert (mol_test.structure['xyz'] == mol_ref.structure['xyz']).all() == True
@@ -83,7 +84,8 @@ def test_to_rdkit():
     assert mol.structure['xyz'] is not []
     assert mol.structure['conn'] is not []
 
-    test_rd = mol.to_rdkit()
+    mol.to_rdkit()
+    test_rd = mol.rdmol
     assert test_rd is not None
 
 def test_from_file():
@@ -119,7 +121,8 @@ def test_to_file_pyb():
     test_mol = aemol(test_mol)
     ref_xyz = 'tests/test_dataset/test_xyz.xyz'
 
-    pybmol = test_mol.from_file_pyb(ref_xyz)
+    test_mol.from_file_pyb(ref_xyz)
+    pybmol = test_mol.pybmol
     test_mol.from_pybel(pybmol)
     tmp_file = Path("./tmp_pyb.smi")
     test_mol.to_file_pyb('smi', 'tmp_pyb.smi')
@@ -130,14 +133,15 @@ def test_check_mol_aemol():
     test_molid = 'test'
     test_file = 'tests/test_dataset/test_xyz.xyz'
     test_mol = aemol(test_molid)
-    pybmol = test_mol.from_file_pyb(test_file)
+    test_mol.from_file_pyb(test_file)
+    pybmol = test_mol.pybmol
     test_mol.from_pybel(pybmol)
 
     test_bad_molid = 'bad_test'
     test_bad_file = 'tests/test_dataset/test_bad_mol.xyz'
     test_bad_mol = aemol(test_bad_molid)
-    pybmol = test_bad_mol.from_file_pyb(test_bad_file)
-    test_bad_mol.from_pybel(pybmol)
+    test_bad_mol.from_file_pyb(test_bad_file)
+    test_bad_mol.from_pybel(test_bad_mol.pybmol)
 
     assert aemol.check_mol_aemol(test_mol) == True
     assert aemol.check_mol_aemol(test_bad_mol) == False
@@ -148,9 +152,9 @@ def test_rd_neutralise():
 
     for idx, file in enumerate(test_file):
         test_mol = aemol(idx)
-        rdmol = test_mol.from_file_rdkit(file)
-        rdmol = test_mol.rd_neutralise(rdmol)
-        test_mol.from_rdkit(rdmol)
+        test_mol.from_file_rdkit(file)
+        test_mol.rd_neutralise(test_mol.rdmol)
+        test_mol.from_rdkit(test_mol.rdmol)
         assert test_mol.check_mol_aemol() == True
 
 def test_pyb_neutralise():
@@ -159,9 +163,9 @@ def test_pyb_neutralise():
 
     for idx, file in enumerate(test_file):
         test_mol = aemol(idx)
-        pybmol = test_mol.from_file_pyb(file, ftype = 'sdf')
-        pybmol = test_mol.pyb_neutralise(pybmol)
-        test_mol.from_pybel(pybmol)
+        test_mol.from_file_pyb(file, ftype = 'sdf')
+        test_mol.pyb_neutralise(test_mol.pybmol)
+        test_mol.from_pybel(test_mol.pybmol)
         assert test_mol.check_mol_aemol() == True
 
 def test_prop_tofile():
@@ -169,8 +173,8 @@ def test_prop_tofile():
     test_mol = aemol(test_mol)
     ref_xyz = 'tests/test_mols/qm9_1.nmredata.sdf'
     assert os.path.isfile(ref_xyz)
-    pybmol = test_mol.from_file_pyb(ref_xyz, 'sdf')
-    test_mol.from_pybel(pybmol)
+    test_mol.from_file_pyb(ref_xyz, 'sdf')
+    test_mol.from_pybel(test_mol.pybmol)
     test_mol.get_bonds()
     test_mol.get_path_lengths()
     get_coupling_types(test_mol)

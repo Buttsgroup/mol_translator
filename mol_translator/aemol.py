@@ -66,6 +66,10 @@ class aemol(object):
                             'types': [],
                             'conn': []}
 
+        self.rdmol = None
+
+        self.pybmol = None
+
         self.atom_properties = {}
 
         self.pair_properties = {}
@@ -99,9 +103,7 @@ class aemol(object):
         Returns:
             pybmol (object): pybel/openbabel mol object
         """
-        pybmol = aemol_to_pybmol(self.structure, self.info['molid'])
-
-        return pybmol
+        self.pybmol = aemol_to_pybmol(self.structure, self.info['molid'])
 
     def from_rdkit(self, rdmol):
         """
@@ -132,9 +134,7 @@ class aemol(object):
         Returns:
             rdmol (object): rdkit object
         """
-        rdmol = aemol_to_rdmol(self, self.info['molid'], sanitize, removeHs)
-
-        return rdmol
+        self.rdmol = aemol_to_rdmol(self, self.info['molid'], sanitize, removeHs)
 
     def from_file_pyb(self, file, ftype='xyz'):
         """
@@ -148,8 +148,7 @@ class aemol(object):
         Returns:
             Null: Stores interal information to aemol object
         """
-        pybmol = next(pyb.readfile(ftype, file))
-        return pybmol
+        self.pybmol = next(pyb.readfile(ftype, file))
 
     def from_file_rdkit(self, path):
         """
@@ -167,7 +166,7 @@ class aemol(object):
         for rdmol in suppl:
             if rdmol is not None:
                 if rdmol.GetProp('_Name') is None: rdmol.SetProp('_Name',self.info['molid'])
-                return rdmol
+                self.rdmol = rdmol
             else: continue
 
 
@@ -183,8 +182,8 @@ class aemol(object):
         Returns:
             Null: Stores interal information to aemol object
         """
-        pybmol = pyb.readstring(stype, string)
-        self.from_pybel(pybmol)
+        self.pybmol = pyb.readstring(stype, string)
+        self.from_pybel(self.pybmol)
 
     def to_file_ae(self, format, filename):
         """
@@ -215,8 +214,20 @@ class aemol(object):
         Returns:
             Null: Stores interal information to aemol object
         """
-        pybmol = self.to_pybel()
-        pybmol.write(format, filename)
+        self.pybmol.write(format, filename)
+
+    def to_file_rdkit(self, format, filename):
+        """
+        Writes rdmol object into sdf format by RDKit
+
+        Args:
+            self: aemol object
+            rdmol: rdkit molecule object
+            format: file type, sdf by default
+            filename: name of the ouputfile
+        """
+        w = Chem.SDWriter(filename)
+        w.write(self.rdmol)
 
     def prop_tofile(self, filename, prop='nmr', format='nmredata'):
         """
@@ -260,8 +271,8 @@ class aemol(object):
         Returns:
             Null: Stores interal information to aemol object
         """
-        pybmol = self.to_pybel()
-        self.structure['paths'] = pathfind.pybmol_find_all_paths(pybmol, maxlen)
+        self.to_pybel()
+        self.structure['paths'] = pathfind.pybmol_find_all_paths(self.pybmol, maxlen)
 
     def get_bonds(self):
         """
@@ -273,8 +284,8 @@ class aemol(object):
         Returns:
             Null: Stores interal information to aemol object
         """
-        pybmol = self.to_pybel()
-        self.structure['conn'] = pathfind.pybmol_get_bond_table(pybmol)
+        self.to_pybel()
+        self.structure['conn'] = pathfind.pybmol_get_bond_table(self.pybmol)
 
     def get_path_lengths(self, maxlen=5):
         """
@@ -287,10 +298,10 @@ class aemol(object):
         Returns:
             Null: Stores interal information to aemol object
         """
-        pybmol = self.to_pybel()
-        self.structure['path_len'] = pathfind.pybmol_get_path_lengths(pybmol, maxlen)
+        self.to_pybel()
+        self.structure['path_len'] = pathfind.pybmol_get_path_lengths(self.pybmol, maxlen)
 
-    def get_pyb_fingerprint(self, pybmol, fingerprint='ecfp4'):
+    def get_pyb_fingerprint(self, fingerprint='ecfp4'):
         """
         Uses pybel/openbabel to generate a fingerprint of the aemol object
 
@@ -303,9 +314,9 @@ class aemol(object):
         Returns:
             Null: Stores interal information to aemol object
         """
-        self.mol_properties[fingerprint] = pybmol.calcfp(fingerprint)
+        self.mol_properties[fingerprint] = self.pybmol.calcfp(fingerprint)
 
-    def get_rdkit_fingerprint(self, rdmol, radius=2, nBits=2048, to_numpy=True):
+    def get_rdkit_fingerprint(self, radius=2, nBits=2048, to_numpy=True):
         """
         Uses rdkit to generate an ecfp fingerprint of the aemol object
 
@@ -318,7 +329,7 @@ class aemol(object):
         Returns:
             Null: Stores interal information to aemol object
         """
-        fp = AllChem.GetMorganFingerprintAsBitVect(rdmol,radius=radius, nBits=nBits)
+        fp = AllChem.GetMorganFingerprintAsBitVect(self.rdmol,radius=radius, nBits=nBits)
         if to_numpy:
             arr = np.zeros(0,)
             DataStructs.ConvertToNumpyArray(fp, arr)
@@ -326,7 +337,7 @@ class aemol(object):
         else:
             self.mol_properties['ecfp4'] = fp
 
-    def get_rdkit_3D(self, rdmol, opt=True):
+    def get_rdkit_3D(self, opt=True):
         """
         Uses rdkit to convert the aemol object into 3D with molecular dynamics energy minimisation
 
@@ -338,12 +349,10 @@ class aemol(object):
         Returns:
             Null: Stores interal information to aemol object
         """
-        rdmol = AllChem.AddHs(rdmol)
-        if opt: AllChem.EmbedMolecule(rdmol)
+        self.rdmol = AllChem.AddHs(self.rdmol)
+        if opt: AllChem.EmbedMolecule(self.rdmol)
 
-        return rdmol
-
-    def get_pyb_3D(self, pybmol, refine=True):
+    def get_pyb_3D(self, refine=True):
         """
         Use Openbabel/Pybel wrapper to convert aemol object into 3D thorough H addition and MMFF energy minimisation
 
@@ -354,12 +363,10 @@ class aemol(object):
         Returns:
             Null: stores new geometry and atoms in internal aemol object
         """
-        pybmol.addh()
+        self.pybmol.addh()
 
-        if refine: pybmol.localopt()
-        else: pybmol.make3D()
-
-        return pybmol
+        if refine: self.pybmol.localopt()
+        else: self.pybmol.make3D()
 
     def check_mol_aemol(self, post_check=False):
         """
@@ -378,7 +385,7 @@ class aemol(object):
         """
         return run_all_checks(self, post_check=post_check)
 
-    def check_mol_rdkit(self, rdmol, clean=False):
+    def check_mol_rdkit(self, clean=False):
         """
         Checks validity of rdmol molecule against internal rules
             Valence electrons
@@ -397,21 +404,19 @@ class aemol(object):
         rdkit_vm = mol_std.RDKitValidation()
         molvs_vm = mol_std.MolVSValidation()
 
-        rdkit_vm.validate(rdmol)
-        molvs_vm.validate(rdmol)
+        rdkit_vm.validate(self.rdmol)
+        molvs_vm.validate(self.rdmol)
 
         if clean:
             lfc = mol_stf.LargestFragmentChooser()
-            idx = rdmol.GetProp('_Name')
+            idx = self.rdmol.GetProp('_Name')
 
-            rdmol = lfc.choose(rdmol)
-            mol_std.Cleanup(rdmol)
-            rdmol.SetProp('_Name', idx)
-
-            return rdmol
+            self.rdmol = lfc.choose(rself.rdmol)
+            mol_std.Cleanup(self.rdmol)
+            self.rdmol.SetProp('_Name', idx)
 
 
-    def rd_neutralise(self, rdmol, opt=True):
+    def rd_neutralise(self, opt=True):
         """
         Uses rdkit to neutralise any charged atoms
 
@@ -422,11 +427,10 @@ class aemol(object):
         Returns:
             rdmol: rdkit molecule object
         """
-        rdmol = rdkit_neutralise(rdmol)
-        if opt: return self.get_rdkit_3D(rdmol)
-        else: return rdmol
+        self.rdmol = rdkit_neutralise(self.rdmol)
+        if opt: return self.get_rdkit_3D(self.rdmol)
 
-    def pyb_neutralise(self, pybmol, opt=True):
+    def pyb_neutralise(self, opt=True):
         """
         Uses pybel/openbabel to neutralise any charged atoms
 
@@ -437,6 +441,5 @@ class aemol(object):
         Returns:
             pybmol: pybel molecule object
         """
-        pybmol = pybel_neutralise(pybmol)
-        if opt: return self.get_pyb_3D(pybmol)
-        else: return pybmol
+        self.pybmol = pybel_neutralise(self.pybmol)
+        if opt: return self.get_pyb_3D(self.pybmol)
