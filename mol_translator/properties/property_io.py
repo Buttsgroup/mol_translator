@@ -19,6 +19,7 @@
 from . import nmr as nmr
 from . import energy as energy
 from . import binding as binding
+from . import charge as charge
 
 def prop_write(aemol, outfile, prop, format):
     if prop == 'nmr':
@@ -49,6 +50,9 @@ def prop_read(aemol, filename, prop, format):
     elif prop == 'ic50':
         ic50 = binding.binding_read.pchembl_read(filename, format, aemol.info['molid'])
         aemol.mol_properties['ic50'] = ic50
+    elif prop == 'mc':
+        mc = charge.charge_read.charge_read(filename, format=format, prop=prop)
+        aemol.atom_properties['mull_chg'] = mc
     else:
         print('property not recognised or function not written yet !')
         raise ValueError('Cannot read property: ', prop)
