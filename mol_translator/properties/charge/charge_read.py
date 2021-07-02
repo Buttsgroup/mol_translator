@@ -56,6 +56,9 @@ def g09_mcread(file):
                     except:
                         continue
                     # Mulliken charge is the 3rd item (0, 1, 2)
-                    mc_array[num-1] = float(items[2])
-
+                    try:
+                        mc_array[num-1] = float(items[2])
+                    except:
+                        print(file)
+                        
     return mc_array
