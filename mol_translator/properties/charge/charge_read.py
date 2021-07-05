@@ -36,29 +36,26 @@ def g09_mcread(file):
                 atomnumber = int(items[1])
 
     mc_array = np.zeros(atomnumber, dtype=np.float64)
-    switch = 0
+    switch = False
     # Go through file to find mulliken charge
     with open(file, 'r') as f_handle:
         for line in f_handle:
             # If mulliken charge label is found, activate switch
-            if "mulliken charges:" in line:
-                switch =+ 1
+            if "Mulliken charges:" in line:
+                switch = True
             # This label comes at the end of the Mulliken section, so deactivate switch
             if "Sum of Mulliken charges" in line:
-                switch =+ 1
+                switch = False
             # Only run this code on the first mulliken charge set found
-            if switch == 1:
+            if switch == True:
                 # Find
-                if "" in line:
-                    items = line.split()
-                    try:
-                        num = int(items[2])
-                    except:
-                        continue
-                    # Mulliken charge is the 3rd item (0, 1, 2)
-                    try:
-                        mc_array[num-1] = float(items[2])
-                    except:
-                        print(file)
-                        
+                items = line.split()
+                if len(items) != 3:
+                    continue
+                # Mulliken charge is the 3rd item (0, 1, 2)
+                try:
+                    mc_array[int(items[0])-1] = float(items[2])
+                except:
+                    print(file)
+
     return mc_array
