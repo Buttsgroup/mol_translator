@@ -104,6 +104,7 @@ class aemol(object):
             pybmol (object): pybel/openbabel mol object
         """
         self.pybmol = aemol_to_pybmol(self.structure, self.info['molid'])
+        return self.pybmol
 
     def from_rdkit(self, rdmol):
         """
@@ -135,6 +136,7 @@ class aemol(object):
             rdmol (object): rdkit object
         """
         self.rdmol = aemol_to_rdmol(self, self.info['molid'], sanitize, removeHs)
+        return self.rdmol
 
     def from_file_pyb(self, file, ftype='xyz'):
         """
@@ -251,8 +253,8 @@ class aemol(object):
         Args:
             self: aemol object
             filename: The name of the input file
-            prop: The input property data type
-            format: The output file extension
+            prop: The input property data type eg. NMR, scf, ic50, mc
+            format: The output file format extension eg. g09, g16, nmredata
 
 
         Returns:
