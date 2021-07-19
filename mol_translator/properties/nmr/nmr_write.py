@@ -71,6 +71,10 @@ def write_nmredata(outfile, aemol, write_zeros=False,
 
 			lines.append(string)
 
+	#End section
+	lines.append('')
+	lines.append('$$$$')
+
 	# Print assembled lines to output file
 	with open(outfile, 'w') as f:
 		for line in lines:
