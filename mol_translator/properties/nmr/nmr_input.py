@@ -43,7 +43,7 @@ def make_orca_nmrin(prefs, molname, aemol, outfile):
 	if processors != 1:
 		instr += ' PAL{0:<d}'.format(processors)
 	# Add solvent model/solvent if requested
-	if solvent != 'none':
+	if solvent != None:
 		instr += ' CPCM(' + solvent + ')'
 	# If direct line input specified then overwrite all of this
 	if direct_cmd_line_nmr:
@@ -95,12 +95,12 @@ def make_g09_nmrin(prefs, molname, aemol, outname):
 	except:
 		return
 
-	if mixed == "True":
+	if mixed == True:
 		instr='nmr(giao,spinspin,mixed)' + str(functional) + '/' + str(basis_set) + ' maxdisk=50GB'
 	else:
 		instr='nmr(giao,spinspin)' + str(functional) + '/' + str(basis_set) + ' maxdisk=50GB'
 
-	if solvent != 'none':
+	if solvent != None:
 		instr += ' scrf=(' + str(solventmodel) + ',solvent=' + str(solvent) + ')'
 
 	comfile = outname
