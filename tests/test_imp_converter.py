@@ -35,16 +35,17 @@ def test_dataframe_readwrite():
 
 def test_prep_mol():
     test_mol = aemol(0)
-    test_mol.from_file('tests/test_mols/qm9_8.nmredata.sdf', ftype='sdf')
+    test_mol.from_file_pyb('tests/test_mols/qm9_8.nmredata.sdf', ftype='sdf')
+    test_mol.from_pybel(test_mol.pybmol)
     test_mol = dataframe_prep.prep_mol_nmr(test_mol, nmr_file='tests/test_mols/qm9_8.nmredata.sdf', nmr_type='nmredata')
-    
+
     assert np.array_equal(test_mol.atom_properties['shift'], np.asarray([ 46.06039042, 327.955,   3.76051871,   3.76014554,
          3.59063345,  -0.6359735 ]))
-    assert test_mol.pair_properties['nmr_types'] == [['0JCC', '1JOC', '1JCH', '1JCH', '1JCH', '2JCH'], 
-                                                    ['1JOC', '0JOO', '2JOH', '2JOH', '2JOH', '1JOH'], 
-                                                    ['1JCH', '2JOH', '0JHH', '2JHH', '2JHH', '3JHH'], 
-                                                    ['1JCH', '2JOH', '2JHH', '0JHH', '2JHH', '3JHH'], 
-                                                    ['1JCH', '2JOH', '2JHH', '2JHH', '0JHH', '3JHH'], 
+    assert test_mol.pair_properties['nmr_types'] == [['0JCC', '1JOC', '1JCH', '1JCH', '1JCH', '2JCH'],
+                                                    ['1JOC', '0JOO', '2JOH', '2JOH', '2JOH', '1JOH'],
+                                                    ['1JCH', '2JOH', '0JHH', '2JHH', '2JHH', '3JHH'],
+                                                    ['1JCH', '2JOH', '2JHH', '0JHH', '2JHH', '3JHH'],
+                                                    ['1JCH', '2JOH', '2JHH', '2JHH', '0JHH', '3JHH'],
                                                     ['2JCH', '1JOH', '3JHH', '3JHH', '3JHH', '0JHH']]
     assert np.array_equal(test_mol.pair_properties['coupling'], np.asarray([[  0.     ,   0.     ,  87.6326 ,  87.6253 ,  90.0888 ,  -1.36995],
                                                                            [  0.     ,   0.     ,   0.     ,   0.     ,   0.     ,   0.     ],
@@ -71,38 +72,39 @@ def test_prep_mol():
                                                                        [1, 2, 2, 0, 2, 3],
                                                                        [1, 2, 2, 2, 0, 3],
                                                                        [2, 1, 3, 3, 3, 0]]))
-    
+
 def test_dataframe_write():
-    
+
     files = glob.glob("tests/test_mols/qm9_*.nmredata.sdf")
     mols = []
     for file in files:
         f = int(file.split('_')[-1].split('.')[0])
         test_mol = aemol(f)
-        test_mol.from_file(file, ftype='sdf')
+        test_mol.from_file_pyb(file, ftype='sdf')
+        test_mol.from_pybel(test_mol.pybmol)
         test_mol = dataframe_prep.prep_mol_nmr(test_mol, nmr_file=file, nmr_type='nmredata')
         mols.append(test_mol)
-        
+
     atom_df = dataframe_write.make_atom_df(mols)
     pair_df = dataframe_write.make_pair_df(mols)
-    
+
     assert np.all(pair_df.loc[(pair_df.path_len == 0)]['coupling'].to_numpy() == 0)
     assert np.all([x[2] == x[3] for x in pair_df.loc[(pair_df.path_len == 0)]['nmr_types'].to_list()])
     assert pair_df['path_len'].to_list() == [int(x[0]) for x in pair_df['nmr_types'].to_list()]
-    
+
     mol_atoms = atom_df.loc[atom_df.molecule_name == 8]
     mol_pairs = pair_df.loc[pair_df.molecule_name == 8]
-    
+
     assert np.array_equal(mol_atoms['shift'].to_numpy(), np.asarray([ 46.06039042, 327.955,   3.76051871,   3.76014554,
-        3.59063345,  -0.6359735 ])) 
-         
-    assert mol_pairs['nmr_types'].to_list() == ['0JCC', '1JOC', '1JCH', '1JCH', '1JCH', '2JCH', 
-                                                    '1JOC', '0JOO', '2JOH', '2JOH', '2JOH', '1JOH', 
-                                                    '1JCH', '2JOH', '0JHH', '2JHH', '2JHH', '3JHH', 
-                                                    '1JCH', '2JOH', '2JHH', '0JHH', '2JHH', '3JHH', 
-                                                    '1JCH', '2JOH', '2JHH', '2JHH', '0JHH', '3JHH', 
+        3.59063345,  -0.6359735 ]))
+
+    assert mol_pairs['nmr_types'].to_list() == ['0JCC', '1JOC', '1JCH', '1JCH', '1JCH', '2JCH',
+                                                    '1JOC', '0JOO', '2JOH', '2JOH', '2JOH', '1JOH',
+                                                    '1JCH', '2JOH', '0JHH', '2JHH', '2JHH', '3JHH',
+                                                    '1JCH', '2JOH', '2JHH', '0JHH', '2JHH', '3JHH',
+                                                    '1JCH', '2JOH', '2JHH', '2JHH', '0JHH', '3JHH',
                                                     '2JCH', '1JOH', '3JHH', '3JHH', '3JHH', '0JHH']
-                                                    
+
     assert np.array_equal(mol_pairs['coupling'], np.asarray([[  0.     ,   0.     ,  87.6326 ,  87.6253 ,  90.0888 ,  -1.36995],
                                                                            [  0.     ,   0.     ,   0.     ,   0.     ,   0.     ,   0.     ],
                                                                            [ 87.6326 ,   0.     ,   0.     ,  -6.48291, -10.6098 ,   1.43077],
@@ -128,4 +130,3 @@ def test_dataframe_write():
                                                                        [1, 2, 2, 0, 2, 3],
                                                                        [1, 2, 2, 2, 0, 3],
                                                                        [2, 1, 3, 3, 3, 0]]).flatten())
-    

@@ -59,3 +59,15 @@ def prep_mol_ecfp4(aemol):
     aemol.atom_properties['ecfp4'] = aemol.mol_properties['ecfp4']
 
     return aemol
+
+def prep_mol_mulliken(aemol, mc_file="", mc_format=""):
+    aemol.get_bonds()
+    aemol.get_path_lengths()
+    get_coupling_types(aemol)
+    if os.path.isfile(mc_file):
+        aemol.prop_fromfile(mc_file, mc_format, 'mc')
+    else:
+        print('Setting fake mulliken charge values', mc_file)
+        aemol.atom_properties['mull_chg'] = np.zeros(len(aemol.structure['types']), dtype=np.float64)
+
+    return aemol
