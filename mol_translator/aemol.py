@@ -403,6 +403,9 @@ class aemol(object):
             if clean = True: returns cleaned molecule
             else: returns null
         """
+        if self.rdmol == None:
+            self.to_rdkit()
+        
         rdkit_vm = mol_std.RDKitValidation()
         molvs_vm = mol_std.MolVSValidation()
 
