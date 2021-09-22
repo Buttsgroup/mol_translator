@@ -18,12 +18,14 @@ from openbabel import pybel as pyb
 from openbabel import openbabel as ob
 import numpy as np
 
+# Conversion functions for rdkit, pybel
 from mol_translator.structure.pybel_converter import pybmol_to_aemol, aemol_to_pybmol
 from mol_translator.structure.rdkit_converter import rdmol_to_aemol, aemol_to_rdmol
+# Structure writer
 from mol_translator.structure import structure_write as strucwrt
-
+# Property input/output
 import mol_translator.properties.property_io as prop_io
-
+# Path finder
 from mol_translator.structure import find_paths as pathfind
 
 from mol_translator.properties.nmr.nmr_write import write_nmredata
@@ -40,8 +42,7 @@ from mol_translator.properties.charge.charge_ops import rdkit_neutralise, pybel_
 
 class aemol(object):
     """
-        molecule object
-
+        molecule object class
         molecular information is stored in a set of dictionaries containing strings and numpy arrays
 
         contains functions for i/o and conversion between different python package objects
@@ -62,7 +63,7 @@ class aemol(object):
 
         self.info = {   'molid': molid,
                         'filepath': filepath}
-
+        # Structural information
         self.structure = {  'xyz': [],
                             'types': [],
                             'conn': []}
@@ -72,12 +73,12 @@ class aemol(object):
         self.pybmol = None
 
         self.atom_properties = {}
-
+        # Pair properties: Coupling constant, distances, etc
         self.pair_properties = {}
-
+        # Mol properties: Binding affinity, energy, etc
         self.mol_properties = {'energy': -404.404}
 
-
+    # Create aemol molecule object from pybel molecule object
     def from_pybel(self, pybmol):
         """
         Converts molecule from pybel/openbabel object into an aemol object
@@ -93,7 +94,7 @@ class aemol(object):
         self.structure['types'] = types
         self.structure['xyz'] = xyz
         self.structure['conn'] = conn
-
+    # Create pybel molecule object from aemol object
     def to_pybel(self):
         """
         Converts aemol object into pybel/openbabel object
@@ -107,6 +108,7 @@ class aemol(object):
         self.pybmol = aemol_to_pybmol(self.structure, self.info['molid'])
         return self.pybmol
 
+    # Create aemol molecule object from rdkit molecule object
     def from_rdkit(self, rdmol):
         """
         Converts rdkit object into aemol object
@@ -173,6 +175,7 @@ class aemol(object):
             else: continue
 
 
+    # Create aemol object from file (using pybel import)
     def from_string(self, string, stype='smi'):
         """
         Converts a SMILES string into an aemol object via pybel/openbabel

@@ -38,7 +38,10 @@ def get_coupling_types(aemol, maxlen=6):
 
 	aemol.pair_properties['nmr_types'] = cpl_types
 
-def scale_chemical_shifts(aemol, scaling={6: [-1.0399, 187.136], 1: [-1.0719, 32.1254]}):
+# Carbon and proton defaults obtained through validation on exp data in the group
+# Nitrogen defaults are from Gao, Peng, Xingyong Wang, and Haibo Yu. "Towards an Accurate Prediction of Nitrogen Chemical Shifts by Density Functional Theory and Gauge‐Including Atomic Orbital." Advanced Theory and Simulations 2.2 (2019): 1800148.
+# Not for the exact same functional but close enough to be useful.
+def scale_chemical_shifts(aemol, scaling={6: [-1.0399, 187.136], 1: [-1.0719, 32.1254], 7: [-1.0139, -148.67]}):
 	# default scaling values are for functional: wb97xd, basis_set: 6-311g(d,p)
 
 	for t, type in enumerate(aemol.structure['types']):
