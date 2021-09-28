@@ -95,6 +95,7 @@ def make_g09_optin(prefs, molname, aemol, outfile):
 	basis_set = prefs['optimisation']['basisset']
 	grid = prefs['optimisation']['grid']
 	solvent = prefs['optimisation']['solvent']
+	solventmodel = prefs['optimisation']['solventmodel']
 	freq = True # Without this the energies we get arent useful for boltzmann weighting
 
 
@@ -111,7 +112,7 @@ def make_g09_optin(prefs, molname, aemol, outfile):
 
 	instr = 'opt=' + str(opt) + ' freq ' + str(functional) + '/' + str(basis_set) + ' integral=' + str(grid) + ' MaxDisk=50GB'
 
-	if solvent != 'none':
+	if solvent != None:
 		instr += ' scrf=(' + str(solventmodel) + ',solvent=' + str(solvent) + ')'
 
 	comfile = outfile
