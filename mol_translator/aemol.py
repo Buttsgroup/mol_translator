@@ -164,7 +164,7 @@ class aemol(object):
         Returns:
             suppl (list): list of rdkit mol objects
         """
-        suppl = Chem.SDMolSupplier(path)
+        suppl = Chem.SDMolSupplier(path, removeHs=False)
         for rdmol in suppl:
             if rdmol is not None:
                 if rdmol.GetProp('_Name') is None: rdmol.SetProp('_Name',self.info['molid'])
@@ -403,6 +403,9 @@ class aemol(object):
             if clean = True: returns cleaned molecule
             else: returns null
         """
+        if self.rdmol == None:
+            self.to_rdkit()
+
         rdkit_vm = mol_std.RDKitValidation()
         molvs_vm = mol_std.MolVSValidation()
 
