@@ -111,7 +111,7 @@ def make_g09_optin(prefs, molname, aemol, outfile):
 
 	instr = 'opt=' + str(opt) + ' freq ' + str(functional) + '/' + str(basis_set) + ' integral=' + str(grid) + ' MaxDisk=50GB'
 
-	if solvent != 'none':
+	if solvent != None:
 		instr += ' scrf=(' + str(solventmodel) + ',solvent=' + str(solvent) + ')'
 
 	comfile = outfile
