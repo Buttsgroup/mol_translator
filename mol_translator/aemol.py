@@ -172,7 +172,7 @@ class aemol(object):
             if rdmol is not None:
                 if rdmol.GetProp('_Name') is None: rdmol.SetProp('_Name',self.info['molid'])
                 self.rdmol = rdmol
-            else: continue
+            else: self.rdmol = rdmol
 
 
     # Create aemol object from file (using pybel import)
@@ -222,7 +222,7 @@ class aemol(object):
         """
         self.pybmol.write(format, filename)
 
-    def to_file_rdkit(self, format, filename):
+    def to_file_rdkit(self, filename):
         """
         Writes rdmol object into sdf format by RDKit
 
