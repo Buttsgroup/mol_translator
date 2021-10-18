@@ -421,7 +421,7 @@ class aemol(object):
             self.rdmol.SetProp('_Name', idx)
 
 
-    def rd_neutralise(self, opt=True):
+    def rd_neutralise(self, opt=False):
         """
         Uses rdkit to neutralise any charged atoms
 
@@ -435,7 +435,7 @@ class aemol(object):
         self.rdmol = rdkit_neutralise(self.rdmol)
         if opt: return self.get_rdkit_3D(self.rdmol)
 
-    def pyb_neutralise(self, opt=True):
+    def pyb_neutralise(self, opt=False):
         """
         Uses pybel/openbabel to neutralise any charged atoms
 
