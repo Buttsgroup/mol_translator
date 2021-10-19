@@ -1,21 +1,24 @@
 # Copyright 2020 Will Gerrard, Calvin Yiu
-#This file is part of autoenrich.
+# This file is part of autoenrich.
 
-#autoenrich is free software: you can redistribute it and/or modify
-#it under the terms of the GNU General Public License as published by
-#the Free Software Foundation, either version 3 of the License, or
-#(at your option) any later version.
+# autoenrich is free software: you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation, either version 3 of the License, or
+# (at your option) any later version.
 
-#autoenrich is distributed in the hope that it will be useful,
-#but WITHOUT ANY WARRANTY; without even the implied warranty of
-#MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-#GNU General Public License for more details.
+# autoenrich is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
 
-#You should have received a copy of the GNU General Public License
-#along with autoenrich.  If not, see <https://www.gnu.org/licenses/>.
+# You should have received a copy of the GNU General Public License
+# along with autoenrich.  If not, see <https://www.gnu.org/licenses/>.
 
 import pybel as pyb
 import numpy as np
+
+from os import PathLike
+from typing import Any, Dict, Iterable, List, Optional, Tuple, Union
 
 from mol_translator.structure.pybel_converter import pybmol_to_aemol, aemol_to_pybmol
 from mol_translator.structure.rdkit_converter import rdmol_to_aemol, aemol_to_rdmol
@@ -36,6 +39,7 @@ from rdkit.Chem.MolStandardize import rdMolStandardize as mol_std
 
 
 from mol_translator.properties.charge.charge_ops import rdkit_neutralise, pybel_neutralise
+
 
 class aemol(object):
     """
@@ -59,12 +63,12 @@ class aemol(object):
             Null : Generates default internal variables
         """
 
-        self.info = {   'molid': molid,
-                        'filepath': filepath}
+        self.info = {'molid': molid,
+                     'filepath': filepath}
 
-        self.structure = {  'xyz': [],
-                            'types': [],
-                            'conn': []}
+        self.structure = {'xyz': [],
+                          'types': [],
+                          'conn': []}
 
         self.rdmol = None
 
@@ -75,7 +79,6 @@ class aemol(object):
         self.pair_properties = {}
 
         self.mol_properties = {'energy': -404.404}
-
 
     def from_pybel(self, pybmol):
         """
@@ -117,7 +120,7 @@ class aemol(object):
         Returns:
             Null: Stores interal information to aemol object
         """
-        #assumes rdmol is already 3D with Hs included
+        # assumes rdmol is already 3D with Hs included
         types, xyz, conn = rdmol_to_aemol(rdmol)
         self.structure['types'] = types
         self.structure['xyz'] = xyz
@@ -135,10 +138,11 @@ class aemol(object):
         Returns:
             rdmol (object): rdkit object
         """
-        self.rdmol = aemol_to_rdmol(self, self.info['molid'], sanitize, removeHs)
+        self.rdmol = aemol_to_rdmol(
+            self, self.info['molid'], sanitize, removeHs)
         return self.rdmol
 
-    def from_file_pyb(self, file, ftype='xyz'):
+    def from_file_pyb(self, file, ftype='xyz', to_aemol=True):
         """
         Converts a file of filetype 'ftype' into an aemol object via pybel/openbabel
 
@@ -152,7 +156,10 @@ class aemol(object):
         """
         self.pybmol = next(pyb.readfile(ftype, file))
 
-    def from_file_rdkit(self, path):
+        if to_aemol:
+            self.from_pybel(self.pybmol)
+
+    def from_file_rdkit(self, path, to_aemol=True):
         """
         Mass converts sdf files within a folder into a rdkit object list.
         If passing a single SDF file containing multiple molecules call rdkit independently
@@ -167,10 +174,14 @@ class aemol(object):
         suppl = Chem.SDMolSupplier(path, removeHs=False)
         for rdmol in suppl:
             if rdmol is not None:
-                if rdmol.GetProp('_Name') is None: rdmol.SetProp('_Name',self.info['molid'])
+                if rdmol.GetProp('_Name') is None:
+                    rdmol.SetProp('_Name', self.info['molid'])
                 self.rdmol = rdmol
-            else: continue
+            else:
+                continue
 
+        if to_aemol:
+            self.from_rdkit(self.rdmol)
 
     def from_string(self, string, stype='smi'):
         """
@@ -274,7 +285,8 @@ class aemol(object):
             Null: Stores interal information to aemol object
         """
         self.to_pybel()
-        self.structure['paths'] = pathfind.pybmol_find_all_paths(self.pybmol, maxlen)
+        self.structure['paths'] = pathfind.pybmol_find_all_paths(
+            self.pybmol, maxlen)
 
     def get_bonds(self):
         """
@@ -301,7 +313,8 @@ class aemol(object):
             Null: Stores interal information to aemol object
         """
         self.to_pybel()
-        self.structure['path_len'] = pathfind.pybmol_get_path_lengths(self.pybmol, maxlen)
+        self.structure['path_len'] = pathfind.pybmol_get_path_lengths(
+            self.pybmol, maxlen)
 
     def get_pyb_fingerprint(self, fingerprint='ecfp4'):
         """
@@ -331,7 +344,8 @@ class aemol(object):
         Returns:
             Null: Stores interal information to aemol object
         """
-        fp = AllChem.GetMorganFingerprintAsBitVect(self.rdmol,radius=radius, nBits=nBits)
+        fp = AllChem.GetMorganFingerprintAsBitVect(
+            self.rdmol, radius=radius, nBits=nBits)
         if to_numpy:
             arr = np.zeros(0,)
             DataStructs.ConvertToNumpyArray(fp, arr)
@@ -352,7 +366,8 @@ class aemol(object):
             Null: Stores interal information to aemol object
         """
         self.rdmol = AllChem.AddHs(self.rdmol)
-        if opt: AllChem.EmbedMolecule(self.rdmol)
+        if opt:
+            AllChem.EmbedMolecule(self.rdmol)
 
     def get_pyb_3D(self, refine=True):
         """
@@ -367,8 +382,10 @@ class aemol(object):
         """
         self.pybmol.addh()
 
-        if refine: self.pybmol.localopt()
-        else: self.pybmol.make3D()
+        if refine:
+            self.pybmol.localopt()
+        else:
+            self.pybmol.make3D()
 
     def check_mol_aemol(self, post_check=False):
         """
@@ -420,7 +437,6 @@ class aemol(object):
             mol_std.Cleanup(self.rdmol)
             self.rdmol.SetProp('_Name', idx)
 
-
     def rd_neutralise(self, opt=False):
         """
         Uses rdkit to neutralise any charged atoms
@@ -433,7 +449,8 @@ class aemol(object):
             rdmol: rdkit molecule object
         """
         self.rdmol = rdkit_neutralise(self.rdmol)
-        if opt: return self.get_rdkit_3D(self.rdmol)
+        if opt:
+            return self.get_rdkit_3D(self.rdmol)
 
     def pyb_neutralise(self, opt=False):
         """
@@ -447,4 +464,5 @@ class aemol(object):
             pybmol: pybel molecule object
         """
         self.pybmol = pybel_neutralise(self.pybmol)
-        if opt: return self.get_pyb_3D(self.pybmol)
+        if opt:
+            return self.get_pyb_3D(self.pybmol)
