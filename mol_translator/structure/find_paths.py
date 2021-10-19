@@ -1,4 +1,4 @@
-# Copyright 2020 Will Gerrard
+# Copyright 2020 Will Gerrard, Calvin Yiu
 #This file is part of autoenrich.
 
 #autoenrich is free software: you can redistribute it and/or modify
@@ -87,9 +87,9 @@ def pybmol_get_bond_table(pybmol):
 def pybmol_get_path_lengths(pybmol, maxlen=5):
 	atoms = len(pybmol.atoms)
 	coupling_len = np.zeros((atoms, atoms), dtype=np.int32)
-	
+
 	allpaths = pybmol_find_all_paths(pybmol, maxlen=maxlen)
-	
+
 	for atom1 in range(atoms):
 		for atom2 in range(atoms):
 			if atom1 == atom2:
@@ -100,7 +100,7 @@ def pybmol_get_path_lengths(pybmol, maxlen=5):
 				if path[0] == atom1 and path[-1] == atom2:
 					if len(path)-1 < shortest:
 						shortest = len(path) - 1
-						
+
 			coupling_len[atom1][atom2] = shortest
 			coupling_len[atom2][atom1] = shortest
 
