@@ -257,7 +257,7 @@ class aemol(object):
         """
         prop_io.prop_write(self, filename, prop=prop, format=format)
 
-    def prop_fromfile(self, filename, format, prop):
+    def prop_fromfile(self, filename, prop='nmr', format='nmredata'):
         """
         Reads NMR properties into a generated aemol object
 
@@ -353,7 +353,7 @@ class aemol(object):
         else:
             self.mol_properties['ecfp4'] = fp
 
-    def get_rdkit_3D(self, opt=True):
+    def get_rdkit_3D(self, opt=True, to_aemol=True):
         """
         Uses rdkit to convert the aemol object into 3D with molecular dynamics energy minimisation
 
@@ -368,8 +368,10 @@ class aemol(object):
         self.rdmol = AllChem.AddHs(self.rdmol)
         if opt:
             AllChem.EmbedMolecule(self.rdmol)
+        if to_aemol:
+            self.from_rdkit(self.rdmol)
 
-    def get_pyb_3D(self, refine=True):
+    def get_pyb_3D(self, refine=True, to_aemol=True):
         """
         Use Openbabel/Pybel wrapper to convert aemol object into 3D thorough H addition and MMFF energy minimisation
 
@@ -386,6 +388,8 @@ class aemol(object):
             self.pybmol.localopt()
         else:
             self.pybmol.make3D()
+        if to_aemol:
+            self.from_pybel(self.pybmol)
 
     def check_mol_aemol(self, post_check=False):
         """

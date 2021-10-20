@@ -33,7 +33,7 @@ def prep_mol_nmr(aemol, nmr_file="", nmr_type=""):
     aemol.get_path_lengths()
     get_coupling_types(aemol)
     if os.path.isfile(nmr_file):
-        aemol.prop_fromfile(nmr_file, nmr_type, 'nmr')
+        aemol.prop_fromfile(nmr_file, 'nmr', nmr_type)
     else:
         aemol.atom_properties['shift'] = np.zeros(len(aemol.structure['types']), dtype=np.float64)
         aemol.pair_properties['coupling'] = np.zeros((len(aemol.structure['types']), len(aemol.structure['types'])), dtype=np.float64)
