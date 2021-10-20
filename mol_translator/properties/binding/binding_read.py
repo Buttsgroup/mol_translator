@@ -20,9 +20,11 @@ import pandas as pd
 
 # Reads pchembl value for given molecule from tsv file downloadable from ChEMBL
 def pchembl_read(file, format='tsv', molid=0):
-    ic50_df = pd.read_csv(file, sep='\t')
+    if format == 'tsv':
+        ic50_df = pd.read_csv(file, sep='\t')
+    else:
+        ic50_df = pd.read_csv(file, sep=';')
     ic50 = ic50_df.loc[(ic50_df["Molecule ChEMBL ID"] == molid)]["pChEMBL Value"].to_numpy()
     ic50 = ic50[0]
-    
+
     return ic50
-    

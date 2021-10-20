@@ -20,12 +20,14 @@ import numpy as np
 from os import PathLike
 from typing import Any, Dict, Iterable, List, Optional, Tuple, Union
 
+# Conversion functions for rdkit, pybel
 from mol_translator.structure.pybel_converter import pybmol_to_aemol, aemol_to_pybmol
 from mol_translator.structure.rdkit_converter import rdmol_to_aemol, aemol_to_rdmol
+# Structure writer
 from mol_translator.structure import structure_write as strucwrt
-
+# Property input/output
 import mol_translator.properties.property_io as prop_io
-
+# Path finder
 from mol_translator.structure import find_paths as pathfind
 
 from mol_translator.properties.nmr.nmr_write import write_nmredata
@@ -43,15 +45,18 @@ from mol_translator.properties.charge.charge_ops import rdkit_neutralise, pybel_
 
 class aemol(object):
     """
-        molecule object
-
+        molecule object class
         molecular information is stored in a set of dictionaries containing strings and numpy arrays
-
+        
         contains functions for i/o and conversion between different python package objects
-
+        
+        input output functions for popular structure formats
+        
+        functions to derive common structural info (file paths, fingerprints, etc)
     """
 
     def __init__(self, molid, filepath=""):
+
         """
         Generates blank internal variables which stores assigned atomic properties as strings and numpy arrays.
 
@@ -62,22 +67,23 @@ class aemol(object):
         Returns:
             Null : Generates default internal variables
         """
-
+        # object information, trying to ween off filepath usage
         self.info = {'molid': molid,
                      'filepath': filepath}
-
+        # Structural information
         self.structure = {'xyz': [],
                           'types': [],
                           'conn': []}
-
+        #Internal storage of rdkit/openbabel molecule objects
         self.rdmol = None
 
         self.pybmol = None
 
+        # Atom based properties: Chemical shift, Charge, etc
         self.atom_properties = {}
-
+        # Pair properties: Coupling constant, distances, etc
         self.pair_properties = {}
-
+        # Mol properties: Binding affinity, energy, etc
         self.mol_properties = {'energy': -404.404}
 
     def from_pybel(self, pybmol):
@@ -95,7 +101,7 @@ class aemol(object):
         self.structure['types'] = types
         self.structure['xyz'] = xyz
         self.structure['conn'] = conn
-
+    # Create pybel molecule object from aemol object
     def to_pybel(self):
         """
         Converts aemol object into pybel/openbabel object
