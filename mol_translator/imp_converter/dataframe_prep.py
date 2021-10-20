@@ -1,4 +1,4 @@
-# Copyright 2020 Will Gerrard
+# Copyright 2020 Will Gerrard, Calvin Yiu
 #This file is part of autoenrich.
 
 #autoenrich is free software: you can redistribute it and/or modify
@@ -20,7 +20,7 @@ import numpy as np
 
 # Gets the necessary info for aemol to turn it into an IMP dataframe
 def prep_mol(aemol):
-    
+
     aemol.get_bonds()
     aemol.get_path_lengths()
     get_coupling_types(aemol)
@@ -28,12 +28,12 @@ def prep_mol(aemol):
     return aemol
 
 def prep_mol_nmr(aemol, nmr_file="", nmr_type=""):
-    
+
     aemol.get_bonds()
     aemol.get_path_lengths()
     get_coupling_types(aemol)
     if os.path.isfile(nmr_file):
-        aemol.prop_fromfile(nmr_file, nmr_type, 'nmr')
+        aemol.prop_fromfile(nmr_file, 'nmr', nmr_type)
     else:
         aemol.atom_properties['shift'] = np.zeros(len(aemol.structure['types']), dtype=np.float64)
         aemol.pair_properties['coupling'] = np.zeros((len(aemol.structure['types']), len(aemol.structure['types'])), dtype=np.float64)
@@ -49,5 +49,25 @@ def prep_mol_ic50(aemol, ic50_file="", ic50_type=""):
     else:
         print('Setting fake ic50 values', ic50_file)
         aemol.atom_properties['ic50'] = np.zeros(len(aemol.structure['types']), dtype=np.float64)
-    
+
+    return aemol
+
+def prep_mol_ecfp4(aemol):
+    aemol.get_bonds()
+    aemol.get_path_lengths()
+    get_coupling_types(aemol)
+    aemol.atom_properties['ecfp4'] = aemol.mol_properties['ecfp4']
+
+    return aemol
+
+def prep_mol_mulliken(aemol, mc_file="", mc_format=""):
+    aemol.get_bonds()
+    aemol.get_path_lengths()
+    get_coupling_types(aemol)
+    if os.path.isfile(mc_file):
+        aemol.prop_fromfile(mc_file, mc_format, 'mc')
+    else:
+        print('Setting fake mulliken charge values', mc_file)
+        aemol.atom_properties['mull_chg'] = np.zeros(len(aemol.structure['types']), dtype=np.float64)
+
     return aemol

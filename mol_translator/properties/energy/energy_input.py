@@ -42,7 +42,7 @@ def make_orca_optin(prefs, molname, aemol, outfile):
 	if processors != 1:
 		instr += ' PAL{0:<d}'.format(processors)
 	# Add solvent model/solvent if requested
-	if solvent != 'none':
+	if solvent != None:
 		instr += ' CPCM(' + solvent + ')'
 	# If direct line input specified then overwrite all of this
 	if direct_cmd_line_opt:
@@ -84,7 +84,7 @@ def make_g09_optin(prefs, molname, aemol, outfile):
 	#  processors   = number of processoers to use for gaussian, integer.
 	#  instr        = instruction line for gaussian, string. 'opt=tight freq mpw1pw91/6-311g(d,p) scrf=(iefpcm,solvent=chloroform) geom=distance MaxDisk=50GB'
 	Periodic_table = Get_periodic_table()
-	
+
 	charge = prefs['mol']['charge']
 	multiplicity = prefs['mol']['multiplicity']
 	memory = prefs['optimisation']['memory']
@@ -96,8 +96,8 @@ def make_g09_optin(prefs, molname, aemol, outfile):
 	grid = prefs['optimisation']['grid']
 	solvent = prefs['optimisation']['solvent']
 	freq = True # Without this the energies we get arent useful for boltzmann weighting
-	
-	
+
+
 	try:
 		int(memory)
 		int(processors)
@@ -111,7 +111,7 @@ def make_g09_optin(prefs, molname, aemol, outfile):
 
 	instr = 'opt=' + str(opt) + ' freq ' + str(functional) + '/' + str(basis_set) + ' integral=' + str(grid) + ' MaxDisk=50GB'
 
-	if solvent != 'none':
+	if solvent != None:
 		instr += ' scrf=(' + str(solventmodel) + ',solvent=' + str(solvent) + ')'
 
 	comfile = outfile

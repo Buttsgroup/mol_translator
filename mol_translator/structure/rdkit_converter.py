@@ -46,11 +46,11 @@ def rdmol_to_aemol(rdmol):
 
 	return type_array, xyz_array, conn_array
 
-def aemol_to_rdmol(aemol, id, removeHs):
+def aemol_to_rdmol(aemol, molid, sanitize, removeHs):
 
-	strucwrt.write_mol_tosdf(aemol, f'tmp{id}.sdf')
-	molblock = open(f'tmp{id}.sdf', 'r').read()
-	rdmol = Chem.MolFromMolBlock(molblock, removeHs=removeHs)
-	os.remove(f'tmp{id}.sdf')
+	strucwrt.write_mol_tosdf(aemol, f'tmp{molid}.sdf')
+	molblock = open(f'tmp{molid}.sdf', 'r').read()
+	rdmol = Chem.MolFromMolBlock(molblock, sanitize=sanitize, removeHs=removeHs)
+	os.remove(f'tmp{molid}.sdf')
 
 	return rdmol

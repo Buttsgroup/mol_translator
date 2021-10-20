@@ -19,14 +19,15 @@
 from . import nmr as nmr
 from . import energy as energy
 from . import binding as binding
+from .charge import charge_read as c_read
 
 def prop_write(aemol, outfile, prop, format):
     if prop == 'nmr':
-        if 'nmr_types' not in aemol.pair_properties.keys():
-            aemol.pair_properties['nmr_types'] = nmr.nmr_ops.get_coupling_types(aemol)
+        if 'nmr_type' not in aemol.pair_properties.keys():
+            aemol.pair_properties['nmr_type'] = nmr.nmr_ops.get_coupling_types(aemol)
 
         if format == 'nmredata':
-            nmr.nmr_write.write_nmredata(outfile, aemol, write_zeros=True)
+            nmr.nmr_write.write_nmredata(outfile, aemol, write_zeros=False, count_from=0)
         else:
             raise_formaterror(format)
     else:
@@ -36,19 +37,22 @@ def prop_write(aemol, outfile, prop, format):
 
 def prop_read(aemol, filename, prop, format):
     if prop == 'nmr':
-        shift, coupling = nmr.nmr_read.nmr_read(filename, format, prop)
+        shift, coupling = nmr.nmr_read.nmr_read(filename, prop, format)
         aemol.atom_properties['shift'] = shift
         aemol.pair_properties['coupling'] = coupling
     elif prop == 'nmr_var':
-        shift_var, coupling_var = nmr.nmr_read.nmr_read(filename, format, prop)
+        shift_var, coupling_var = nmr.nmr_read.nmr_read(filename, prop, format)
         aemol.atom_properties['shift_var'] = shift_var
         aemol.pair_properties['coupling_var'] = coupling_var
     elif prop == 'scf':
-        scf = energy.energy_read.energy_read(filename, format=format, prop=prop)
+        scf = energy.energy_read.energy_read(filename, prop, format)
         aemol.mol_properties['energy'] = scf
     elif prop == 'ic50':
         ic50 = binding.binding_read.pchembl_read(filename, format, aemol.info['molid'])
         aemol.mol_properties['ic50'] = ic50
+    elif prop == 'mc':
+        mc = c_read.charge_read(filename, prop, format)
+        aemol.atom_properties['mull_chg'] = mc
     else:
         print('property not recognised or function not written yet !')
         raise ValueError('Cannot read property: ', prop)

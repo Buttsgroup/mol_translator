@@ -23,19 +23,19 @@ import numpy as np
 
 # nmredata g09, g16, orca
 
-def nmr_read(file, ftype, prop):
+def nmr_read(file, prop, format):
 	if prop == 'nmr':
-		if ftype == 'g09':
+		if format == 'g09':
 			shift, coupling = g09_nmrread(file)
-		elif ftype == 'g16':
+		elif format == 'g16':
 			shift, coupling = g16_nmrread(file)
-		elif ftype == 'orca':
+		elif format == 'orca':
 			shift, coupling = orca_nmrread(file)
-		elif ftype == 'nmredata':
+		elif format == 'nmredata':
 			shift, _, coupling, _ = nmredata_nmrread(file)
 		else:
-			print("ftype not recognised, no function to read:", ftype)
-			raise ValueError('Cannout read ftype: ', ftype, ' for property: ', prop)
+			print("format not recognised, no function to read:", format)
+			raise ValueError('Cannot read format: ', format, ' for property: ', prop)
 		return shift, coupling
 	if prop == 'nmr_var':
 		_, shift_var, _, coupling_var = nmredata_nmrread(file)
@@ -45,7 +45,7 @@ def nmr_read(file, ftype, prop):
 		raise ValueError('Cannot output property: ', prop)
 
 
-# Read NMR inftypeion from ORCA NMR log files
+# Read NMR information from ORCA NMR log files
 def orca_nmrread(file):
 
 	shiftswitch = False
