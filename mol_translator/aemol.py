@@ -47,11 +47,11 @@ class aemol(object):
     """
         molecule object class
         molecular information is stored in a set of dictionaries containing strings and numpy arrays
-        
+
         contains functions for i/o and conversion between different python package objects
-        
+
         input output functions for popular structure formats
-        
+
         functions to derive common structural info (file paths, fingerprints, etc)
     """
 
@@ -235,7 +235,7 @@ class aemol(object):
         """
         self.pybmol.write(format, filename)
 
-    def to_file_rdkit(self, format, filename):
+    def to_file_rdkit(self, filename):
         """
         Writes rdmol object into sdf format by RDKit
 
