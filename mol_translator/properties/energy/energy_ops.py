@@ -96,14 +96,14 @@ def redundant_elimination(aemols, geom_threshold=0.1, e_threshold=0.1, redundant
                     if energy_diff < e_threshold:
                         if achiral is False:
                             elim_list.append(a)
-                            print(f"removed mol {aemol_a.info['molid']} due to geomtric similarity to {aemol_b.info['molid']}")
+                            print(f"added mol {aemol_a.info['molid']} to eliminated_mol.txt due to geomtric similarity to {aemol_b.info['molid']}")
 
                         else:
                             if a - b == 1:
                                 print(f"energy difference between {aemol_a.info['molid']} & {aemol_b.info['molid']} detected but could be mirror images, please check manually")
                             else:
                                 elim_list.append(a)
-                                print(f"removed mol {aemol_a.info['molid']} due to geomtric similarity to {aemol_b.info['molid']} as mirror image has been found")
+                                print(f"added mol {aemol_a.info['molid']} to eliminated_mol.txt due to geomtric similarity to {aemol_b.info['molid']} as mirror image has been found")
                     else:
                         print(f"geometry threshold is passed but not energy threshold, consider changing parameters after checking {aemol_a.info['molid']} & {aemol_b.info['molid']}")
 
