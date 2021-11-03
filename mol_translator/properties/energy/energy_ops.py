@@ -1,4 +1,4 @@
-# Copyright 2020 Will Gerrard
+# Copyright 2020 Will Gerrard, Calvin Yiu
 #This file is part of autoenrich.
 
 #autoenrich is free software: you can redistribute it and/or modify
@@ -37,18 +37,82 @@ def calc_pops(aemols, temp=298):
 
 def boltzmann_average(aemols, pair_props=['coupling'], atom_props=['shift']):
     atoms = len(aemols[0].structure['types'])
-    
+
     new_atom_dict = {}
     new_pair_dict = {}
     for prop in atom_props:
         new_atom_dict[prop] = np.zeros(atoms, dtype=np.float64)
     for prop in pair_props:
         new_pair_dict[prop] = np.zeros((atoms, atoms), dtype=np.float64)
-    
+
     for aemol in aemols:
         for prop in atom_props:
             new_atom_dict[prop] += aemol.atom_properties[prop] * aemol.mol_properties['pop']
         for prop in pair_props:
             new_pair_dict[prop] += aemol.pair_properties[prop] * aemol.mol_properties['pop']
-    
+
     return new_atom_dict, new_pair_dict
+
+def get_dist_array(aemols):
+
+    for t, aemol in enumerate(aemols):
+        num_atoms = len(aemol.structure['types'])
+        dist_array = np.zeros(num_atoms, num_atoms, dtype=np.float64)
+        for i in range(num_atoms):
+            for j in range(num_atoms):
+                dist_array[i][j] = np.absolute(np.linalg.norm(aemol.structure['xyz'][i] - aemol.structure['xyz'][j]))
+
+        aemol.mol_properties['dist_array'] = dist_array
+
+def redundant_elimination(aemols, geom_threshold=0.1, e_threshold=0.1, redundant_atoms=None, achiral=False):
+
+    elim_list = []
+    elim_array = np.ones(len(aemols), ftype=np.float64)
+    e_array = np.zeros(len(aemols), dtype=np.float64)
+    dist_array = np.zeros(len(aemols), dtype=np.float64)
+
+    if redundant_atoms != None:
+        redundant_atoms = redundant_atoms.split(",")
+        redundant_atoms = list(map(int, redundant_atoms))
+
+        for atoms in redundant_atoms:
+            for i in range(aemols):
+                dist_arrays[i][int(atoms)-1] = 0
+                for k in range(atoms):
+                    dist_arrays[i][k][int(atoms)-1] = 0
+
+    for a, aemol_a in enumerate(aemols):
+        e_array[a] = aemol_a.mol_properties['energy']
+        dist_array[a] = aemol_a.mol_properties['dist_array']
+
+        for b, aemol_b in enumerate(aemols):
+            e_array[b] = aemol_b.mol_properties['energy']
+            dist_array[b] = aemol_b.mol_properties['dist_array']
+            if a > b and not b in elim_list:
+                diff = np.absolute(np.sum(dist_array[a] - dist_array[b])) / float(len(aemols))
+                energy_diff = np.absolute(e_array[a] - e_array[b]) * 2625.5
+
+                if diff < geom_threshold:
+                    if energy_diff < e_threshold:
+                        if achiral is False:
+                            elim_list.append(a)
+                            print(f"removed mol {aemol_a.info['molid']} due to geomtric similarity to {aemol_b.info['molid']}")
+
+                        else:
+                            if a - b == 1:
+                                print(f"energy difference between {aemol_a.info['molid']} & {aemol_b.info['molid']} detected but could be mirror images, please check manually")
+                            else:
+                                elim_list.append(a)
+                                print(f"removed mol {aemol_a.info['molid']} due to geomtric similarity to {aemol_b.info['molid']} as mirror image has been found")
+                    else:
+                        print(f"geometry threshold is passed but not energy threshold, consider changing parameters after checking {aemol_a.info['molid']} & {aemol_b.info['molid']}")
+
+    elim_list = list(set(elim_list))
+    removed_mol = []
+    for i in len(elim_list):
+        if elim_list[i] = 0:
+            removed_mol.append(aemols[i].info['molid'])
+
+    with open("eliminated_molecules.txt", 'w' )as f:
+        for id in removed_mol:
+            f.write(mol + "\n")
