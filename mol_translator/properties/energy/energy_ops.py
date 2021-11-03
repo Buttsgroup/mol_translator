@@ -110,7 +110,7 @@ def redundant_elimination(aemols, geom_threshold=0.1, e_threshold=0.1, redundant
     elim_list = list(set(elim_list))
     removed_mol = []
     for i in len(elim_list):
-        if elim_list[i] = 0:
+        if elim_list[i] == 0:
             removed_mol.append(aemols[i].info['molid'])
 
     with open("eliminated_molecules.txt", 'w' )as f:
