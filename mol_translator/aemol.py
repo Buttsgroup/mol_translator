@@ -248,7 +248,7 @@ class aemol(object):
         w = Chem.SDWriter(filename)
         w.write(self.rdmol)
 
-    def prop_tofile(self, filename, prop='nmr', format='nmredata'):
+    def prop_to_file(self, filename, prop='nmr', format='nmredata'):
         """
         Writes NMR properties stored within aemol object into an nmredata file
 
@@ -263,7 +263,7 @@ class aemol(object):
         """
         prop_io.prop_write(self, filename, prop=prop, format=format)
 
-    def prop_fromfile(self, filename, prop='nmr', format='nmredata'):
+    def prop_from_file(self, filename, prop='nmr', format='nmredata'):
         """
         Reads NMR properties into a generated aemol object
 
