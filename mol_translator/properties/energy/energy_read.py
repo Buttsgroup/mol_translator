@@ -16,7 +16,7 @@
 
 import sys
 
-def energy_read(file, format, prop):
+def energy_read(file, prop, format):
     if prop == 'scf':
         if format == 'g09':
             energy = g09_scfread(file)
