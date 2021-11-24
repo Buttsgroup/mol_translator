@@ -67,7 +67,7 @@ def get_dist_array(aemols):
 def redundant_elimination(aemols, geom_threshold=0.1, e_threshold=0.1, redundant_atoms=None, achiral=False):
 
     elim_list = []
-    elim_array = np.ones(len(aemols), ftype=np.float64)
+    elim_array = np.ones(len(aemols), dtype=np.float64)
     e_array = np.zeros(len(aemols), dtype=np.float64)
     dist_array = np.zeros(len(aemols), dtype=np.float64)
 
