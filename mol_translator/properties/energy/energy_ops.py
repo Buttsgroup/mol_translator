@@ -57,7 +57,7 @@ def get_dist_array(aemols):
 
     for t, aemol in enumerate(aemols):
         num_atoms = len(aemol.structure['types'])
-        dist_array = np.zeros(num_atoms, num_atoms, dtype=np.float64)
+        dist_array = np.zeros((num_atoms, num_atoms), dtype=np.float64)
         for i in range(num_atoms):
             for j in range(num_atoms):
                 dist_array[i][j] = np.absolute(np.linalg.norm(aemol.structure['xyz'][i] - aemol.structure['xyz'][j]))
@@ -83,13 +83,14 @@ def redundant_elimination(aemols, geom_threshold=0.1, e_threshold=0.1, redundant
 
     for a, aemol_a in enumerate(aemols):
         e_array[a] = aemol_a.mol_properties['energy']
-        dist_array[a] = aemol_a.mol_properties['dist_array']
+        dist_array_a = aemol_a.mol_properties['dist_array']
 
         for b, aemol_b in enumerate(aemols):
             e_array[b] = aemol_b.mol_properties['energy']
-            dist_array[b] = aemol_b.mol_properties['dist_array']
+            dist_array_b = aemol_b.mol_properties['dist_array']
             if a > b and not b in elim_list:
-                diff = np.absolute(np.sum(dist_array[a] - dist_array[b])) / float(len(aemols))
+                diff = np.absolute(np.sum(dist_array_a - dist_array_b)) / float(len(aemols))
+                print(diff)
                 energy_diff = np.absolute(e_array[a] - e_array[b]) * 2625.5
 
                 if diff < geom_threshold:
@@ -109,7 +110,7 @@ def redundant_elimination(aemols, geom_threshold=0.1, e_threshold=0.1, redundant
 
     elim_list = list(set(elim_list))
     removed_mol = []
-    for i in len(elim_list):
+    for i in range(len(elim_list)):
         if elim_list[i] == 0:
             removed_mol.append(aemols[i].info['molid'])
 
