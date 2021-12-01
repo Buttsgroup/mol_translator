@@ -81,7 +81,7 @@ def redundant_elimination(aemols, geom_threshold=0.1, e_threshold=0.1, redundant
                 for k in range(atoms):
                     dist_arrays[i][k][int(atoms)-1] = 0
 
-    with open("redundant_elimination_log.txt", 'a' as l):
+    with open("redundant_elimination_log.txt", 'a') as l:
 
         for a, aemol_a in enumerate(aemols):
             e_array[a] = aemol_a.mol_properties['energy']
@@ -117,6 +117,6 @@ def redundant_elimination(aemols, geom_threshold=0.1, e_threshold=0.1, redundant
         if elim_list[i] == 0:
             removed_mol.append(aemols[i].info['molid'])
 
-    with open("eliminated_molecules.txt", 'w' )as f:
+    with open("eliminated_molecules.txt", 'w')as f:
         for id in removed_mol:
             f.write(mol + "\n")
