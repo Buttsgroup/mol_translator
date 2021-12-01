@@ -81,32 +81,35 @@ def redundant_elimination(aemols, geom_threshold=0.1, e_threshold=0.1, redundant
                 for k in range(atoms):
                     dist_arrays[i][k][int(atoms)-1] = 0
 
-    for a, aemol_a in enumerate(aemols):
-        e_array[a] = aemol_a.mol_properties['energy']
-        dist_array_a = aemol_a.mol_properties['dist_array']
+    with open("redundant_elimination_log.txt", 'a' as l):
 
-        for b, aemol_b in enumerate(aemols):
-            e_array[b] = aemol_b.mol_properties['energy']
-            dist_array_b = aemol_b.mol_properties['dist_array']
-            if a > b and not b in elim_list:
-                diff = np.absolute(np.sum(dist_array_a - dist_array_b)) / float(len(aemols))
-                print(diff)
-                energy_diff = np.absolute(e_array[a] - e_array[b]) * 2625.5
+        for a, aemol_a in enumerate(aemols):
+            e_array[a] = aemol_a.mol_properties['energy']
+            dist_array_a = aemol_a.mol_properties['dist_array']
 
-                if diff < geom_threshold:
-                    if energy_diff < e_threshold:
-                        if achiral is False:
-                            elim_list.append(a)
-                            print(f"added mol {aemol_a.info['molid']} to eliminated_mol.txt due to geomtric similarity to {aemol_b.info['molid']}")
+            for b, aemol_b in enumerate(aemols):
+                e_array[b] = aemol_b.mol_properties['energy']
+                dist_array_b = aemol_b.mol_properties['dist_array']
+                if a > b and not b in elim_list:
+                    diff = np.absolute(np.sum(dist_array_a - dist_array_b)) / float(len(aemols))
+                    energy_diff = np.absolute(e_array[a] - e_array[b]) * 2625.5
 
-                        else:
-                            if a - b == 1:
-                                print(f"energy difference between {aemol_a.info['molid']} & {aemol_b.info['molid']} detected but could be mirror images, please check manually")
-                            else:
+                    if diff < geom_threshold:
+                        if energy_diff < e_threshold:
+                            if achiral is False:
                                 elim_list.append(a)
-                                print(f"added mol {aemol_a.info['molid']} to eliminated_mol.txt due to geomtric similarity to {aemol_b.info['molid']} as mirror image has been found")
-                    else:
-                        print(f"geometry threshold is passed but not energy threshold, consider changing parameters after checking {aemol_a.info['molid']} & {aemol_b.info['molid']}")
+                                print(f"added mol {aemol_a.info['molid']} to eliminated_mol.txt due to geomtric similarity to {aemol_b.info['molid']}", file=l)
+
+                            else:
+                                if a - b == 1:
+                                    print(f"energy difference between {aemol_a.info['molid']} & {aemol_b.info['molid']} detected but could be mirror images, please check manually", file=l)
+                                    print(f"{aemol_a.info['molid']} & {aemol_b.info['molid']} energy diff & geom diff = {energy_diff} kj/mol & {diff} Angstroms", file=l)
+                                else:
+                                    elim_list.append(a)
+                                    print(f"added mol {aemol_a.info['molid']} to eliminated_mol.txt due to geomtric similarity to {aemol_b.info['molid']} as mirror image has been found", file=l)
+                        else:
+                            print(f"geometry threshold is passed but not energy threshold, consider changing parameters after checking {aemol_a.info['molid']} & {aemol_b.info['molid']}", file=l)
+                            print(f"{aemol_a.info['molid']} & {aemol_b.info['molid']} energy diff & geom diff = {energy_diff} kj/mol & {diff} Angstroms", file=l)
 
     elim_list = list(set(elim_list))
     removed_mol = []
