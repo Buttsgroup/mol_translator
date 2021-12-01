@@ -33,7 +33,7 @@ def prep_mol_nmr(aemol, nmr_file="", nmr_type=""):
     aemol.get_path_lengths()
     get_coupling_types(aemol)
     if os.path.isfile(nmr_file):
-        aemol.prop_fromfile(nmr_file, 'nmr', nmr_type)
+        aemol.prop_from_file(nmr_file, 'nmr', nmr_type)
     else:
         aemol.atom_properties['shift'] = np.zeros(len(aemol.structure['types']), dtype=np.float64)
         aemol.pair_properties['coupling'] = np.zeros((len(aemol.structure['types']), len(aemol.structure['types'])), dtype=np.float64)
@@ -44,7 +44,7 @@ def prep_mol_ic50(aemol, ic50_file="", ic50_type=""):
     aemol.get_path_lengths()
     get_coupling_types(aemol)
     if os.path.isfile(ic50_file):
-        aemol.prop_fromfile(ic50_file, ic50_type, 'ic50')
+        aemol.prop_from_file(ic50_file, ic50_type, 'ic50')
         aemol.atom_properties['ic50'] = np.full(len(aemol.structure['types']), aemol.mol_properties['ic50'], dtype=np.float64)
     else:
         print('Setting fake ic50 values', ic50_file)
@@ -65,7 +65,7 @@ def prep_mol_mulliken(aemol, mc_file="", mc_format=""):
     aemol.get_path_lengths()
     get_coupling_types(aemol)
     if os.path.isfile(mc_file):
-        aemol.prop_fromfile(mc_file, mc_format, 'mc')
+        aemol.prop_from_file(mc_file, mc_format, 'mc')
     else:
         print('Setting fake mulliken charge values', mc_file)
         aemol.atom_properties['mull_chg'] = np.zeros(len(aemol.structure['types']), dtype=np.float64)
