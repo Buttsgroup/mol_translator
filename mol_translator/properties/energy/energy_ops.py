@@ -91,7 +91,7 @@ def redundant_elimination(aemols, geom_threshold=0.1, e_threshold=0.1, redundant
                 e_array[b] = aemol_b.mol_properties['energy']
                 dist_array_b = aemol_b.mol_properties['dist_array']
                 if a > b and not b in elim_list:
-                    diff = np.absolute(np.sum(dist_array_a - dist_array_b)) / float(len(aemols))
+                    diff = np.absolute(np.sum(dist_array_a - dist_array_b))
                     energy_diff = np.absolute(e_array[a] - e_array[b]) * 2625.5
 
                     if diff < geom_threshold:
