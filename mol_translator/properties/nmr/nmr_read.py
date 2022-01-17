@@ -158,9 +158,9 @@ def nmredata_nmrread(file):
 		shift_switch = False
 		cpl_switch = False
 		for line in f:
-			if '> <NMREDATA_ASSIGNMENT>' in line:
+			if '<NMREDATA_ASSIGNMENT>' in line:
 				shift_switch = True
-			if '> <NMREDATA_J>' in line:
+			if '<NMREDATA_J>' in line:
 				shift_switch = False
 				cpl_switch = True
 			# If shift assignment label found, process shift rows
