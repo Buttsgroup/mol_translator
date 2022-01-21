@@ -29,10 +29,12 @@ from mol_translator.structure import structure_write as strucwrt
 import mol_translator.properties.property_io as prop_io
 # Path finder
 from mol_translator.structure import find_paths as pathfind
-
+# Writes NMR data to file
 from mol_translator.properties.nmr.nmr_write import write_nmredata
-
+# Run checks based off rdkit and pybel functions
 from mol_translator.structure.checks import run_all_checks
+# Generates descriptors
+from mol_translator.descriptors.descriptor_io import get_all_descriptors
 
 from rdkit import Chem
 from rdkit.Chem import AllChem
@@ -477,3 +479,15 @@ class aemol(object):
         self.pybmol = pybel_neutralise(self.pybmol)
         if opt:
             return self.get_pyb_3D(self.pybmol)
+
+    def generate_descriptors(self):
+        """
+        Generate atom and pair descriptors based off openbabel and rdkit functions
+
+        Args:
+            self: aemol object
+
+        Returns:
+            Null: Updates dictionary embedded in aemol object
+        """
+        get_all_descriptors(self)
