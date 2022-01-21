@@ -85,7 +85,7 @@ class aemol(object):
         self.pair_properties = {}
         # Mol properties: Binding affinity, energy, etc
         self.mol_properties = {'energy': -404.404,
-                               'dist_array': None}
+                               }
 
     def from_pybel(self, pybmol):
         """
