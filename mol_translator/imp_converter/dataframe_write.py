@@ -1,4 +1,4 @@
-# Copyright 2020 Will Gerrard, Calvin Yiu
+# Copyright 2022 Will Gerrard, Calvin Yiu
 #This file is part of autoenrich.
 
 #autoenrich is free software: you can redistribute it and/or modify
@@ -89,7 +89,7 @@ def make_atom_df(aemols, progress=False, write=False):
 		return atoms
 
 
-def make_pair_df(aemols, progress=False, max_bond_distance=4, write=False):
+def make_pair_df(aemols, progress=False, path_to_self=True, write=False):
 
 	p_table = Get_periodic_table()
 
@@ -135,6 +135,9 @@ def make_pair_df(aemols, progress=False, max_bond_distance=4, write=False):
 		pairs[propname] = pair_props[p]
 
 	pairs = pd.DataFrame(pairs)
+
+	if not path_to_self:
+		pairs = pairs[pairs['atom_index_0'] != pairs['atom_index_1']]
 
 	if progress:
 		pbar.close()

@@ -168,7 +168,7 @@ def test_pyb_neutralise():
         test_mol.from_pybel(test_mol.pybmol)
         assert test_mol.check_mol_aemol() == True
 
-def test_prop_tofile():
+def test_prop_to_file():
     test_mol = 'to_file_pyb_test'
     test_mol = aemol(test_mol)
     ref_xyz = 'tests/test_mols/qm9_1.nmredata.sdf'
@@ -188,11 +188,11 @@ def test_prop_tofile():
     check1 = test_mol.pair_properties['coupling']
     check2 = test_mol.atom_properties['shift']
 
-    test_mol.prop_tofile('test.nmredata.sdf', 'nmr', 'nmredata')
+    test_mol.prop_to_file('test.nmredata.sdf', 'nmr', 'nmredata')
 
     checkmol = aemol('test')
     checkmol.from_file_pyb('test.nmredata.sdf', 'sdf')
-    checkmol.prop_fromfile('test.nmredata.sdf', 'nmr', 'nmredata')
+    checkmol.prop_from_file('test.nmredata.sdf', 'nmr', 'nmredata')
 
     os.remove('test.nmredata.sdf')
 #def test_prop_fromfile():
