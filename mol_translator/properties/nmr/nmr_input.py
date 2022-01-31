@@ -96,7 +96,7 @@ def make_g09_nmrin(prefs, molname, aemol, outname):
 		int(memory)
 		int(processors)
 	except:
-		return
+		raise ValueError(f'Memory/Processor values {memory} or {processor} are invalid, please make sure they are numeric integers')
 
 	if mixed == True:
 		instr='nmr(giao,spinspin,mixed) ' + str(functional) + '/' + str(basis_set) + ' maxdisk=50GB'

@@ -1,3 +1,1 @@
-from . import nmr_read
-from . import nmr_write
-from . import nmr_ops
+from . import nmr_read, nmr_write, nmr_ops, nmr_input
