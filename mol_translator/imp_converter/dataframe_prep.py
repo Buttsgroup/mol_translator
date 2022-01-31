@@ -44,7 +44,7 @@ def prep_mol_ic50(aemol, ic50_file="", ic50_type=""):
     aemol.get_path_lengths()
     get_coupling_types(aemol)
     if os.path.isfile(ic50_file):
-        aemol.prop_from_file(ic50_file, ic50_type, 'ic50')
+        aemol.prop_from_file(ic50_file, 'ic50', ic50_type)
         aemol.atom_properties['ic50'] = np.full(len(aemol.structure['types']), aemol.mol_properties['ic50'], dtype=np.float64)
     else:
         print('Setting fake ic50 values', ic50_file)

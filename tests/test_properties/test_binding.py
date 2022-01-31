@@ -16,7 +16,7 @@ def test_getpchembl():
         test_mol = aemol(molid)
         test_mol.from_file_pyb(file, ftype='sdf')
         test_mol.from_pybel(test_mol.pybmol)
-        test_mol.prop_fromfile('tests/test_mols/test_pchembl/test_ic50.tsv', prop='ic50', format='tsv')
+        test_mol.prop_from_file('tests/test_mols/test_pchembl/test_ic50.tsv', prop='ic50', format='tsv')
 
         mols.append(test_mol)
 
@@ -36,7 +36,7 @@ def test_pchemblimp():
         test_mol.from_pybel(test_mol.pybmol)
 
 
-        pmol = dataframe_prep.prep_mol_ic50(test_mol, 'tests/test_mols/test_pchembl/test_ic50.tsv', 'ic50')
+        pmol = dataframe_prep.prep_mol_ic50(test_mol, 'tests/test_mols/test_pchembl/test_ic50.tsv', 'tsv')
 
         mols.append(pmol)
 
