@@ -97,12 +97,11 @@ def make_g09_optin(prefs, molname, aemol, outfile):
 	solvent = prefs['optimisation']['solvent']
 	freq = True # Without this the energies we get arent useful for boltzmann weighting
 
-
 	try:
 		int(memory)
 		int(processors)
 	except:
-		return
+		raise ValueError(f'Memory/Processor values {memory} or {processor} are invalid, please make sure they are numeric integers')
 
 	if freq:
 		instr = 'opt=' + str(opt) + ' freq ' + str(functional) + '/' + str(basis_set) + ' integral=' + str(grid) + ' MaxDisk=50GB'

@@ -40,13 +40,13 @@ def make_orca_nmrin(prefs, molname, aemol, outfile):
 	# Get periodic table
 	Periodic_table = Get_periodic_table()
 	# Construct instruction line for ORCE
-	instr = '! ' + str(functional) + ' ' + str(basis_set) + ' ' + str(aux_basis_set) +  '  TightSCF miniprint' + ' NMR '
+	instr = f'! {str(functional)} {str(basis_set)} {str(aux_basis_set)} TightSCF miniprint NMR'
 	# Add parallel option if multiple processors requested
 	if processors != 1:
 		instr += ' PAL{0:<d}'.format(processors)
 	# Add solvent model/solvent if requested
 	if solvent != None:
-		instr += ' CPCM(' + solvent + ')'
+		instr += f' CPCM(  {solvent}  )'
 	# If direct line input specified then overwrite all of this
 	if direct_cmd_line_nmr:
 		instr = direct_cmd_line_nmr
@@ -99,13 +99,13 @@ def make_g09_nmrin(prefs, molname, aemol, outname):
 		raise ValueError(f'Memory/Processor values {memory} or {processor} are invalid, please make sure they are numeric integers')
 
 	if mixed == True:
-		instr='nmr(giao,spinspin,mixed) ' + str(functional) + '/' + str(basis_set) + ' maxdisk=50GB'
+		instr=f'nmr(giao,spinspin,mixed) {str(functional)}/{str(basis_set)} maxdisk=50GB'
 
 	else:
-		instr='nmr(giao,spinspin) ' + str(functional) + '/' + str(basis_set) + ' maxdisk=50GB'
+		instr=f'nmr(giao,spinspin) {str(functional)}/{str(basis_set)} maxdisk=50GB'
 
 	if solvent != None:
-		instr += ' scrf=(' + str(solventmodel) + ',solvent=' + str(solvent) + ')'
+		instr += f' scrf=( {str(solventmodel)} , solvent={str(solvent)} )'
 
 	comfile = outname
 	chkfile = outname.strip('.com') + '.chk'
