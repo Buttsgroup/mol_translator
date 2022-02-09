@@ -32,6 +32,8 @@ def make_orca_optin(prefs, molname, aemol, outfile):
 	functional = prefs['optimisation']['functional']
 	basis_set = prefs['optimisation']['basisset']
 	solvent = prefs['optimisation']['solvent']
+	if solvent != None:
+		solventmodel = prefs['optimisation']['solventmodel']
 	direct_cmd_line_opt = prefs['optimisation']['custom_cmd_line']
 	processors = prefs['optimisation']['processors']
 	# Get periodic table
@@ -95,6 +97,8 @@ def make_g09_optin(prefs, molname, aemol, outfile):
 	basis_set = prefs['optimisation']['basisset']
 	grid = prefs['optimisation']['grid']
 	solvent = prefs['optimisation']['solvent']
+	if solvent != None:
+		solventmodel = prefs['optimisation']['solventmodel']
 	freq = True # Without this the energies we get arent useful for boltzmann weighting
 
 
