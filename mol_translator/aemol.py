@@ -32,7 +32,7 @@ from mol_translator.structure import find_paths as pathfind
 # Writes NMR data to file
 from mol_translator.properties.nmr.nmr_write import write_nmredata
 # Run checks based off rdkit and pybel functions
-from mol_translator.structure.checks import run_all_checks
+from mol_translator.sanitize.checks import run_all_checks
 # Generates descriptors
 from mol_translator.descriptors.descriptor_io import get_all_descriptors
 

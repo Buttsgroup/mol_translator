@@ -13,7 +13,6 @@
 
 #You should have received a copy of the GNU General Public License
 #along with autoenrich.  If not, see <https://www.gnu.org/licenses/>.
-import mol_translator.aemol as aemol
 from mol_translator.structure.find_num_bonds import rdmol_find_num_bonds
 from rdkit.Chem import rdMolTransforms as Chem
 import numpy as np
@@ -33,12 +32,15 @@ def check_valence(aemol):
     Might be redundant since loading molecule into rdkit already checks this
     '''
     aemol.to_rdkit()
-    num_bond_dict = rdmol_find_num_bonds(aemol.rdmol)
-    for num_bonds in num_bond_dict.values():
-        if len(num_bonds)>1:
-            print(f"Unexpected number of valence electrons in mol, {aemol.info['molid']}")
-            return False
-    return True
+    try:
+        num_bond_dict = rdmol_find_num_bonds(aemol.rdmol)
+        for num_bonds in num_bond_dict.values():
+            if len(num_bonds)>1:
+                print(f"Unexpected number of valence electrons in mol, {aemol.info['molid']}")
+                return False
+        return True
+    except:
+        return False
 
 def check_missing_H(aemol, post_check=False):
     '''
