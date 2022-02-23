@@ -37,21 +37,21 @@ def prop_write(aemol, outfile, prop, format):
 
 def prop_read(aemol, filename, prop, format):
     if prop == 'nmr':
-        shift, coupling = nmr.nmr_read.nmr_read(filename, format, prop)
+        shift, coupling = nmr.nmr_read.nmr_read(filename, prop, format)
         aemol.atom_properties['shift'] = shift
         aemol.pair_properties['coupling'] = coupling
     elif prop == 'nmr_var':
-        shift_var, coupling_var = nmr.nmr_read.nmr_read(filename, format, prop)
+        shift_var, coupling_var = nmr.nmr_read.nmr_read(filename, prop, format)
         aemol.atom_properties['shift_var'] = shift_var
         aemol.pair_properties['coupling_var'] = coupling_var
     elif prop == 'scf':
-        scf = energy.energy_read.energy_read(filename, format=format, prop=prop)
+        scf = energy.energy_read.energy_read(filename, prop, format)
         aemol.mol_properties['energy'] = scf
     elif prop == 'ic50':
         ic50 = binding.binding_read.pchembl_read(filename, format, aemol.info['molid'])
         aemol.mol_properties['ic50'] = ic50
     elif prop == 'mc':
-        mc = c_read.charge_read(filename, format=format, prop=prop)
+        mc = c_read.charge_read(filename, prop, format)
         aemol.atom_properties['mull_chg'] = mc
     else:
         print('property not recognised or function not written yet !')

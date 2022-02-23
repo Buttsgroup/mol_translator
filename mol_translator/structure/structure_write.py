@@ -54,7 +54,7 @@ def write_mol_tosdf(aemol, outfile, stringsonly=False):
 	else:
 		lines.append(outfile.split('.')[0])
 	# print file and author
-	lines.append('auto-ENRICH - 2020 - ButtsGroup')
+	lines.append('mol_translator - 2022 - ButtsGroup')
 	lines.append('')
 
 	# Structure section

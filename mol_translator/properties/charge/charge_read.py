@@ -17,7 +17,7 @@
 import sys
 import numpy as np
 
-def charge_read(file, format, prop):
+def charge_read(file, prop, format):
     if prop ==  'mc':
         if format == 'g09':
             return g09_mcread(file)

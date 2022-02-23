@@ -33,6 +33,8 @@ def make_orca_nmrin(prefs, molname, aemol, outfile):
 	basis_set = prefs['NMR']['basisset']
 	aux_basis_set = prefs['NMR']['aux_basis_set']
 	solvent = prefs['NMR']['solvent']
+	if solvent != None:
+		solventmodel = prefs['NMR']['solventmodel']
 	direct_cmd_line_nmr = prefs['NMR']['custom_cmd_line']
 	processors = prefs['NMR']['processors']
 	# Get periodic table
@@ -82,7 +84,8 @@ def make_g09_nmrin(prefs, molname, aemol, outname):
 	functional = prefs['NMR']['functional']
 	basis_set = prefs['NMR']['basisset']
 	solvent = prefs['NMR']['solvent']
-	solventmodel = prefs['NMR']['solventmodel']
+	if solvent != None:
+		solventmodel = prefs['NMR']['solventmodel']
 	mixed = prefs['NMR']['mixed']
 	direct_cmd_line_nmr = prefs['NMR']['custom_cmd_line']
 	processors = prefs['NMR']['processors']
@@ -96,9 +99,10 @@ def make_g09_nmrin(prefs, molname, aemol, outname):
 		return
 
 	if mixed == True:
-		instr='nmr(giao,spinspin,mixed)' + str(functional) + '/' + str(basis_set) + ' maxdisk=50GB'
+		instr='nmr(giao,spinspin,mixed) ' + str(functional) + '/' + str(basis_set) + ' maxdisk=50GB'
+
 	else:
-		instr='nmr(giao,spinspin)' + str(functional) + '/' + str(basis_set) + ' maxdisk=50GB'
+		instr='nmr(giao,spinspin) ' + str(functional) + '/' + str(basis_set) + ' maxdisk=50GB'
 
 	if solvent != None:
 		instr += ' scrf=(' + str(solventmodel) + ',solvent=' + str(solvent) + ')'

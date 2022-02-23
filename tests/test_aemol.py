@@ -193,7 +193,7 @@ def test_prop_tofile():
 
     checkmol = aemol('test')
     checkmol.from_file_pyb('test.nmredata.sdf', 'sdf')
-    checkmol.prop_fromfile('test.nmredata.sdf', 'nmredata', 'nmr')
+    checkmol.prop_fromfile('test.nmredata.sdf', 'nmr', 'nmredata')
 
     os.remove('test.nmredata.sdf')
 #def test_prop_fromfile():
