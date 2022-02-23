@@ -73,6 +73,7 @@ def fix_delocalised_valency(aemol):
                     bond.SetBondOrder(1)
 
         aemol.from_pybel(aemol.pybmol)
+        print(f"Fixed delocalised valency of aemol {aemol.info['molid']}")
 
     else:
         pair_list = get_pair_list(aemol.pybmol, bad_atom_idx)
@@ -90,7 +91,6 @@ def fix_delocalised_valency(aemol):
                         bond.SetBondOrder(1)
 
         aemol.from_pybel(aemol.pybmol)
+        print(f"Fixed delocalised valency of aemol {aemol.info['molid']}")
 
-
-
-    print(f"Fixed delocalised valency of aemol {aemol.info['molid']}")
+    print(f"Valency can't be fixed")
