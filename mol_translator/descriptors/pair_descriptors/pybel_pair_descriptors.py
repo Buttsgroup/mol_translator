@@ -17,7 +17,7 @@ import numpy as np
 
 def get_pyb_pair_descriptors(pybmol):
     pair_properties = {}
-    pair_properties['bond_order_matrix'] = get_bond_order_matrix_pyb(pybmol)
+    pair_properties['bond_order'] = get_bond_order_matrix_pyb(pybmol)
     #pair_properties['distance_matrix'] = get_distance_matrix_pyb(pybmol)
     #pair_properties['angle_matrix'] = get_angle_matrix_pyb(pybmol)
 

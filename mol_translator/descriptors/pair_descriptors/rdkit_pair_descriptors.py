@@ -17,7 +17,7 @@ import numpy as np
 
 def get_rd_pair_descriptors(rdmol):
     pair_properties = {}
-    pair_properties['bond_order_matrix'] = get_bond_order_matrix_rdkit(rdmol)
+    pair_properties['bond_order'] = get_bond_order_matrix_rdkit(rdmol)
 
     return pair_properties
 
