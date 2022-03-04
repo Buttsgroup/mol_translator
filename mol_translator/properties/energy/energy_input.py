@@ -123,7 +123,7 @@ def make_g09_optin(prefs, molname, aemol, outfile):
 
 	with open(comfile, 'w') as f_handle:
 		strings = []
-		strings.append("%Chk={0:<1s}_OPT1".format(molname))
+		strings.append("%Chk=OPT/{0:<1s}_OPT1".format(molname))
 		strings.append("%NoSave")
 		strings.append("%mem={0:<1d}GB".format(memory))
 		strings.append("%NProcShared={0:<1d}".format(processors))
