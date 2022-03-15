@@ -13,7 +13,7 @@
 
 #You should have received a copy of the GNU General Public License
 #along with autoenrich.  If not, see <https://www.gnu.org/licenses/>.
-import pybel as pyb
+from openbabel import pybel as pyb
 from rdkit.Chem import AllChem
 from rdkit import Chem
 

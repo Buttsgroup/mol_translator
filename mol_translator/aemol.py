@@ -1,4 +1,4 @@
-# Copyright 2020 Will Gerrard, Calvin Yiu
+# Copyright 2022 Will Gerrard, Calvin Yiu
 # This file is part of autoenrich.
 
 # autoenrich is free software: you can redistribute it and/or modify
@@ -14,14 +14,13 @@
 # You should have received a copy of the GNU General Public License
 # along with autoenrich.  If not, see <https://www.gnu.org/licenses/>.
 
-import pybel as pyb
+import openbabel.pybel as pyb
 import numpy as np
 
 from os import PathLike
-from typing import Any, Dict, Iterable, List, Optional, Tuple, Union
 
 # Conversion functions for rdkit, pybel
-from mol_translator.structure.pybel_converter import pybmol_to_aemol, aemol_to_pybmol
+from mol_translator.structure.pybel_converter import obmol_to_aemol, aemol_to_obmol
 from mol_translator.structure.rdkit_converter import rdmol_to_aemol, aemol_to_rdmol
 # Structure writer
 from mol_translator.structure import structure_write as strucwrt
@@ -40,32 +39,39 @@ from rdkit.Chem import DataStructs
 from rdkit.Chem.MolStandardize import rdMolStandardize as mol_std
 
 
-from mol_translator.properties.charge.charge_ops import rdkit_neutralise, pybel_neutralise
+from mol_translator.properties.charge.charge_ops import rdkit_neutralise, openbabel_neutralise
 
-
-class aemol(object):
+class Aemol(object):
     """
-        molecule object class
-        molecular information is stored in a set of dictionaries containing strings and numpy arrays
+        Base class for mol_translator, contains structural and chemical information plus storage of RDKit and Openbabel molecular objects
 
-        contains functions for i/o and conversion between different python package objects
-
-        input output functions for popular structure formats
-
-        functions to derive common structural info (file paths, fingerprints, etc)
+        >>> mol = Aemol('butane')
+        >>> mol.from_smiles('CCCC')
+        >>> mol.structure['conn']
+        array([[0, 1, 0, 0],
+               [1, 0, 1, 0],
+               [0, 1, 0, 1],
+               [0, 0, 1, 0]], dtype=int32)
     """
 
-    def __init__(self, molid, filepath=""):
+    def __init__(self, molid: str, filepath: str = "") -> object:
 
         """
-        Generates blank internal variables which stores assigned atomic properties as strings and numpy arrays.
+        Initilises an Aemol object with blank attributes to be written. A molid string needs to be passed to name the molecule represented internally,
+        am optional filepath can be passed to store the location of the file read else it stores a blank string.
 
-        Args:
-            molid: The identifier to the aemol obejct
-            filepath: The filepath where the assigned aemol objects attributes are stored
+        Attributes generated currently are:
+            info: dictionary of the molid and filepath
+            structure: dictionary of  'xyz': xyz coordinate, 'types': atom type array, and 'conn': connectivity matrix
+            rdmol: storage of rdkit representation of the molecule
+            obmol: storage of openbabel representation of the molecule
+            atom_properties: dictionary of atom properties
+            pair_properties: dictionary of pairwise properties
+            mol_properties: dictionary of molecular properties
 
-        Returns:
-            Null : Generates default internal variables
+        :param molid: The identifier to the aemol obejct
+        :param filepath: The filepath where the assigned aemol objects attributes are stored
+
         """
         # object information, trying to ween off filepath usage
         self.info = {'molid': molid,
@@ -77,7 +83,7 @@ class aemol(object):
         #Internal storage of rdkit/openbabel molecule objects
         self.rdmol = None
 
-        self.pybmol = None
+        self.obmol = None
 
         # Atom based properties: Chemical shift, Charge, etc
         self.atom_properties = {}
@@ -87,45 +93,32 @@ class aemol(object):
         self.mol_properties = {'energy': -404.404,
                                }
 
-    def from_pybel(self, pybmol):
+    def from_ob(self, obmol: object) -> None:
         """
-        Converts molecule from pybel/openbabel object into an aemol object
+        Converts Openbabel molecule object into an Aemol object
 
-        Args:
-            self: aemol object
-            pybmol: pybel/openbabel mol object
+        :param obmol: Openbabel instance
 
-        Returns:
-            Null: Stores interal information to aemol object
         """
-        types, xyz, conn = pybmol_to_aemol(pybmol)
+        types, xyz, conn = obmol_to_aemol(obmol)
         self.structure['types'] = types
         self.structure['xyz'] = xyz
         self.structure['conn'] = conn
     # Create pybel molecule object from aemol object
-    def to_pybel(self):
+    def to_ob(self) -> None:
         """
-        Converts aemol object into pybel/openbabel object
+        Creates an Openbabel instance of the Aemol molecule, stored internally in self.obmol
 
-        Args:
-            self: aemol object
-
-        Returns:
-            pybmol (object): pybel/openbabel mol object
         """
-        self.pybmol = aemol_to_pybmol(self.structure, self.info['molid'])
-        return self.pybmol
+        self.obmol = aemol_to_obmol(self.structure, self.info['molid'])
+        return self.obmol
 
-    def from_rdkit(self, rdmol):
+    def from_rdkit(self, rdmol: object) -> None:
         """
-        Converts rdkit object into aemol object
+        Converts rdkit mol instance into Aemol object
 
-        Args:
-            self: aemol object
-            rdmol: rdkit mol object
+        :param rdmol: RDKit mol instance
 
-        Returns:
-            Null: Stores interal information to aemol object
         """
         # assumes rdmol is already 3D with Hs included
         types, xyz, conn = rdmol_to_aemol(rdmol)
@@ -133,50 +126,38 @@ class aemol(object):
         self.structure['xyz'] = xyz
         self.structure['conn'] = conn
 
-    def to_rdkit(self, sanitize=True, removeHs=False):
+    def to_rdkit(self, sanitize: bool = True, removeHs: bool = False) -> None:
         """
-        Converts aemol object into rdkit objects
+        Converts aemol object into RDKit objects
 
-        Args:
-            self: aemol object
-            sanitize: True/False, whether the mol is cleaned via rdkit checks when converted
-            removeHs: True/False, whether hydrogen atoms are explicitly stated on the rdkit object
+        :param sanitize: bool, whether the mol is cleaned via rdkit checks when converted
+        :param removeHs: bool, whether hydrogen atoms are explicitly stated on the rdkit object
 
-        Returns:
-            rdmol (object): rdkit object
         """
         self.rdmol = aemol_to_rdmol(
             self, self.info['molid'], sanitize, removeHs)
         return self.rdmol
 
-    def from_file_pyb(self, file, ftype='xyz', to_aemol=True):
+    def from_file_ob(self, file: str, ftype: str = 'xyz', to_aemol: bool = True) -> None:
         """
-        Converts a file of filetype 'ftype' into an aemol object via pybel/openbabel
+        Reads a file of filetype 'ftype' into an aemol object through Openbabel
 
-        Args:
-            self: aemol object
-            file: filepath to the input file containing molecular information of format ftype
-            ftype: the filetype extension of the input file
+        :param file: str, filepath to the input file containing molecular information of format ftype
+        :param ftype: str, the filetype extension of the input file
 
-        Returns:
-            Null: Stores interal information to aemol object
         """
-        self.pybmol = next(pyb.readfile(ftype, file))
+        self.obmol = next(pyb.readfile(ftype, file))
 
         if to_aemol:
-            self.from_pybel(self.pybmol)
+            self.from_ob(self.obmol)
 
-    def from_file_rdkit(self, path, to_aemol=True):
+    def from_file_rdkit(self, path: str, to_aemol: bool = True) -> None:
         """
-        Mass converts sdf files within a folder into a rdkit object list.
-        If passing a single SDF file containing multiple molecules call rdkit independently
+        Reads in sdf file through RDKit, only functions properly if sdf file only contains one molecule
 
-        Args:
-            self: aemol object
-            path: file path to folder containing list of molecular data
+        :param path: str, file path to folder containing list of molecular data
+        :param to_aemol: bool, whether to convert the rdmol into an aemol object
 
-        Returns:
-            suppl (list): list of rdkit mol objects
         """
         suppl = Chem.SDMolSupplier(path, removeHs=False)
         for rdmol in suppl:
@@ -190,166 +171,118 @@ class aemol(object):
         if to_aemol:
             self.from_rdkit(self.rdmol)
 
-    def from_string(self, string, stype='smi'):
+    def from_smiles(self, smiles: str) -> None:
         """
-        Converts a SMILES string into an aemol object via pybel/openbabel
+        Converts a SMILES string into an aemol object via Openbabel
 
-        Args:
-            self: aemol object
-            string: SMILES string of molecule
-            stype: The format of the string
+        :param smiles: str, SMILES string of molecule
 
-        Returns:
-            Null: Stores interal information to aemol object
         """
-        self.pybmol = pyb.readstring(stype, string)
-        self.from_pybel(self.pybmol)
+        self.obmol = pyb.readstring('smi', smiles)
+        self.from_ob(self.obmol)
 
-    def to_file_ae(self, format, filename):
+    def to_file_ae(self, format: str, filename: str) -> None:
         """
-        Writes the aemol object into an 'xyz' file, currently only supports 'xyz' format
+        Writes the aemol object into an 'xyz' file through openbabel, currently only supports 'xyz' format
 
-        Args:
-            self: aemol object
-            format: The output file extension
-            filename: The name of the output file
+        :param format: str, output file extension
+        :param filename: str, name of the output file
 
-        Returns:
-            Null: saves a file of assigned format containing molecular information
         """
         if format == 'xyz':
             strucwrt.write_mol_toxyz(self.structure, filename)
         else:
             raise_formaterror(format)
 
-    def to_file_pyb(self, format, filename):
+    def to_file_ob(self, format: str, filename: str) -> None:
         """
-        Writes aemol object into a filetype support by pybel/openbabel
+        Writes aemol object into a file with a filetype support by openbabel
 
-        Args:
-            self: aemol object
-            format: The output file extension
-            filename: The name of the output file
+        :param format: str, output file extension
+        :param filename: str, output file name
 
-        Returns:
-            Null: Stores interal information to aemol object
         """
-        self.pybmol.write(format, filename)
+        self.obmol.write(format, filename)
 
-    def to_file_rdkit(self, filename):
+    def to_file_rdkit(self, filename: str) -> None:
         """
-        Writes rdmol object into sdf format by RDKit
+        Writes rdmol object into sdf file by RDKit
 
-        Args:
-            self: aemol object
-            rdmol: rdkit molecule object
-            format: file type, sdf by default
-            filename: name of the ouputfile
+        :param rdmol: object, rdkit molecule object
+        :param filename: str, output file name
         """
         w = Chem.SDWriter(filename)
         w.write(self.rdmol)
 
-    def prop_to_file(self, filename, prop='nmr', format='nmredata'):
+    def prop_to_file(self, filename: str, prop: str = 'nmr', format: str = 'nmredata') -> None:
         """
-        Writes NMR properties stored within aemol object into an nmredata file
+        Writes NMR properties stored within aemol object into an nmredata file by default
 
-        Args:
-            self: aemol object
-            filename: The name of the output file
-            prop: The input property data type
-            format: The output file extension
+        :param filename: str, output file name
+        :param prop: str, property being read
+        :param format: str, output file extention
 
-        Returns:
-            Null: Stores interal information to aemol object
         """
         prop_io.prop_write(self, filename, prop=prop, format=format)
 
-    def prop_from_file(self, filename, prop='nmr', format='nmredata'):
+    def prop_from_file(self, filename: str, prop: str = 'nmr', format: str = 'nmredata') -> None:
         """
-        Reads NMR properties into a generated aemol object
+        Reads NMR properties and stores internally into aemol object attributes
 
-        Args:
-            self: aemol object
-            filename: The name of the input file
-            prop: The input property data type eg. NMR, scf, ic50, mc
-            format: The output file format extension eg. g09, g16, nmredata
+        :param filename: str, output file name
+        :param prop: str, property being read ('nmr', 'scf', 'ic50', 'mc')
+        :param format: str, input file type ('g09', 'g16', 'nmredata')
 
-
-        Returns:
-            Null: Stores interal information to aemol object
         """
         prop_io.prop_read(self, filename, prop=prop, format=format)
 
-    def get_all_paths(self, maxlen=5):
+    def get_all_paths(self, maxlen: int = 5) -> None:
         """
-        Uses pybel/openbabel to generate all connected paths in the aemol object
+        Generates all connected paths within a molecule at a given radius maxlen using openbabel
 
-        Args:
-            self: aemol object
-            maxlen = defines the max distance to generate paths
+        :param maxlen: int, max distance to find paths
 
-        Returns:
-            Null: Stores interal information to aemol object
         """
-        self.to_pybel()
-        self.structure['paths'] = pathfind.pybmol_find_all_paths(
-            self.pybmol, maxlen)
+        self.to_ob()
+        self.structure['paths'] = pathfind.obmol_find_all_paths(
+            self.obmol, maxlen)
 
-    def get_bonds(self):
+    def get_bonds(self) -> None:
         """
-        Uses pybel/openbabel to generate a connectivity matrix of bond connections within the aemol object
+        Generates a connectivity matrix based of the openbabel mol object
 
-        Args:
-            self: aemol object
-
-        Returns:
-            Null: Stores interal information to aemol object
         """
-        self.to_pybel()
-        self.structure['conn'] = pathfind.pybmol_get_bond_table(self.pybmol)
+        self.to_ob()
+        self.structure['conn'] = pathfind.obmol_get_bond_table(self.obmol)
 
-    def get_path_lengths(self, maxlen=5):
+    def get_path_lengths(self, maxlen: int = 5) -> None:
         """
-        Uses pybel/openbabel to generate path lengths for the paths found
+        Get the lengths of the shortest bond connections from one atom to another through openbabel
 
-        Args:
-            self: aemol object
-            maxlen: defines to the max distance to generate paths
+        :param maxlen: int, max distance to search for paths
 
-        Returns:
-            Null: Stores interal information to aemol object
         """
-        self.to_pybel()
-        self.structure['path_len'] = pathfind.pybmol_get_path_lengths(
-            self.pybmol, maxlen)
+        self.to_ob()
+        self.structure['path_len'] = pathfind.obmol_get_path_lengths(
+            self.obmol, maxlen)
 
-    def get_pyb_fingerprint(self, fingerprint='ecfp4'):
+    def get_ob_fingerprint(self, fingerprint: str = 'ecfp4') -> None:
         """
-        Uses pybel/openbabel to generate a fingerprint of the aemol object
+        Generates fingerprints through openbabel mol object, stored internally under mol_properties attribute
 
-        Args:
-            self: aemol object
-            pybmol: pybel molecule object
-            fingerprint: the type of fingerprint to be generated,
-            available fingerprints: ['ecfp0', 'ecfp10', 'ecfp2', 'ecfp4', 'ecfp6', 'ecfp8', 'fp2', 'fp3', 'fp4', 'maccs']
+        :param fingerprint: str, type of fingerprint to be generated ('ecfp0', 'ecfp10', 'ecfp2', 'ecfp4', 'ecfp6', 'ecfp8', 'fp2', 'fp3', 'fp4', 'maccs')
 
-        Returns:
-            Null: Stores interal information to aemol object
         """
-        self.mol_properties[fingerprint] = self.pybmol.calcfp(fingerprint)
+        self.mol_properties[fingerprint] = self.obmol.calcfp(fingerprint)
 
-    def get_rdkit_fingerprint(self, radius=2, nBits=2048, to_numpy=True):
+    def get_rdkit_fingerprint(self, radius: int = 2, nBits: int = 2048, to_numpy: bool = True) -> None:
         """
-        Uses rdkit to generate an ecfp fingerprint of the aemol object
+        Generates fingerprints through RDKit mol object, stored internally under mol_properties attribute
 
-        Args:
-            self: aemol object
-            rdmol: rdkit molecule object
-            radius: The distance to identify unique fragments
-            nBits: The total length of the fingerprint generated
+        :param radius: int, radius of unique fragments
+        :param nBits: int, total bit length of the fingerprint
+        :param to_numpy: bool, converts fingerprint to numpy array
 
-        Returns:
-            Null: Stores interal information to aemol object
         """
         fp = AllChem.GetMorganFingerprintAsBitVect(
             self.rdmol, radius=radius, nBits=nBits)
@@ -360,17 +293,13 @@ class aemol(object):
         else:
             self.mol_properties['ecfp4'] = fp
 
-    def get_rdkit_3D(self, opt=True, to_aemol=True):
+    def get_rdkit_3D(self, opt: bool = True, to_aemol: bool = True) -> None:
         """
-        Uses rdkit to convert the aemol object into 3D with molecular dynamics energy minimisation
+        Converts aemol object to 3D using RDKit to add implicit hydrogens then MMFF energy minimise to find a possible conformer
 
-        Args:
-            self: aemol object
-            rdmol: rdkit molecule object
-            opt: True/False, whether or not to run quick energy minimization
+        :param opt: bool, flag to run energy minimisation
+        :param to_aemol: bool, flag to convert back to aemol object after function call
 
-        Returns:
-            Null: Stores interal information to aemol object
         """
         self.rdmol = AllChem.AddHs(self.rdmol)
         if opt:
@@ -378,27 +307,24 @@ class aemol(object):
         if to_aemol:
             self.from_rdkit(self.rdmol)
 
-    def get_pyb_3D(self, refine=True, to_aemol=True):
+    def get_ob_3D(self, opt: bool = True, to_aemol: bool = True) -> None:
         """
-        Use Openbabel/Pybel wrapper to convert aemol object into 3D thorough H addition and MMFF energy minimisation
+        Converts aemol object to 3D using Openbabel to add implicit hydrogens then MMFF energy minimise to find a possible conformer
 
-        Args:
-            self: aemol object
-            refine: whether to run local energy optimisation
+        :param opt: bool, flag to run energy minimisation
+        :param to_aemol: bool, flag to convert back to aemol object after function call
 
-        Returns:
-            Null: stores new geometry and atoms in internal aemol object
         """
-        self.pybmol.addh()
+        self.obmol.addh()
 
-        if refine:
-            self.pybmol.localopt()
+        if opt:
+            self.obmol.localopt()
         else:
-            self.pybmol.make3D()
+            self.obmol.make3D()
         if to_aemol:
-            self.from_pybel(self.pybmol)
+            self.from_ob(self.obmol)
 
-    def check_mol_aemol(self, post_check=False):
+    def check_mol_aemol(self, post_check: bool = False) -> bool:
         """
         Checks the validity of aemol via basic checks:
             Valence electrons
@@ -406,16 +332,12 @@ class aemol(object):
             Atom distance
             Charge
 
-        Args:
-            self: aemol object
-            post_check: A post DFT calculated check for missing Hs
-
-        Returns:
-            Null: Stores interal information to aemol object
+        :param post_check: bool, flag to assess post DFT optimised geometries
+        :return: bool, True/False for test pass
         """
         return run_all_checks(self, post_check=post_check)
 
-    def check_mol_rdkit(self, clean=False):
+    def check_mol_rdkit(self, clean: bool = False) -> bool:
         """
         Checks validity of rdmol molecule against internal rules
             Valence electrons
@@ -423,13 +345,8 @@ class aemol(object):
             Charge
             Fragments
 
-        Args:
-            self: aemol object
-            rdmol: rdkit molecule object
-
-        Returns:
-            if clean = True: returns cleaned molecule
-            else: returns null
+        :param clean: bool, flag to clean molecule if test fails
+        :return: bool, True/False for test pass
         """
         if self.rdmol == None:
             self.to_rdkit()
@@ -448,32 +365,25 @@ class aemol(object):
             mol_std.Cleanup(self.rdmol)
             self.rdmol.SetProp('_Name', idx)
 
-    def rd_neutralise(self, opt=False):
+    def rd_neutralise(self, opt: bool = False) -> None:
         """
-        Uses rdkit to neutralise any charged atoms
+        Neutralises charged molecules with RDKit
 
-        Args:
-            self: aemol object
-            opt: Quick conversion of molecule to 3D and apply forcefield based energy minimisation via rdkit
+        :param opt: bool, Flag to convert to 3D and energy minimise through RDKit
 
-        Returns:
-            rdmol: rdkit molecule object
         """
         self.rdmol = rdkit_neutralise(self.rdmol)
+
         if opt:
-            return self.get_rdkit_3D(self.rdmol)
+            self.get_rdkit_3D()
 
-    def pyb_neutralise(self, opt=False):
+    def ob_neutralise(self, opt: bool = False):
         """
-        Uses pybel/openbabel to neutralise any charged atoms
+        Neutralises charged molecules with Openbabel
 
-        Args:
-            self: aemol object
-            opt: Quick conversion of molecule to 3D and apply forcefield based energy minimisation via rdkit
+        :param opt: bool, Flag to convert to 3D and energy minimise through Openbabel
 
-        Returns:
-            pybmol: pybel molecule object
         """
-        self.pybmol = pybel_neutralise(self.pybmol)
+        self.obmol = openbabel_neutralise(self.obmol)
         if opt:
-            return self.get_pyb_3D(self.pybmol)
+            self.get_ob_3D()

@@ -4,7 +4,7 @@ from pathlib import Path
 sys.path.append(os.path.realpath(os.path.dirname(__file__))+'/../')
 
 from mol_translator.aemol import aemol
-import pybel as pyb
+from openbabel import pybel as pyb
 from rdkit import Chem
 from rdkit.Chem import AllChem
 import numpy as np

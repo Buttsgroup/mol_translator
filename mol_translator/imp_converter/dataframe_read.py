@@ -1,4 +1,4 @@
-# Copyright 2020 Will Gerrard
+# Copyright 2022 Will Gerrard, Calvin Yiu
 #This file is part of autoenrich.
 
 #autoenrich is free software: you can redistribute it and/or modify
@@ -14,7 +14,7 @@
 #You should have received a copy of the GNU General Public License
 #along with autoenrich.  If not, see <https://www.gnu.org/licenses/>.
 
-from mol_translator.aemol import aemol
+from mol_translator.aemol import Aemol
 
 import numpy as np
 

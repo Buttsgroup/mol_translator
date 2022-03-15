@@ -12,7 +12,7 @@ setup(
     version='1.0.0',
     description='Molecule processing package for working with NMR data. Used for pipeline with DFT calculation & machine learning preprocessing',
     long_description=readme,
-    author='Calvin Yiu, Will Gerrard, Butts Research Group',
+    author='Calvin Yiu, Will Gerrard, Ben Honore, Butts Research Group',
     author_email='calvin.yiu@bristol.ac.uk',
     url='https://github.com/Buttsgroup/mol_translator',
     license=license,

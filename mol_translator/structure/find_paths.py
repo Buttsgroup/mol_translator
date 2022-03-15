@@ -1,4 +1,4 @@
-# Copyright 2020 Will Gerrard, Calvin Yiu
+# Copyright 2022 Will Gerrard, Calvin Yiu
 #This file is part of autoenrich.
 
 #autoenrich is free software: you can redistribute it and/or modify
@@ -16,26 +16,26 @@
 
 
 import numpy as np
-import openbabel
+from openbabel import openbabel
 from mol_translator.util.periodic_table import Get_periodic_table
 
-def pybmol_find_all_paths(pybmol, maxlen=5):
+def obmol_find_all_paths(obmol, maxlen=5):
 	all_paths = []
-	for atom1 in range(len(pybmol.atoms)):
-		for atom2 in range(len(pybmol.atoms)):
-			coords1 = np.asarray(pybmol.atoms[atom1].coords)
-			coords2 = np.asarray(pybmol.atoms[atom2].coords)
+	for atom1 in range(len(obmol.atoms)):
+		for atom2 in range(len(obmol.atoms)):
+			coords1 = np.asarray(obmol.atoms[atom1].coords)
+			coords2 = np.asarray(obmol.atoms[atom2].coords)
 			if np.linalg.norm(coords1-coords2) > 2.5*maxlen:
 				continue
 			for length in range(1, maxlen):
-				paths = pybmol_find_paths(pybmol, atom1, atom2, length)
+				paths = obmol_find_paths(obmol, atom1, atom2, length)
 				if len(paths) > 0:
 					all_paths.extend(paths)
 
 	return all_paths
 
 
-def pybmol_find_paths(pybmol, start, end, coupling_length, path=[]):
+def obmol_find_paths(obmol, start, end, coupling_length, path=[]):
 		# append atom to start
 		path = path + [start]
 		# check if we have reached target atom
@@ -48,13 +48,13 @@ def pybmol_find_paths(pybmol, start, end, coupling_length, path=[]):
 		# define new path
 		paths = []
 		# loop over neighbouring atoms
-		for nbr_atom in openbabel.OBAtomAtomIter(pybmol.atoms[start].OBAtom):
+		for nbr_atom in openbabel.OBAtomAtomIter(obmol.atoms[start].OBAtom):
 			# get ID of neighbour
 			node = nbr_atom.GetId()
 			# check the neighbour is not already in the path, and that the path is not over the required length
 			if node not in path and len(path) <= coupling_length:
 				# get new paths for the neighbour
-				newpaths = pybmol_find_paths(pybmol, node, end, coupling_length, path)
+				newpaths = obmol_find_paths(obmol, node, end, coupling_length, path)
 				#for each new path, check for paths of correct length
 				for newpath in newpaths:
 					if len(newpath) == coupling_length+1 and newpath != []:
@@ -62,21 +62,21 @@ def pybmol_find_paths(pybmol, start, end, coupling_length, path=[]):
 
 		return paths
 
-def pybmol_get_bond_table(pybmol):
+def obmol_get_bond_table(obmol):
 
-	atoms = len(pybmol.atoms)
+	atoms = len(obmol.atoms)
 
 	bond_table = np.zeros((atoms, atoms), dtype=np.int32)
 
 	for atom1 in range(atoms):
 		for atom2 in range(atom1, atoms):
 
-			for nbr_atom in openbabel.OBAtomAtomIter(pybmol.atoms[atom1].OBAtom):
+			for nbr_atom in openbabel.OBAtomAtomIter(obmol.atoms[atom1].OBAtom):
 				check = nbr_atom.GetId()
 				if atom2 != check:
 					continue
 
-				bond = pybmol.atoms[atom1].OBAtom.GetBond(nbr_atom)
+				bond = obmol.atoms[atom1].OBAtom.GetBond(nbr_atom)
 				order = bond.GetBondOrder()
 
 				bond_table[atom1][atom2] = int(order)
@@ -84,11 +84,11 @@ def pybmol_get_bond_table(pybmol):
 
 	return bond_table
 
-def pybmol_get_path_lengths(pybmol, maxlen=5):
-	atoms = len(pybmol.atoms)
+def obmol_get_path_lengths(obmol, maxlen=5):
+	atoms = len(obmol.atoms)
 	coupling_len = np.zeros((atoms, atoms), dtype=np.int32)
 
-	allpaths = pybmol_find_all_paths(pybmol, maxlen=maxlen)
+	allpaths = obmol_find_all_paths(obmol, maxlen=maxlen)
 
 	for atom1 in range(atoms):
 		for atom2 in range(atoms):
