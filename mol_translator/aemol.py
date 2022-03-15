@@ -20,7 +20,7 @@ import numpy as np
 from os import PathLike
 
 # Conversion functions for rdkit, pybel
-from mol_translator.structure.pybel_converter import obmol_to_aemol, aemol_to_obmol
+from mol_translator.structure.openbabel_converter import obmol_to_aemol, aemol_to_obmol
 from mol_translator.structure.rdkit_converter import rdmol_to_aemol, aemol_to_rdmol
 # Structure writer
 from mol_translator.structure import structure_write as strucwrt
