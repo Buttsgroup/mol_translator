@@ -377,7 +377,7 @@ class Aemol(object):
         if opt:
             self.get_rdkit_3D()
 
-    def ob_neutralise(self, opt: bool = False):
+    def ob_neutralise(self, opt: bool = False) -> None:
         """
         Neutralises charged molecules with Openbabel
 

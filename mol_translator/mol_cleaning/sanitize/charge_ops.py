@@ -31,14 +31,14 @@ def rdkit_neutralise(rdmol):
             atom.UpdatePropertyCache()
     return rdmol
 
-def pybel_neutralise(pybmol):
+def openbabel_neutralise(obmol):
     pattern = pyb.Smarts("[+1!h0!$([*]~[-1,-2,-3,-4]),-1!$([*]~[+1,+2,+3,+4])]")
 
-    match_list = pattern.findall(pybmol)
+    match_list = pattern.findall(obmol)
     for match in match_list:
-        atom = pybmol.GetAtom(match[0])
+        atom = obmol.GetAtom(match[0])
         charge = atom.GetFormalCharge()
         hnum = atom.GetImplicitHCount()
         atom.SetFormalCharge(0)
         atom.SetImplicitHCount(hnum - charge)
-    return pybmol
+    return obmol
