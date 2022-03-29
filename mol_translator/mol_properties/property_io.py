@@ -32,7 +32,7 @@ def prop_write(aemol, outfile, prop, format):
             raise_formaterror(format)
     else:
         print('property not recognised or function not written yet !')
-        raise ValueError('Cannot output property: ', prop)
+        raise ValueError(f'Cannot output property: {prop}')
 
 
 def prop_read(aemol, filename, prop, format):
@@ -55,4 +55,4 @@ def prop_read(aemol, filename, prop, format):
         aemol.atom_properties['mull_chg'] = mc
     else:
         print('property not recognised or function not written yet !')
-        raise ValueError('Cannot read property: ', prop)
+        raise ValueError(f'Cannot read property: {prop}')

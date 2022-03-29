@@ -1,4 +1,4 @@
-# Copyright 2020 Will Gerrard, Calvin Yiu
+# Copyright 2022 Will Gerrard, Calvin Yiu
 #This file is part of autoenrich.
 
 #autoenrich is free software: you can redistribute it and/or modify
@@ -25,9 +25,9 @@ def rdkit_neutralise(rdmol):
         for idx in match_list:
             atom = rdmol.GetAtomWithIdx(idx)
             charge = atom.GetFormalCharge()
-            hnum= atom.GetTotalNumHs()
+            num_h= atom.GetTotalNumHs()
             atom.SetFormalCharge(0)
-            atom.SetNumExplicitHs(hnum - charge)
+            atom.SetNumExplicitHs(num_h - charge)
             atom.UpdatePropertyCache()
     return rdmol
 
@@ -38,7 +38,7 @@ def openbabel_neutralise(obmol):
     for match in match_list:
         atom = obmol.GetAtom(match[0])
         charge = atom.GetFormalCharge()
-        hnum = atom.GetImplicitHCount()
+        num_h = atom.GetImplicitHCount()
         atom.SetFormalCharge(0)
-        atom.SetImplicitHCount(hnum - charge)
+        atom.SetImplicitHCount(num_h - charge)
     return obmol

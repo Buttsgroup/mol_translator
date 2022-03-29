@@ -37,9 +37,8 @@ def flag_to_target(flag):
 		return [atype]
 
 	else:
-		print('flag, ', flag, ' not recognised, coupling flag format is <nJxy> . . .')
-		print('flag, ', flag, ' not recognised, chemical shift flag format is <XCS> . . .')
-		return 0
+		raise TypeError(f'flag, {flag} not recognised, coupling flag format is <nJxy> . . .')
+		raise TypeError(f'flag, {flag} not recognised, chemical shift flag format is <XCS> . . .')
 
 def target_to_flag(target):
 	p_table = Get_periodic_table()
@@ -52,6 +51,6 @@ def target_to_flag(target):
 	elif len(target) == 1:
 		flag = str(target[0]) + 'CS'
 	else:
-		print('Error, target ', target, ' not recognised')
+		raise TypeError(f'Error, target {target} not recognised')
 
 	return flag
