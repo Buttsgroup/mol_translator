@@ -1,4 +1,4 @@
-# Copyright 2020 Will Gerrard, Calvin Yiu
+# Copyright 2022 Will Gerrard, Calvin Yiu
 #This file is part of autoenrich.
 
 #autoenrich is free software: you can redistribute it and/or modify
@@ -13,7 +13,6 @@
 
 #You should have received a copy of the GNU General Public License
 #along with autoenrich.  If not, see <https://www.gnu.org/licenses/>.
-
 
 import numpy as np
 import os

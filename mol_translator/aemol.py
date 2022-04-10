@@ -14,32 +14,32 @@
 # You should have received a copy of the GNU General Public License
 # along with autoenrich.  If not, see <https://www.gnu.org/licenses/>.
 
-import openbabel.pybel as pyb
+from typing import Type
+
 import numpy as np
-
-from os import PathLike
-
-# Conversion functions for rdkit, pybel
-from mol_translator.structure.openbabel_converter import obmol_to_aemol, aemol_to_obmol
-from mol_translator.structure.rdkit_converter import rdmol_to_aemol, aemol_to_rdmol
-# Structure writer
-from mol_translator.structure import structure_write as strucwrt
-# Property input/output
-import mol_translator.properties.property_io as prop_io
-# Path finder
-from mol_translator.structure import find_paths as pathfind
-
-from mol_translator.properties.nmr.nmr_write import write_nmredata
-
-from mol_translator.structure.checks import run_all_checks
-
+import openbabel.pybel as pyb
 from rdkit import Chem
 from rdkit.Chem import AllChem
 from rdkit.Chem import DataStructs
 from rdkit.Chem.MolStandardize import rdMolStandardize as mol_std
 
+# Conversion functions for rdkit, pybel
+from mol_translator.mol_structure.openbabel_converter import obmol_to_aemol, aemol_to_obmol
+from mol_translator.mol_structure.rdkit_converter import rdmol_to_aemol, aemol_to_rdmol
 
-from mol_translator.properties.charge.charge_ops import rdkit_neutralise, openbabel_neutralise
+# Structure writer
+from mol_translator.mol_structure import structure_write as strucwrt
+
+# Property input/output
+import mol_translator.mol_properties.property_io as prop_io
+
+# Path finder
+from mol_translator.mol_structure import find_paths as pathfind
+
+from mol_translator.mol_cleaning.checks import run_all_checks
+
+from mol_translator.mol_cleaning.sanitize.charge_ops import rdkit_neutralise, openbabel_neutralise
+
 
 class Aemol(object):
     """
@@ -54,8 +54,7 @@ class Aemol(object):
                [0, 0, 1, 0]], dtype=int32)
     """
 
-    def __init__(self, molid: str, filepath: str = "") -> object:
-
+    def __init__(self, molid: str, filepath: str = "") -> Type[Aemol]:
         """
         Initilises an Aemol object with blank attributes to be written. A molid string needs to be passed to name the molecule represented internally,
         am optional filepath can be passed to store the location of the file read else it stores a blank string.
@@ -80,7 +79,7 @@ class Aemol(object):
         self.structure = {'xyz': [],
                           'types': [],
                           'conn': []}
-        #Internal storage of rdkit/openbabel molecule objects
+        # Internal storage of rdkit/openbabel molecule objects
         self.rdmol = None
 
         self.obmol = None
@@ -105,6 +104,7 @@ class Aemol(object):
         self.structure['xyz'] = xyz
         self.structure['conn'] = conn
     # Create pybel molecule object from aemol object
+
     def to_ob(self) -> None:
         """
         Creates an Openbabel instance of the Aemol molecule, stored internally in self.obmol

@@ -1,4 +1,4 @@
-# Copyright 2020 Will Gerrard
+# Copyright 2022 Will Gerrard, Calvin Yiu
 #This file is part of autoenrich.
 
 #autoenrich is free software: you can redistribute it and/or modify
