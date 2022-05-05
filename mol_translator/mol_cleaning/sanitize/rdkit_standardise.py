@@ -30,7 +30,7 @@ def cleanup(rdmol: Type[rdmol]) -> Type[rdmol]:
     :param rdmol: RDKit molecule object
     :return: RDKit molecule object
     """
-    cleaned_mol = rdMolStandardize.Cleanup(rdmol)
+    cleaned_rdmol = rdMolStandardize.Cleanup(rdmol)
     return cleaned_rdmol
 
 
