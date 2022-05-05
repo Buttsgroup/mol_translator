@@ -86,10 +86,10 @@ class Aeconf(Aemol):
             redundant_atoms = redundant_atoms.split(",")
             redundant_atoms = list(map(int, redundant_atoms))
 
-            dist_arrays = np.zeros(len(aemols[0].structure['types']), len(
-                aemols[0].structure['types']))
+            dist_arrays = np.zeros(len(self.aemols[0].structure['types']), len(
+                self.aemols[0].structure['types']))
             for atoms in redundant_atoms:
-                for i in range(aemols):
+                for i in range(self.aemols):
                     dist_arrays[i][int(atoms)-1] = 0
                     for k in range(atoms):
                         dist_arrays[i][k][int(atoms)-1] = 0
