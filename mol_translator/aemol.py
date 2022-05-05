@@ -47,13 +47,30 @@ class Aemol(object):
     """
         Base class for mol_translator, contains structural and chemical information plus storage of RDKit and Openbabel molecular objects
 
-        >>> mol = Aemol('butane')
+        >>> mol = Aemol('Butane')
         >>> mol.from_smiles('CCCC')
-        >>> mol.structure['conn']
-        array([[0, 1, 0, 0],
-               [1, 0, 1, 0],
-               [0, 1, 0, 1],
-               [0, 0, 1, 0]], dtype=int32)
+        >>> str(mol)
+        'Aemol(Butane)'
+        >>> mol
+        Aemol(Butane,
+        xyz:
+        [[0. 0. 0.]
+        [0. 0. 0.]
+        [0. 0. 0.]
+        [0. 0. 0.]],
+        types:
+        [6 6 6 6],
+        conn:
+        [[0 1 0 0]
+        [1 0 1 0]
+        [0 1 0 1]
+        [0 0 1 0]],
+        atom_prop:
+        {},
+        pair_prop:
+        {},
+        mol_prop:
+        {'energy': -404.404})
     """
 
     def __init__(self, molid: str, filepath: Optional[str] = None) -> Type:
@@ -118,7 +135,7 @@ class Aemol(object):
             id = self.info['molid']
 
         return(
-            f"Aemol({id} \n"
+            f"Aemol({id}, \n"
             f"xyz: \n {self.structure['xyz']}, \n"
             f"types: \n {self.structure['types']}, \n"
             f"conn: \n {self.structure['conn']}, \n"
