@@ -14,7 +14,7 @@
 # You should have received a copy of the GNU General Public License
 # along with autoenrich.  If not, see <https://www.gnu.org/licenses/>.
 
-from typing import Type
+from typing import Type, Optional
 
 import numpy as np
 import openbabel.pybel as pyb
@@ -56,22 +56,26 @@ class Aemol(object):
                [0, 0, 1, 0]], dtype=int32)
     """
 
-    def __init__(self, molid: str, filepath: str = "") -> Type:
+    def __init__(self, molid: str, filepath: Optional[str] = None) -> Type:
         """
-        Initilises an Aemol object with blank attributes to be written. A molid string needs to be passed to name the molecule represented internally,
-        am optional filepath can be passed to store the location of the file read else it stores a blank string.
+        Initialises an Aemol object with blank attributes. The molid string needs to be passed to label the molecule represented internally,
+        an optional filepath can be passed to store the location of the file read and runs the from_file_ob function, else it stores a blank string.
 
         Attributes generated currently are:
             info: dictionary of the molid and filepath
             structure: dictionary of  'xyz': xyz coordinate, 'types': atom type array, and 'conn': connectivity matrix
-            rdmol: storage of rdkit representation of the molecule
-            obmol: storage of openbabel representation of the molecule
+            rdmol: storage of rdkit class of the molecule
+            obmol: storage of openbabel class of the molecule
             atom_properties: dictionary of atom properties
             pair_properties: dictionary of pairwise properties
             mol_properties: dictionary of molecular properties
 
-        :param molid: The identifier to the aemol obejct
-        :param filepath: The filepath where the assigned aemol objects attributes are stored
+        >>> mol = Aemol('butane')
+
+        :param molid str: The identifier to the aemol obejct
+        :param filepath str: The filepath where the assigned aemol objects attributes are stored
+
+        :return Type[Aemol]: The instantiated class of Aemol
 
         """
         # object information, trying to ween off filepath usage
@@ -94,9 +98,39 @@ class Aemol(object):
         self.mol_properties = {'energy': -404.404,
                                }
 
+        if filepath:
+            self.from_file_ob(filepath, ftype=filepath.split('.')[-1])
+
+    def __str__(self) -> str:
+
+        if self.info['molid'] == "":
+            id = 'UnknownMol'
+        else:
+            id = self.info['molid']
+
+        return f"Aemol({id})"
+
+    def __repr__(self) -> str:
+
+        if self.info['molid'] == "":
+            id = 'UnknownMol'
+        else:
+            id = self.info['molid']
+
+        return(
+            f"Aemol({id} \n"
+            f"xyz: \n {self.structure['xyz']}, \n"
+            f"types: \n {self.structure['types']}, \n"
+            f"conn: \n {self.structure['conn']}, \n"
+            f"atom_prop: \n {self.atom_properties}, \n"
+            f"pair_prop: \n {self.pair_properties}, \n"
+            f"mol_prop: \n {self.mol_properties}"
+            f")"
+        )
+
     def from_ob(self, obmol: object) -> None:
         """
-        Converts Openbabel molecule object into an Aemol object
+        Converts Openbabel molecule object into an Aemol object.
 
         :param obmol: Openbabel instance
 
@@ -105,11 +139,10 @@ class Aemol(object):
         self.structure['types'] = types
         self.structure['xyz'] = xyz
         self.structure['conn'] = conn
-    # Create pybel molecule object from aemol object
 
     def to_ob(self) -> None:
         """
-        Creates an Openbabel instance of the Aemol molecule, stored internally in self.obmol
+        Creates an Openbabel instance of the Aemol molecule, stored internally in self.obmol.
 
         """
         self.obmol = aemol_to_obmol(self.structure, self.info['molid'])
