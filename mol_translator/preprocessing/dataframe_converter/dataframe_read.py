@@ -15,7 +15,7 @@
 # along with autoenrich.  If not, see <https://www.gnu.org/licenses/>.
 
 import numpy as np
-
+from mol_translator.aemol import Aemol
 from tqdm import tqdm
 
 
@@ -28,7 +28,7 @@ def read_df(atom_df, pair_df):
 
     mols = []
     for molname in tqdm(molnames):
-        amol = aemol(molname)
+        amol = Aemol(molname)
 
         mol_atom_df = atom_df.loc[(atom_df.molecule_name == molname)]
         mol_pair_df = pair_df.loc[(pair_df.molecule_name == molname)]

@@ -14,14 +14,14 @@
 # You should have received a copy of the GNU General Public License
 # along with autoenrich.  If not, see <https://www.gnu.org/licenses/>.
 from typing import Type
-from mol_translator.mol_properties.nmr.nmr_ops import get_coupling_types
+from mol_translator.properties.nmr.nmr_ops import get_coupling_types
 import os.path
 import numpy as np
 
 # Gets the necessary info for aemol to turn it into an IMP dataframe
 
 
-def prep_mol(aemol: Type[Aemol]):
+def prep_mol(aemol: Type):
 
     aemol.get_bonds()
     aemol.get_path_lengths()
@@ -30,7 +30,7 @@ def prep_mol(aemol: Type[Aemol]):
     return aemol
 
 
-def prep_mol_nmr(aemol: Type[Aemol], nmr_file: str = "", nmr_type: str = ""):
+def prep_mol_nmr(aemol: Type, nmr_file: str = "", nmr_type: str = ""):
 
     aemol.get_bonds()
     aemol.get_path_lengths()
@@ -45,7 +45,7 @@ def prep_mol_nmr(aemol: Type[Aemol], nmr_file: str = "", nmr_type: str = ""):
     return aemol
 
 
-def prep_mol_ic50(aemol: Type[Aemol], ic50_file: str = "", ic50_type: str = ""):
+def prep_mol_ic50(aemol: Type, ic50_file: str = "", ic50_type: str = ""):
     aemol.get_bonds()
     aemol.get_path_lengths()
     get_coupling_types(aemol)
@@ -61,7 +61,7 @@ def prep_mol_ic50(aemol: Type[Aemol], ic50_file: str = "", ic50_type: str = ""):
     return aemol
 
 
-def prep_mol_ecfp4(aemol: Type[Aemol]):
+def prep_mol_ecfp4(aemol: Type):
     aemol.get_bonds()
     aemol.get_path_lengths()
     get_coupling_types(aemol)
@@ -70,7 +70,7 @@ def prep_mol_ecfp4(aemol: Type[Aemol]):
     return aemol
 
 
-def prep_mol_mulliken(aemol: Type[Aemol], mc_file: str = "", mc_format: str = ""):
+def prep_mol_mulliken(aemol: Type, mc_file: str = "", mc_format: str = ""):
     aemol.get_bonds()
     aemol.get_path_lengths()
     get_coupling_types(aemol)

@@ -15,9 +15,10 @@
 # along with autoenrich.  If not, see <https://www.gnu.org/licenses/>.
 
 from mol_translator.util.periodic_table import Get_periodic_table
+from typing import Type, Dict
 
 
-def make_gaussian_rootline(prefs: dict[str, str]) -> str:
+def make_gaussian_rootline(prefs: Dict[str, str]) -> str:
     """
     Function for the automation of the root line required for setting up the gaussian calculation
 
@@ -27,26 +28,26 @@ def make_gaussian_rootline(prefs: dict[str, str]) -> str:
 
     if prefs['calc_type'] == ('optimisation' or 'opt'):
         if prefs['freq']:
-            root_line = f'opt={str(prefs['opt'])} freq {str(prefs['functional'])}/{str(prefs['basis_set'])} integral={str(prefs['grid'])} MaxDisk=50GB'
+            root_line = f"opt={str(prefs['opt'])} freq {str(prefs['functional'])}/{str(prefs['basis_set'])} integral={str(prefs['grid'])} MaxDisk=50GB"
 
         else:
-            root_line = f'opt={str(prefs['opt'])} {str(prefs['functional'])}/{str(prefs['basis_set'])} integral={str(prefs['grid'])} MaxDisk=50GB'
+            root_line = f"opt={str(prefs['opt'])} {str(prefs['functional'])}/{str(prefs['basis_set'])} integral={str(prefs['grid'])} MaxDisk=50GB"
 
-        if solvent != None:
-            root_line += f' scrf=( {str(prefs['solvent_model'])} , solvent={str(prefs['solvent'])} )'
+        if prefs['solvent'] != None:
+            root_line += f" scrf=( {str(prefs['solvent_model'])} , solvent={str(prefs['solvent'])} )"
 
         return root_line
 
     elif prefs['calc_type'] == ('nmr' or 'NMR'):
         # change elif assertion to switch case if RDKit updates to python 3.10
-        if mixed == True:
-            root_line = f'nmr(giao,spinspin,mixed) {str(prefs['functional'])}/{str(prefs['basis_set'])} maxdisk=50GB'
+        if prefs['mixed'] == True:
+            root_line = f"nmr(giao,spinspin,mixed) {str(prefs['functional'])}/{str(prefs['basis_set'])} maxdisk=50GB"
 
         else:
-            root_line = f'nmr(giao,spinspin) {str(prefs['functional'])}/{str(prefs['basis_set'])} maxdisk=50GB'
+            root_line = f"nmr(giao,spinspin) {str(prefs['functional'])}/{str(prefs['basis_set'])} maxdisk=50GB"
 
-        if solvent != None:
-            root_line += f' scrf=( {str(prefs['solvent_model'])} , solvent={str(prefs['solvent'])} )'
+        if prefs['solvent'] != None:
+            root_line += f" scrf=( {str(prefs['solvent_model'])} , solvent={str(prefs['solvent'])} )"
 
         return root_line
 
@@ -55,7 +56,7 @@ def make_gaussian_rootline(prefs: dict[str, str]) -> str:
             f"Calculation type is set to {prefs['calc_type']}, current only 'optimisation' & 'nmr' are supported")
 
 
-def write_gaussian_com(prefs: dict, molname: str, aemol: Aemol, root_line: str, outfile: str) -> None:
+def write_gaussian_com(prefs: dict, molname: str, aemol: Type, root_line: str, outfile: str) -> None:
     """
     Generates gaussian input .com files based off prefs dictionary values, requires aemol object, molecule name, root line, and outfile name as input.
 

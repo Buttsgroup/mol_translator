@@ -15,8 +15,7 @@
 # along with autoenrich.  If not, see <https://www.gnu.org/licenses/>.
 
 from typing import Type
-from mol_translator.aemol import Aemol
-from mol_translator.mol_structure.find_num_bonds import rdmol_find_num_bonds
+from mol_translator.structure.find_num_bonds import rdmol_find_num_bonds
 from rdkit.Chem import rdMolTransforms as Chem
 import numpy as np
 
@@ -25,7 +24,7 @@ import numpy as np
 #   is every bond within a plausible distance range
 
 
-def run_all_checks(aemol: Type[Aemol], post_check: bool = False):
+def run_all_checks(aemol: Type, post_check: bool = False):
     """
     Runs a set of basic checks to check validity of molecules:
         checks_valence : uses rdkit to check the valence of each atom to match internal rules
@@ -45,7 +44,7 @@ def run_all_checks(aemol: Type[Aemol], post_check: bool = False):
     return True
 
 
-def check_valence(aemol: Type[Aemol]):
+def check_valence(aemol: Type):
     '''
     Check for counting the number valence electrons around an atom and checking it against a reference list of acceptable numbers
 
@@ -62,7 +61,7 @@ def check_valence(aemol: Type[Aemol]):
     return True
 
 
-def check_missing_H(aemol: Type[Aemol], post_check=False):
+def check_missing_H(aemol: Type, post_check=False):
     '''
     Check for counting the number hydrodrogens around an non H-atom and ensures it's all explicit
 
@@ -86,7 +85,7 @@ def check_missing_H(aemol: Type[Aemol], post_check=False):
     return True
 
 
-def check_overlap(aemol: Type[Aemol]):
+def check_overlap(aemol: Type):
     '''
     Check for validating bond/atom distances against reference values to ensure that atoms aren't overlapping in the same space
 

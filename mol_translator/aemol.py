@@ -24,21 +24,23 @@ from rdkit.Chem import DataStructs
 from rdkit.Chem.MolStandardize import rdMolStandardize as mol_std
 
 # Conversion functions for rdkit, pybel
-from mol_translator.mol_structure.openbabel_converter import obmol_to_aemol, aemol_to_obmol
-from mol_translator.mol_structure.rdkit_converter import rdmol_to_aemol, aemol_to_rdmol
+from mol_translator.structure.openbabel_converter import obmol_to_aemol, aemol_to_obmol
+from mol_translator.structure.rdkit_converter import rdmol_to_aemol, aemol_to_rdmol
 
 # Structure writer
-from mol_translator.mol_structure import structure_write as strucwrt
+from mol_translator.structure import structure_write as strucwrt
 
 # Property input/output
-import mol_translator.mol_properties.property_io as prop_io
+import mol_translator.properties.property_io as prop_io
 
 # Path finder
-from mol_translator.mol_structure import find_paths as pathfind
+from mol_translator.structure import find_paths as pathfind
 
-from mol_translator.mol_cleaning.checks import run_all_checks
+from mol_translator.cleaning.checks import run_all_checks
 
-from mol_translator.mol_cleaning.sanitize.charge_ops import rdkit_neutralise, openbabel_neutralise
+from mol_translator.cleaning.sanitize.charge_ops import rdkit_neutralise, openbabel_neutralise
+
+from mol_translator.util.custom_errors import raise_formaterror
 
 
 class Aemol(object):
@@ -54,7 +56,7 @@ class Aemol(object):
                [0, 0, 1, 0]], dtype=int32)
     """
 
-    def __init__(self, molid: str, filepath: str = "") -> Type[Aemol]:
+    def __init__(self, molid: str, filepath: str = "") -> Type:
         """
         Initilises an Aemol object with blank attributes to be written. A molid string needs to be passed to name the molecule represented internally,
         am optional filepath can be passed to store the location of the file read else it stores a blank string.
@@ -358,10 +360,10 @@ class Aemol(object):
         molvs_vm.validate(self.rdmol)
 
         if clean:
-            lfc = mol_stf.LargestFragmentChooser()
+            lfc = mol_std.LargestFragmentChooser()
             idx = self.rdmol.GetProp('_Name')
 
-            self.rdmol = lfc.choose(rself.rdmol)
+            self.rdmol = lfc.choose(self.rdmol)
             mol_std.Cleanup(self.rdmol)
             self.rdmol.SetProp('_Name', idx)
 

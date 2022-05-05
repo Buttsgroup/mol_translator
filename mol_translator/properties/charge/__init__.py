@@ -14,4 +14,4 @@
 # You should have received a copy of the GNU General Public License
 # along with autoenrich.  If not, see <https://www.gnu.org/licenses/>.
 
-from .gaussian_input import make_gaussian_rootline, write_gaussian_com
+from . import charge_read

@@ -39,13 +39,13 @@ def make_orca_rootline(prefs: Dict[str, str]) -> str:
             root_line += f" FREQ"
 
         if prefs['solventmodel'] == 'CPCM':
-            root_line += f' CPCM( {prefs['solvent']})'
+            root_line += f" CPCM( {prefs['solvent']})"
 
         if prefs['processors'] != 1:
-            root_line += f' PAL={prefs['processors']}'
+            root_line += f" PAL={prefs['processors']}"
 
         if prefs['print_format']:
-            root_line += f' {prefs['print_format']}'
+            root_line += f" {prefs['print_format']}"
 
         return root_line
 
@@ -54,8 +54,8 @@ def make_orca_rootline(prefs: Dict[str, str]) -> str:
 
         root_line = f"! {str(prefs['functional'])} {str(prefs['basis_set'])} NMR"
 
-        if solvent != None:
-            root_line += f' scrf=( {str(prefs['solventmodel'])} , solvent={str(prefs['solvent'])} )'
+        if prefs['solvent'] != None:
+            root_line += f" scrf=( {str(prefs['solventmodel'])} , solvent={str(prefs['solvent'])} )"
 
         return root_line
 
@@ -64,7 +64,7 @@ def make_orca_rootline(prefs: Dict[str, str]) -> str:
             f"Calculation type is set to {prefs['calc_type']}, current only 'optimisation' & 'nmr' are supported")
 
 
-def write_orca_inp(prefs: dict, aemol: Type[Aemol], root_line: str, outfile: str) -> file:
+def write_orca_inp(prefs: dict, aemol: Type, root_line: str, outfile: str) -> None:
     """
     Creates orca input files based off prefs values 
     """
@@ -119,11 +119,11 @@ def write_orca_inp(prefs: dict, aemol: Type[Aemol], root_line: str, outfile: str
             strings.append(f'       Nuclei = ALL {atom:<2s} {{SHIFT, SSALL}}')
 
         if prefs['spin_thresh']:
-            strings.append(f'SpinSpinRThresh {prefs['spin_thresh']}')
+            strings.append(f"SpinSpinRThresh {prefs['spin_thresh']}")
 
     if prefs['solventmodel'] == 'SMD':
         strings.append('%CPCM SMD TRUE')
-        strings.append(f'     SMDSOLVENT "{prefs['solvent']}"')
+        strings.append(f"     SMDSOLVENT \"{prefs['solvent']}\"")
 
         strings.append('end')
 
