@@ -7,6 +7,16 @@ with open('README.md') as f:
 with open('LICENSE') as f:
     license = f.read()
 
+install_requires = ["python == 3.9.*",
+                    "openbabel >= 3.1.1",
+                    "rdkit >= 2021.03.5"
+                    "numpy >= 1.21.2",
+                    "pandas >= 1.3.4",
+                    "matplotlib",
+                    "scikit-learn >= 1.0.2",
+                    "seaborn >= 0.11.2",
+                    "tqdm >= 4.62.3"]
+
 setup(
     name='mol_translator',
     version='0.1.0',
@@ -18,6 +28,7 @@ setup(
     license=license,
     packages=find_packages(where="mol_translator/"),
     package_dir={"": "mol_translator"},
+    install_requires=install_requires,
     classifiers=[
         'Development Status :: 4 - Beta',
         'Intended Audience :: Computational Chemist',
