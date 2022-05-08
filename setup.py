@@ -17,6 +17,7 @@ setup(
     url='https://github.com/Buttsgroup/mol_translator',
     license=license,
     packages=find_packages(where="mol_translator/"),
+    package_dir={"": "mol_translator"},
     classifiers=[
         'Development Status :: 4 - Beta',
         'Intended Audience :: Computational Chemist',
