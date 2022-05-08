@@ -17,7 +17,13 @@
 import numpy as np
 
 
-def gauss_scf_read(file: str):
+def gauss_scf_read(file: str) -> int:
+    """
+    Reads gaussian .log files and extracts the energy value
+
+    :param file: filepath of the .log file which contains the optimization logs
+    :return energy: int value representing the energy
+    """
     energy = -404
 
     with open(file, 'r') as f:
@@ -29,7 +35,13 @@ def gauss_scf_read(file: str):
     return energy
 
 
-def gauss_mc_read(file):
+def gauss_mc_read(file) -> np.ndarray:
+    """
+    Reads gaussian .log files and extracts the mulliken charge if present
+
+    :param file: filepath of the .log file which contains the nmr logs
+    :return mc_array: numpy array of the mulliken charge for respective atom position
+    """
     with open(file, 'r') as f:
         for line in f:
             if 'NAtoms=' in line:
@@ -62,7 +74,13 @@ def gauss_mc_read(file):
     return mc_array
 
 
-def gauss_nmr_read(file: str):
+def gauss_nmr_read(file: str) -> np.ndarray:
+    """
+    Read gaussian .log files and extracts the nmr parameters if present
+
+    :param file: filepath of the .log file which contains the nmr logs
+    :return shift_array and coupling array: numpy array of the mulliken charge for respective atom position and atom-pair interaction
+    """
     with open(file, 'r') as f:
         for line in f:
             if 'NAtoms=' in line:

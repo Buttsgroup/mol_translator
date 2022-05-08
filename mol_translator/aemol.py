@@ -45,7 +45,47 @@ from mol_translator.util.custom_errors import raise_formaterror
 
 class Aemol(object):
     """
-        Base class for mol_translator, contains structural and chemical information plus storage of RDKit and Openbabel molecular objects
+    Base class for mol_translator, contains structural and chemical information plus storage of RDKit and Openbabel molecular objects
+
+    >>> mol = Aemol('Butane')
+    >>> mol.from_smiles('CCCC')
+    >>> str(mol)
+    'Aemol(Butane)'
+    >>> mol
+    Aemol(Butane,
+    xyz:
+    [[0. 0. 0.]
+    [0. 0. 0.]
+    [0. 0. 0.]
+    [0. 0. 0.]],
+    types:
+    [6 6 6 6],
+    conn:
+    [[0 1 0 0]
+    [1 0 1 0]
+    [0 1 0 1]
+    [0 0 1 0]],
+    atom_prop:
+    {},
+    pair_prop:
+    {},
+    mol_prop:
+    {'energy': -404.404})
+    """
+
+    def __init__(self, molid: str, filepath: Optional[str] = None) -> Type:
+        """
+        Initialises an Aemol object with blank attributes. The molid string needs to be passed to label the molecule represented internally,
+        an optional filepath can be passed to store the location of the file read and runs the from_file_ob function, else it stores a blank string.
+
+        Attributes available are:
+            info: dictionary of the molid and filepath
+            structure: dictionary of  'xyz': xyz coordinate, 'types': atom type array, and 'conn': connectivity matrix
+            rdmol: rdkit class of the molecule
+            obmol: openbabel class of the molecule
+            atom_properties: dictionary of atom properties, e.g. Chemical Shifts, Electronegativity
+            pair_properties: dictionary of pairwise properties e.g. Coupling constants
+            mol_properties: dictionary of molecular properties e.g. Energy (defaults to -404.404), ic50
 
         >>> mol = Aemol('Butane')
         >>> mol.from_smiles('CCCC')
@@ -71,23 +111,6 @@ class Aemol(object):
         {},
         mol_prop:
         {'energy': -404.404})
-    """
-
-    def __init__(self, molid: str, filepath: Optional[str] = None) -> Type:
-        """
-        Initialises an Aemol object with blank attributes. The molid string needs to be passed to label the molecule represented internally,
-        an optional filepath can be passed to store the location of the file read and runs the from_file_ob function, else it stores a blank string.
-
-        Attributes generated currently are:
-            info: dictionary of the molid and filepath
-            structure: dictionary of  'xyz': xyz coordinate, 'types': atom type array, and 'conn': connectivity matrix
-            rdmol: storage of rdkit class of the molecule
-            obmol: storage of openbabel class of the molecule
-            atom_properties: dictionary of atom properties
-            pair_properties: dictionary of pairwise properties
-            mol_properties: dictionary of molecular properties
-
-        >>> mol = Aemol('butane')
 
         :param molid str: The identifier to the aemol obejct
         :param filepath str: The filepath where the assigned aemol objects attributes are stored
@@ -119,6 +142,15 @@ class Aemol(object):
             self.from_file_ob(filepath, ftype=filepath.split('.')[-1])
 
     def __str__(self) -> str:
+        """
+        Returns a simplified representation of the Aemol object when called
+
+        >>> mol = Aemol('Butane')
+        >>> mol.from_smiles('CCCC')
+        >>> str(mol)
+        'Aemol(Butane)'
+
+        """
 
         if self.info['molid'] == "":
             id = 'UnknownMol'
@@ -128,6 +160,33 @@ class Aemol(object):
         return f"Aemol({id})"
 
     def __repr__(self) -> str:
+        """
+        Returns a full representation of the current Aemol object when called
+
+        >>> mol = Aemol('Butane')
+        >>> mol.from_smiles('CCCC')
+        >>> mol
+        Aemol(Butane,
+        xyz:
+        [[0. 0. 0.]
+        [0. 0. 0.]
+        [0. 0. 0.]
+        [0. 0. 0.]],
+        types:
+        [6 6 6 6],
+        conn:
+        [[0 1 0 0]
+        [1 0 1 0]
+        [0 1 0 1]
+        [0 0 1 0]],
+        atom_prop:
+        {},
+        pair_prop:
+        {},
+        mol_prop:
+        {'energy': -404.404})
+
+        """
 
         if self.info['molid'] == "":
             id = 'UnknownMol'
@@ -147,7 +206,7 @@ class Aemol(object):
 
     def from_ob(self, obmol: object) -> None:
         """
-        Converts Openbabel molecule object into an Aemol object.
+        Function for converting an Openbabel molecule object into an Aemol object.
 
         :param obmol: Openbabel instance
 

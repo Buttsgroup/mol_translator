@@ -22,7 +22,7 @@ from rdkit import Chem
 from rdkit.Chem.MolStandardize import rdMolStandardize
 
 
-def cleanup(rdmol: Type[rdmol]) -> Type[rdmol]:
+def cleanup(rdmol: Type) -> Type:
     """
     Function for a general purpose cleanup of molecules based on predetermined parameters
     which can be checked through calling rdMolStandardize.CleanupParameters()
@@ -34,7 +34,7 @@ def cleanup(rdmol: Type[rdmol]) -> Type[rdmol]:
     return cleaned_rdmol
 
 
-def standardise_smiles(smiles_str: str) -> Type[rdmol]:
+def standardise_smiles(smiles_str: str) -> Type:
     """
     Validates SMILES string passed as argument and converts to RDKit molecule object
 
@@ -44,7 +44,7 @@ def standardise_smiles(smiles_str: str) -> Type[rdmol]:
     return rdMolStandardize.StandardizeSmiles(smiles_str)
 
 
-def normalise(rdmol: Union[str, Type[rdmol]], from_smiles: bool = False) -> Type[rdmol]:
+def normalise(rdmol: Union[str, Type], from_smiles: bool = False) -> Type:
     """
     Function for correcting functional groups and recombining charges, with the input
     being smiles string or a RDKit molecule object. Change from_smiles T/F flag depending
@@ -62,7 +62,7 @@ def normalise(rdmol: Union[str, Type[rdmol]], from_smiles: bool = False) -> Type
     return normaliser.normalize(rdmol)
 
 
-def disconnect_metal(mol: Union[str, Type[rdmol]], from_smiles: bool = False) -> Type[rdmol]:
+def disconnect_metal(mol: Union[str, Type], from_smiles: bool = False) -> Type:
     """
     Function for fragmenting molecules contaning metals into charged species. Change from_smiles T/F flag depending
     on input manually, defaults to False
@@ -83,7 +83,7 @@ def disconnect_metal(mol: Union[str, Type[rdmol]], from_smiles: bool = False) ->
         return mol_disconnector.Disconnect(mol)
 
 
-def select_largest_fragment(mol: Union[str, Type[rdol]], from_smiles: bool = False) -> Type[rdmol]:
+def select_largest_fragment(mol: Union[str, Type], from_smiles: bool = False) -> Type:
     """
     Function for selecting the largest fragment, generally used in combination with uncharger to remove counter ions
     and neutralise charge
@@ -103,7 +103,7 @@ def select_largest_fragment(mol: Union[str, Type[rdol]], from_smiles: bool = Fal
         return fragment_selector.choose(mol)
 
 
-def uncharger(mol: Union[str, Type[rdmol]], from_smiles: bool = False) -> Type[rdmol]:
+def uncharger(mol: Union[str, Type], from_smiles: bool = False) -> Type:
     """
     Function for neutralising point charges through addition of hydrogen
 
@@ -120,7 +120,7 @@ def uncharger(mol: Union[str, Type[rdmol]], from_smiles: bool = False) -> Type[r
         return uncharger.uncharge(mol)
 
 
-def charge_parent(mol: Union[str, Type[rdmol]], from_smiles: bool = False) -> Type[rdmol]:
+def charge_parent(mol: Union[str, Type], from_smiles: bool = False) -> Type:
     """
     Function for neutralising the largest fragment of a charged species
 
@@ -137,7 +137,7 @@ def charge_parent(mol: Union[str, Type[rdmol]], from_smiles: bool = False) -> Ty
         return mol
 
 
-def find_resonance(mol: Union[str, Type[rdmol]], from_smiles: bool = False) -> List[rdmol]:
+def find_resonance(mol: Union[str, Type], from_smiles: bool = False) -> List:
     """
     Function for finding viable resonance structures and returning them all in a list
 

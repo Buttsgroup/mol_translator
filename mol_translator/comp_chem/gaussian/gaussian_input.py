@@ -78,6 +78,12 @@ def write_gaussian_com(prefs: dict, molname: str, aemol: Type, root_line: str, o
                  'grid' : 'ultrafine',
                  'custom_cmd_line' = False,
         }
+    :param prefs: dictionary containing key parameters for the gaussian calculation
+    :param molname: name of current molecule
+    :param aemol: Aemol object of the molecule to process
+    :param root_line: the output of make_gaussian_root function, passed as a string
+    :param outfile: Name of the output file to write to
+    :return: None, writes a physical file used to run gaussian calculation
     """
 
     assert type(
@@ -111,7 +117,7 @@ def write_gaussian_com(prefs: dict, molname: str, aemol: Type, root_line: str, o
             atom_type = periodic_table[aemol.structure['types'][i]]
             string = f" {atom_type:<2.2s}{aemol.structure['xyz'][i][0]:>18.6f}{aemol.structure['xyz'][i][1]:>18.6f}{aemol.structure['xyz'][i][2]:>18.6f}"
         for i in range(4):
-            strings.apppend("")
+            strings.append("")
 
     with open(outfile, 'w') as f:
         for string in strings:

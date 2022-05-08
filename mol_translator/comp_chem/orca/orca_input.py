@@ -20,9 +20,9 @@ from mol_translator.util.periodic_table import Get_periodic_table
 
 def make_orca_rootline(prefs: Dict[str, str]) -> str:
     """
-    Function for the automation of the root line required for setting up the gaussian calculation
+    Function for the automation of the root line required for setting up the orca calculation
 
-    :param prefs: dictionary containing key parameters for the gaussian calculation
+    :param prefs: dictionary containing key parameters for the orca calculation
     :return: str root_line
     """
     if prefs['custom_cmd_line']:
@@ -66,9 +66,34 @@ def make_orca_rootline(prefs: Dict[str, str]) -> str:
 
 def write_orca_inp(prefs: dict, aemol: Type, root_line: str, outfile: str) -> None:
     """
-    Creates orca input files based off prefs values 
-    """
+     Generates orca input .inp files based off prefs dictionary values, requires aemol object, molecule name, root line, and outfile name as input.
 
+     Example preferences:
+         prefs = {
+                  'charge' : 0,
+                  'multiplicity : 1,
+                  'calc_type' : 'opt',
+                  'memory' : 12,
+                  'processor' : 8,
+                  'nodes' : 1,
+                  'walltime' : '120:00:00'
+                  'opt' : 'tight',
+                  'freq' : True,
+                  'functional' : 'mPW1PW',
+                  'basis_set' : '6-311g(d,p)',
+                  'solvent' : None,
+                  'solvent_model' : None,
+                  'dispersion_correction': True,
+                  'print_format': 'short'
+                  'custom_cmd_line' = False,
+         }
+     :param prefs: dictionary containing key parameters for the orca calculation
+     :param molname: name of current molecule
+     :param aemol: Aemol object of the molecule to process
+     :param root_line: the output of make_orca_root function, passed as a string
+     :param outfile: Name of the output file to write to
+     :return: None, writes a physical file used to run orca calculation
+     """
     assert type(
         prefs['memory']) is int, f"{prefs['memory']} is {type(prefs['memory'])}, should be an integer value"
     assert type(
@@ -105,7 +130,8 @@ def write_orca_inp(prefs: dict, aemol: Type, root_line: str, outfile: str) -> No
             '                                #  than <MaxDist> Ang. apart (default true)')
         strings.append(
             '     AddExtraBonds_MaxLength 10 # cutoff for number of bonds connecting the two')
-        strings.append('                                #  atoms (default 10)')
+        strings.append(
+            '                                #  atoms (default 10)')
         strings.append(
             '     AddExtraBonds_MaxDist 5    # cutoff for distance between two atoms (default 5 Ang.)')
 
@@ -116,7 +142,8 @@ def write_orca_inp(prefs: dict, aemol: Type, root_line: str, outfile: str) -> No
             strings.append('     GIAO_2el = GIAO_2el_RIJCOSX')
 
         for atom in list(set(atoms_list)):
-            strings.append(f'       Nuclei = ALL {atom:<2s} {{SHIFT, SSALL}}')
+            strings.append(
+                f'       Nuclei = ALL {atom:<2s} {{SHIFT, SSALL}}')
 
         if prefs['spin_thresh']:
             strings.append(f"SpinSpinRThresh {prefs['spin_thresh']}")

@@ -12,6 +12,7 @@ Requirements :
   - Python == 3.9.*
   - RDKit
   - openbabel/pybel => 3.1.1
+  - scikit-learn
   - numpy
   - pandas
   - tqdm

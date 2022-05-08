@@ -9,18 +9,18 @@ with open('LICENSE') as f:
 
 setup(
     name='mol_translator',
-    version='1.0.0',
+    version='0.1.0',
     description='Molecule processing package for working with NMR data. Used for pipeline with DFT calculation & machine learning preprocessing',
     long_description=readme,
-    author='Calvin Yiu, Will Gerrard, Ben Honore, Butts Research Group',
+    author='Calvin Yiu, Will Gerrard, Butts Research Group',
     author_email='calvin.yiu@bristol.ac.uk',
     url='https://github.com/Buttsgroup/mol_translator',
     license=license,
-    packages=find_packages(exclude=('tests', 'docs')),
+    packages=find_packages(where="mol_translator/"),
     classifiers=[
         'Development Status :: 4 - Beta',
         'Intended Audience :: Computational Chemist',
         'Topic :: Scientific/Engineering :: Chemistry',
-        'Programming Language :: Python :: 3.7',
+        'Programming Language :: Python :: 3.9',
     ],
-    )
+)
