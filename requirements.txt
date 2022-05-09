@@ -13,9 +13,7 @@ joblib==1.1.0
 kiwisolver==1.4.2
     # via matplotlib
 matplotlib==3.5.2
-    # via
-    #   mol-translator (setup.py)
-    #   seaborn
+    # via mol-translator (setup.py)
 numpy==1.22.3
     # via
     #   matplotlib
@@ -24,15 +22,12 @@ numpy==1.22.3
     #   rdkit-pypi
     #   scikit-learn
     #   scipy
-    #   seaborn
-openbabel==3.1.1.1
+openbabel==3.1.1
     # via mol-translator (setup.py)
 packaging==21.3
     # via matplotlib
 pandas==1.4.2
-    # via
-    #   mol-translator (setup.py)
-    #   seaborn
+    # via mol-translator (setup.py)
 pillow==9.1.0
     # via
     #   matplotlib
@@ -52,11 +47,7 @@ rdkit-pypi==2022.3.2.1
 scikit-learn==1.0.2
     # via mol-translator (setup.py)
 scipy==1.8.0
-    # via
-    #   scikit-learn
-    #   seaborn
-seaborn==0.11.2
-    # via mol-translator (setup.py)
+    # via scikit-learn
 six==1.16.0
     # via python-dateutil
 threadpoolctl==3.1.0

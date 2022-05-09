@@ -13,12 +13,3 @@
 
 # You should have received a copy of the GNU General Public License
 # along with autoenrich.  If not, see <https://www.gnu.org/licenses/>.
-
-from .aemol import Aemol
-from . import comp_chem
-from . import cleaning
-from . import conformer
-from . import properties
-from . import structure
-from . import util
-from . import scripts

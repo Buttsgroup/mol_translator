@@ -79,7 +79,7 @@ def gauss_nmr_read(file: str) -> np.ndarray:
     Read gaussian .log files and extracts the nmr parameters if present
 
     :param file: filepath of the .log file which contains the nmr logs
-    :return shift_array and coupling array: numpy array of the mulliken charge for respective atom position and atom-pair interaction
+    :return shift_array and coupling array: numpy array of the chemical tensors for respective atom position and atom-pair interaction
     """
     with open(file, 'r') as f:
         for line in f:

@@ -18,6 +18,12 @@ import numpy as np
 
 
 def orca_scf_read(file):
+    """
+    Reads orca .log files and extracts the energy value
+
+    :param file: filepath of the .log file which contains the optimization logs
+    :return energy: int value representing the energy
+    """
     energy = 0.0
     with open(file, 'r') as f:
         for line in f:
@@ -29,6 +35,12 @@ def orca_scf_read(file):
 
 
 def orca_nmr_read(file: str):
+    """
+    Read orca .log files and extracts the nmr parameters if present
+
+    :param file: filepath of the .log file which contains the nmr logs
+    :return shift_array and coupling array: numpy array of the chemical tensors for respective atom position and atom-pair interaction
+    """
 
     shiftswitch = False
     shifts = []
