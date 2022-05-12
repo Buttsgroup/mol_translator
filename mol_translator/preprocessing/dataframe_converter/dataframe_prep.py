@@ -22,6 +22,13 @@ import numpy as np
 
 
 def prep_mol(aemol: Type):
+    """
+    A function to prepare for the conversion of an Aemol molecule to a dataframe format. 
+    Obtains all the bond/coupling information and finds the path lengths (absolute distance and bond distance)
+
+    :param aemol: Type[Aemol], the aemol object to convert to dataframe
+    :return: Aemol
+    """
 
     aemol.get_bonds()
     aemol.get_path_lengths()
@@ -31,6 +38,16 @@ def prep_mol(aemol: Type):
 
 
 def prep_mol_nmr(aemol: Type, nmr_file: str = "", nmr_type: str = ""):
+    """
+    A function to prepare for the conversion of an Aemol molecule to a dataframe format with the inclusion of NMR data. 
+    Obtains all the bond/coupling information and finds the path lengths (absolute distance and bond distance)
+    Processes NMR file given to extract tensors/chemical shifts and coupling constants, if None is passed then fills with 0 values
+
+    :param aemol: Type[Aemol], the aemol object to convert to dataframe
+    :param nmr_file: str, file path of the correspoinding NMR datafile
+    :param nmr_type: str, file type of the NMR data file, e.g. 'log', 'nmredata'
+    :return: Aemol
+    """
 
     aemol.get_bonds()
     aemol.get_path_lengths()
@@ -46,6 +63,16 @@ def prep_mol_nmr(aemol: Type, nmr_file: str = "", nmr_type: str = ""):
 
 
 def prep_mol_ic50(aemol: Type, ic50_file: str = "", ic50_type: str = ""):
+    """
+    A function to prepare for the conversion of an Aemol molecule to a dataframe format with the inclusion of ic50 data. 
+    Obtains all the bond/coupling information and finds the path lengths (absolute distance and bond distance)
+    Processes ic50 file given to extract ic50 values, if None is passed then fills with 0 values
+
+    :param aemol: Type[Aemol], the aemol object to convert to dataframe
+    :param ic50_file: str, file path of the correspoinding ic50 datafile
+    :param ic50_type: str, file type of the ic50 data file, e.g. 'log', 'nmredata'
+    :return: Aemol
+    """
     aemol.get_bonds()
     aemol.get_path_lengths()
     get_coupling_types(aemol)
@@ -62,6 +89,14 @@ def prep_mol_ic50(aemol: Type, ic50_file: str = "", ic50_type: str = ""):
 
 
 def prep_mol_ecfp4(aemol: Type):
+    """
+    A function to prepare for the conversion of an Aemol molecule to a dataframe format with fingerprints. 
+    Obtains all the bond/coupling information and finds the path lengths (absolute distance and bond distance)
+    Processes the fingerprint stored
+
+    :param aemol: Type[Aemol], the aemol object to convert to dataframe
+    :return: Aemol
+    """
     aemol.get_bonds()
     aemol.get_path_lengths()
     get_coupling_types(aemol)
@@ -71,6 +106,16 @@ def prep_mol_ecfp4(aemol: Type):
 
 
 def prep_mol_mulliken(aemol: Type, mc_file: str = "", mc_format: str = ""):
+    """
+    A function to prepare for the conversion of an Aemol molecule to a dataframe format with the inclusion of mulliken charge data. 
+    Obtains all the bond/coupling information and finds the path lengths (absolute distance and bond distance)
+    Processes data file given to extract mulliken charge values, if None is passed then fills with 0 values
+
+    :param aemol: Type[Aemol], the aemol object to convert to dataframe
+    :param mc_file: str, file path of the correspoinding mulliken charge datafile
+    :param mc_type: str, file type of the mulliken charge data file, e.g. 'log', 'nmredata'
+    :return: Aemol
+    """
     aemol.get_bonds()
     aemol.get_path_lengths()
     get_coupling_types(aemol)

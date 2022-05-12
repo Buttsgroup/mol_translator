@@ -20,17 +20,28 @@ import numpy as np
 
 
 class Aeconf(Aemol):
+    """
+    Base class for Aeconf, allows for the calculation of boltzmann averaged chemical shifts
+    """
 
-    def __init__(self, aemols: List[Type[Aemol]], mol_name='conf'):
+    def __init__(self, aemols: List[Type], mol_name='conf'):
         self.mol_name = mol_name
         self.num_confs = len(aemols)
         self.aemols = aemols
         self.energy_array = np.zeros(self.num_confs, dtype=np.float64)
+        self.pop_array = np.zeros(self.num_confs, dtype=np.float64)
         self.eliminated_mols = []
         self.averaged_shift = []
         self.averaged_coupling = []
 
     def calc_pops(self, temp: int = 298):
+        """
+        calculates the population distrubution of the different conformers used to instantiate the class, prerequisite step for boltzmann averaging
+        and updates the aemol mol_properties attriputes with values
+
+        :param temp: int, temperature to determine the spread of population
+        :return: None
+        """
 
         for c, aemol in enumerate(self.aemols):
             self.energy_array[c] = aemol.mol_properties['energy']
@@ -44,8 +55,12 @@ class Aeconf(Aemol):
 
         pop_array = exp_array / sum_val
 
+        self.pop_array = pop_array
+
+        '''
         for a, aemol in enumerate(self.aemols):
             aemol.mol_properties['pop'] = pop_array[a]
+        '''
 
     def boltzmann_average(self, pair_props: list = ['coupling'], atom_props: list = ['shift']):
         atoms = len(self.aemols[0].structure['types'])
@@ -57,13 +72,13 @@ class Aeconf(Aemol):
         for prop in pair_props:
             new_pair_dict[prop] = np.zeros((atoms, atoms), dtype=np.float64)
 
-        for aemol in self.aemols:
+        for i, aemol in enumerate(self.aemols):
             for prop in atom_props:
                 new_atom_dict[prop] += aemol.atom_properties[prop] * \
-                    aemol.mol_properties['pop']
+                    self.pop_array[i]
             for prop in pair_props:
                 new_pair_dict[prop] += aemol.pair_properties[prop] * \
-                    aemol.mol_properties['pop']
+                    self.pop_array[i]
 
         self.averaged_shift = new_atom_dict
         self.averaged_coupling = new_pair_dict

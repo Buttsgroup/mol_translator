@@ -15,18 +15,27 @@
 # along with autoenrich.  If not, see <https://www.gnu.org/licenses/>.
 
 import numpy as np
+import pandas as pd
 from mol_translator.aemol import Aemol
 from tqdm import tqdm
+from typing import List, Type
 
 
-def read_df(atom_df, pair_df):
+def read_df(atom_df: pd.DataFrame, pair_df: pd.DataFrame) -> List[Type[Aemol]]:
+    """
+    Reads dataframe in the atom_df and pair_df format to reconstruct Aemol molecule.
+
+    :param atom_df: pd.DataFrame, pandas dataframe of atom_df
+    :param pair_df: pd.DataFrame, pandas dataframe of pair_df
+    :return aemols: List[Type[Aemol]], a list of aemol objects
+    """
 
     if 'bond_dist' in pair_df.keys():
         pair_df['path_len'] = pair_df['bond_dist']
 
     molnames = atom_df.molecule_name.unique()
 
-    mols = []
+    aemols = []
     for molname in tqdm(molnames):
         amol = Aemol(molname)
 
@@ -86,6 +95,6 @@ def read_df(atom_df, pair_df):
                     prop_list.append(df_prop)
                 amol.pair_properties[prop].append(prop_list)
 
-        mols.append(amol)
+        aemols.append(amol)
 
-    return mols
+    return aemols
