@@ -35,7 +35,7 @@ def get_bond_order_matrix_ob(obmol):
                 continue
             bond = obmol.atoms[a].OBAtom.GetBond(obmol.atoms[b].OBAtom)
             if bond is not None:
-                bo = float(bond, GetBondOrder())
+                bo = float(bond.GetBondOrder())
                 bond_matrix[a][b] = bo
                 bond_matrix[b][a] = bo
 
