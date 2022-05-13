@@ -20,7 +20,15 @@ from mol_translator.comp_chem.gaussian.gaussian_read import gauss_scf_read
 from mol_translator.comp_chem.orca.orca_read import orca_scf_read
 
 
-def energy_read(file, prop, format):
+def energy_read(file: str, prop: str = 'scf', format: str = 'gauss') -> float:
+    """
+    Function for reading and processing energy data stored in the file.
+
+    :param file: str, filepath of the file containing the data
+    :param prop: str, the property to read in, defaults to 'scf'
+    :param format: str, the format of the file to process, defaults to 'gauss' to read log files
+    :return mc_array: float, scf value of the molecule
+    """
     if prop == 'scf':
         if format == 'gauss':
             energy = gauss_scf_read(file)

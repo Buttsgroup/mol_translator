@@ -15,16 +15,33 @@
 # along with autoenrich.  If not, see <https://www.gnu.org/licenses/>.
 
 import numpy as np
+from typing import Type
 
 
-def get_rd_pair_descriptos(rdmol):
+def get_rd_pair_descriptos(rdmol: Type) -> dict:
+    """
+    Gathers rdkit atom-pair/bond features and stores the data inside a dictionary.
+    Current rdkit pair descriptors included are:
+        - bond order, the bond order associated with an atom-pair connection
+
+    :param rdmol: Type, rdkit class object
+    :return atom_properties: dict, dictionary containing all the atom descriptors
+    """
+
     pair_properties = {}
     pair_properties['bond_order'] = get_bond_order_matrix_rd(rdmol)
 
     return pair_properties
 
 
-def get_bond_order_matrix_rd(rdmol):
+def get_bond_order_matrix_rd(rdmol: Type) -> np.darray:
+    """
+    Generates an NxN numpy array (N = number of atoms) containing the bond order of connected bonds,
+    0 is no bonds, 1 is a single bond, 2 is a double bond, 3 is a triple bonds. 
+
+    :param rdmol: Type, openbabel class object
+    :return bond_matrix: np.array, NxN matrix of bond order values
+    """
     bond_matrix = np.zeros(
         (len(rdmol.GetAtoms()), len(rdmol.GetAtoms())), dtype=np.int32)
     for a in range(len(rdmol.GetAtoms())):

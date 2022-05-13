@@ -15,9 +15,16 @@
 # along with autoenrich.  If not, see <https://www.gnu.org/licenses/>.
 
 from mol_translator.util.periodic_table import Get_periodic_table
+from typing import Type
 
 
-def get_coupling_types(aemol):
+def get_coupling_types(aemol: Type) -> None:
+    """
+    Function for generating all the coupling types for all atom-pair interactions, stores internally in pair_properties attributes.
+
+    :param aemol: Type, aemol class to generate coupling types for
+    :return: None
+    """
     p_table = Get_periodic_table()
 
     if 'path_len' not in aemol.structure.keys():
@@ -40,14 +47,23 @@ def get_coupling_types(aemol):
 
     aemol.pair_properties['nmr_types'] = cpl_types
 
-# Carbon and proton defaults obtained through validation on exp data in the group
-# Nitrogen defaults are from Gao, Peng, Xingyong Wang, and Haibo Yu. "Towards an Accurate Prediction of Nitrogen Chemical Shifts by Density Functional Theory and Gauge‐Including Atomic Orbital." Advanced Theory and Simulations 2.2 (2019): 1800148.
-# Fluorine & Phosphorus defaults are from Gao, Zhang, and Chen. "A systematic benchmarking of 31P and 19F NMR chemical shift predictions using different DFT/GIAO methods and applying linear regression to improve the prediction accuracy" International Journal of Quantum Chemistry 121.5 (2021): e26482.
-# Not for the exact same functional but close enough to be useful.
-# Recalculated scaling factors from original  1: [-1.0719, 32.1254], 6: [-1.0399, 187.136]
 
+def scale_chemical_shifts(aemol: Type, scaling: dict = {1: [-1.0594, 32.2293], 6: [-1.0207, 187.4436], 7: [-1.0139, -148.67], 19: [-1.0940, 173.02], 31: [-1.2777, 307.74]}) -> None:
+    """
+    Function for scaling the shifts stored in the atom_properties against a dictionary. Used to convert tensors into chemical shifts, values stored in dictionary are either from literature or extracted against experimental data
 
-def scale_chemical_shifts(aemol, scaling={1: [-1.0594, 32.2293], 6: [-1.0207, 187.4436], 7: [-1.0139, -148.67], 19: [-1.0940, 173.02], 31: [-1.2777, 307.74]}):
+    :param aemol: Type, aemol class to scale tensors to shifts
+    :param scaling: dict, scaling dictionary
+    :return: None
+
+    # default scaling values are for functional: wb97xd, basis_set: 6-311g(d,p)
+
+    # Carbon and proton defaults obtained through validation on exp data in the group
+    # Nitrogen defaults are from Gao, Peng, Xingyong Wang, and Haibo Yu. "Towards an Accurate Prediction of Nitrogen Chemical Shifts by Density Functional Theory and Gauge-Including Atomic Orbital." Advanced Theory and Simulations 2.2 (2019): 1800148.
+    # Fluorine & Phosphorus defaults are from Gao, Zhang, and Chen. "A systematic benchmarking of 31P and 19F NMR chemical shift predictions using different DFT/GIAO methods and applying linear regression to improve the prediction accuracy" International Journal of Quantum Chemistry 121.5 (2021): e26482.
+    # Not for the exact same functional but close enough to be useful.
+    # Recalculated scaling factors from original  1: [-1.0719, 32.1254], 6: [-1.0399, 187.136]
+    """
     # default scaling values are for functional: wb97xd, basis_set: 6-311g(d,p)
 
     for t, type in enumerate(aemol.structure['types']):

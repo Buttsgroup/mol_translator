@@ -31,7 +31,7 @@ def get_all_descriptors(aemol: Type) -> None:
     get_rdkit_descriptors(aemol)
 
 
-def get_openbabel_descriptors(aemol: Type, get_atom_desc: bool = True, get_pair_desc: bool = True):
+def get_openbabel_descriptors(aemol: Type, get_atom_desc: bool = True, get_pair_desc: bool = True) -> None:
     """
     Gets available descriptors from openbabel and stores descriptors within the aemol object
 
@@ -54,7 +54,7 @@ def get_openbabel_descriptors(aemol: Type, get_atom_desc: bool = True, get_pair_
         aemol.pair_properties.update(pair_props)
 
 
-def get_rdkit_descriptors(aemol: Type, get_atom_desc: bool = True, get_pair_desc: bool = False):
+def get_rdkit_descriptors(aemol: Type, get_atom_desc: bool = True, get_pair_desc: bool = False) -> None:
     """
     Gets available descriptors from rdkit and stores descriptors within the aemol object
 

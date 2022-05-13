@@ -15,9 +15,20 @@
 # along with autoenrich.  If not, see <https://www.gnu.org/licenses/>.
 
 import numpy as np
+from typing import Type
 
 
-def get_rd_atom_descriptors(rdmol):
+def get_rd_atom_descriptors(rdmol: Type) -> dict:
+    """
+    Gathers rdkit atom features and stores the data inside a dictionary.
+    Current atom descriptors included are:
+        - degree, number of bonds connecting to the source atom
+        - InRing, T/F for whether the atom is part of a ring
+        - IsAromatic, T/F for whether the atom is aromatic or not
+
+    :param rdmol: Type, rdkit class object
+    :return atom_properties: dict, dictionary containing all the atom descriptors
+    """
 
     atom_properties = {}
 

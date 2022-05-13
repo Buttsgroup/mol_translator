@@ -35,11 +35,11 @@ def gauss_scf_read(file: str) -> int:
     return energy
 
 
-def gauss_mc_read(file) -> np.ndarray:
+def gauss_mc_read(file: str) -> np.ndarray:
     """
     Reads gaussian .log files and extracts the mulliken charge if present
 
-    :param file: filepath of the .log file which contains the nmr logs
+    :param file: str, filepath of the .log file which contains the nmr logs
     :return mc_array: numpy array of the mulliken charge for respective atom position
     """
     with open(file, 'r') as f:

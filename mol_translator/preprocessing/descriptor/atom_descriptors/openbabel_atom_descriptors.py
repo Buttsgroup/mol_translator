@@ -15,10 +15,21 @@
 # along with autoenrich.  If not, see <https://www.gnu.org/licenses/>.
 
 import numpy as np
+from typing import Type
 
 
-def get_ob_atom_descriptors(obmol):
+def get_ob_atom_descriptors(obmol: Type) -> dict:
+    """
+    Gathers openbable atom features and stores the data inside a dictionary.
+    Current atom descriptors included are:
+        - heavy_valence, number of non-hydrogen atoms connected
+        - heterovalence, number of heteroatoms connected
+        - hyb, hybridisation of the atom, 1 for sp, 2 for sp2, 3 for sp3, etc...
+        - partial charge, the partial charge of the atom
 
+    :param obmol: Type, openbabel class object
+    :return atom_properties: dict, dictionary containing all the atom descriptors
+    """
     atom_properties = {}
 
     #atom_num = np.zeros(len(obmol.atoms), dtype=np.int32)
