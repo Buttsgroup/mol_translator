@@ -22,7 +22,7 @@ numpy==1.22.3
     #   rdkit-pypi
     #   scikit-learn
     #   scipy
-openbabel==3.1.1.1
+openbabel==3.1.1
     # via mol-translator (setup.py)
 packaging==21.3
     # via matplotlib
