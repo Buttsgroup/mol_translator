@@ -22,7 +22,7 @@ numpy==1.22.3
     #   rdkit-pypi
     #   scikit-learn
     #   scipy
-openbabel==3.1.1
+openbabel==3.1.1.1
     # via mol-translator (setup.py)
 packaging==21.3
     # via matplotlib
@@ -32,7 +32,7 @@ pillow==9.1.0
     # via
     #   matplotlib
     #   rdkit-pypi
-pyparsing==3.0.8
+pyparsing==3.0.9
     # via
     #   matplotlib
     #   packaging
@@ -44,7 +44,7 @@ pytz==2022.1
     # via pandas
 rdkit-pypi==2022.3.2.1
     # via mol-translator (setup.py)
-scikit-learn==1.0.2
+scikit-learn==1.1.0
     # via mol-translator (setup.py)
 scipy==1.8.0
     # via scikit-learn
