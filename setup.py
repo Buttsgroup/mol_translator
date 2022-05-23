@@ -7,8 +7,7 @@ with open('README.md') as f:
 with open('LICENSE') as f:
     license = f.read()
 
-install_requires = ["openbabel",
-                    "rdkit-pypi >= 2022.3.2.1",
+install_requires = ["rdkit-pypi >= 2022.3.2.1",
                     "numpy",
                     "pandas >= 1.4.2",
                     "matplotlib >=3.5.2",

@@ -1,0 +1,7 @@
+name: mol_translator
+channels:
+  - conda-forge
+  - defaults
+dependencies:
+  - openbabel=3.1.1=py39hb4f85b1_3
+  - python=3.9.12=h1cc4136_1_cpython
