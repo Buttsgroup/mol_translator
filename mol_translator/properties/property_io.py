@@ -16,10 +16,10 @@
 
 
 # Functions to manage write/read of properties
-from nmr import nmr_ops, nmr_read, nmr_write
-from energy import energy_read
-from binding import binding_read
-from charge import charge_read
+from .nmr import nmr_ops, nmr_read, nmr_write
+from .energy import energy_read
+from .binding import binding_read
+from .charge import charge_read
 from ..util.custom_errors import raise_formaterror
 from typing import Type
 

@@ -20,7 +20,7 @@ def test_init():
     test_mol = 'CCCC'
     mol = Aemol(test_mol)
     assert mol.info['molid'] == test_mol
-    assert mol.info['filepath'] == ""
+    assert mol.info['filepath'] == None
 
     assert mol.structure['xyz'] == []
     assert mol.structure['types'] == []
