@@ -6,7 +6,7 @@ build:
     python: "3.9"
 
 conda:
-  environment: requirements.txt
+  environment: environments.yml
 
 python:
   install:
