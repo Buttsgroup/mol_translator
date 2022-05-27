@@ -13,6 +13,8 @@ Welcome to mol_translator's documentation!
    :maxdepth: 2
    :caption: Contents:
 
+   quickstart
+   apidocs
    modules
 
 Indices and tables

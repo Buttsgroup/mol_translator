@@ -5,4 +5,3 @@ mol_translator
    :maxdepth: 4
 
    mol_translator
-   setup
