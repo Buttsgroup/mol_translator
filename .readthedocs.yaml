@@ -7,3 +7,7 @@ build:
 
 conda:
   environment: environments.yml
+
+formats:
+  - pdf
+  - epub
