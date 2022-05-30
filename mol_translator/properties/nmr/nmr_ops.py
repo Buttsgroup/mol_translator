@@ -43,7 +43,7 @@ def get_coupling_types(aemol, maxlen=6):
 # Fluorine & Phosphorus defaults are from Gao, Zhang, and Chen. "A systematic benchmarking of 31P and 19F NMR chemical shift predictions using different DFT/GIAO methods and applying linear regression to improve the prediction accuracy" International Journal of Quantum Chemistry 121.5 (2021): e26482.
 # Not for the exact same functional but close enough to be useful.
 # Recalculated scaling factors from original  1: [-1.0719, 32.1254], 6: [-1.0399, 187.136]
-def scale_chemical_shifts(aemol, scaling={1: [-1.0594, 32.2293], 6: [-1.0207, 187.4436], 7: [-1.0139, -148.67], 19: [-1.0940, 173.02], 31: [-1.2777, 307.74]}):
+def scale_chemical_shifts(aemol, scaling={1: [-1.0594, 32.2293], 6: [-1.0207, 187.4436], 7: [-1.0139, -148.67], 9: [-1.0940, 173.02], 15: [-1.2777, 307.74]}):
 	# default scaling values are for functional: wb97xd, basis_set: 6-311g(d,p)
 
 	for t, type in enumerate(aemol.structure['types']):
