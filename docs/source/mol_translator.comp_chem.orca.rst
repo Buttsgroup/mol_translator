@@ -1,5 +1,5 @@
-mol\_translator.comp\_chem.orca package
-=======================================
+comp\_chem.orca
+===============
 
 Submodules
 ----------

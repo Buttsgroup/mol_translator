@@ -1,5 +1,5 @@
-mol\_translator.scripts package
-===============================
+scripts
+=======
 
 Submodules
 ----------

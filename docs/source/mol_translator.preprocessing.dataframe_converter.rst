@@ -1,5 +1,5 @@
-mol\_translator.preprocessing.dataframe\_converter package
-==========================================================
+preprocessing.dataframe\_converter
+==================================
 
 Submodules
 ----------

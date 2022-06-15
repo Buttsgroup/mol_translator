@@ -1,5 +1,5 @@
-mol\_translator.properties package
-==================================
+properties
+==========
 
 Subpackages
 -----------

@@ -1,5 +1,5 @@
-mol\_translator.properties.charge package
-=========================================
+properties.charge
+=================
 
 Submodules
 ----------

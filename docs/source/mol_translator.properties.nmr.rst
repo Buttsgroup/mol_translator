@@ -1,5 +1,5 @@
-mol\_translator.properties.nmr package
-======================================
+properties.nmr
+==============
 
 Submodules
 ----------

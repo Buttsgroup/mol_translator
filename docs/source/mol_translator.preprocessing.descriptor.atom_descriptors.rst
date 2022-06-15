@@ -1,5 +1,5 @@
-mol\_translator.preprocessing.descriptor.atom\_descriptors package
-==================================================================
+preprocessing.descriptor.atom\_descriptors
+==========================================
 
 Submodules
 ----------

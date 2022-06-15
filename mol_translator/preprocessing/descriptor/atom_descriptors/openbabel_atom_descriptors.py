@@ -22,6 +22,7 @@ def get_ob_atom_descriptors(obmol: Type) -> dict:
     """
     Gathers openbable atom features and stores the data inside a dictionary.
     Current atom descriptors included are:
+
         - heavy_valence, number of non-hydrogen atoms connected
         - heterovalence, number of heteroatoms connected
         - hyb, hybridisation of the atom, 1 for sp, 2 for sp2, 3 for sp3, etc...

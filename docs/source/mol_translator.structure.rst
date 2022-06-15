@@ -1,5 +1,5 @@
-mol\_translator.structure package
-=================================
+structure
+=========
 
 Submodules
 ----------
@@ -32,14 +32,6 @@ mol\_translator.structure.rdkit\_converter module
 -------------------------------------------------
 
 .. automodule:: mol_translator.structure.rdkit_converter
-   :members:
-   :undoc-members:
-   :show-inheritance:
-
-mol\_translator.structure.structure\_read module
-------------------------------------------------
-
-.. automodule:: mol_translator.structure.structure_read
    :members:
    :undoc-members:
    :show-inheritance:

@@ -22,6 +22,7 @@ def get_rd_pair_descriptos(rdmol: Type) -> dict:
     """
     Gathers rdkit atom-pair/bond features and stores the data inside a dictionary.
     Current rdkit pair descriptors included are:
+
         - bond order, the bond order associated with an atom-pair connection
 
     :param rdmol: Type, rdkit class object
@@ -34,7 +35,7 @@ def get_rd_pair_descriptos(rdmol: Type) -> dict:
     return pair_properties
 
 
-def get_bond_order_matrix_rd(rdmol: Type) -> np.darray:
+def get_bond_order_matrix_rd(rdmol: Type) -> np.ndarray:
     """
     Generates an NxN numpy array (N = number of atoms) containing the bond order of connected bonds,
     0 is no bonds, 1 is a single bond, 2 is a double bond, 3 is a triple bonds. 

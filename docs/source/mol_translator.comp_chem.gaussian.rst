@@ -1,5 +1,5 @@
-mol\_translator.comp\_chem.gaussian package
-===========================================
+comp\_chem.gaussian
+===================
 
 Submodules
 ----------

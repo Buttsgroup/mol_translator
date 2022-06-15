@@ -16,8 +16,8 @@
 
 from typing import Type
 
-from atom_descriptors import rdkit_atom_descriptors, openbabel_atom_descriptors
-from pair_descriptors import rdkit_pair_descriptors, openbabel_pair_descriptors
+from .atom_descriptors import rdkit_atom_descriptors, openbabel_atom_descriptors
+from .pair_descriptors import rdkit_pair_descriptors, openbabel_pair_descriptors
 
 
 def get_all_descriptors(aemol: Type) -> None:

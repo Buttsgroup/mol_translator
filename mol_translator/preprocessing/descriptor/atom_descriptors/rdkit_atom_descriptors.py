@@ -22,6 +22,7 @@ def get_rd_atom_descriptors(rdmol: Type) -> dict:
     """
     Gathers rdkit atom features and stores the data inside a dictionary.
     Current atom descriptors included are:
+
         - degree, number of bonds connecting to the source atom
         - InRing, T/F for whether the atom is part of a ring
         - IsAromatic, T/F for whether the atom is aromatic or not

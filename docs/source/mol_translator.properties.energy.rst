@@ -1,5 +1,5 @@
-mol\_translator.properties.energy package
-=========================================
+properties.energy
+=================
 
 Submodules
 ----------

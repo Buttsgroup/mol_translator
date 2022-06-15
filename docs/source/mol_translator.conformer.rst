@@ -1,5 +1,5 @@
-mol\_translator.conformer package
-=================================
+conformer
+=========
 
 Submodules
 ----------

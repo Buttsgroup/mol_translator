@@ -1,5 +1,5 @@
-mol\_translator.properties.binding package
-==========================================
+properties.binding
+==================
 
 Submodules
 ----------

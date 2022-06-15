@@ -1,5 +1,5 @@
-mol\_translator.preprocessing.descriptor package
-================================================
+preprocessing.descriptor
+========================
 
 Subpackages
 -----------

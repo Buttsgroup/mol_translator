@@ -1,5 +1,5 @@
-mol\_translator.util package
-============================
+util
+====
 
 Submodules
 ----------

@@ -9,6 +9,7 @@ conda:
   environment: environments.yml
 
 sphinx:
+  builder: html
   configuration: docs/conf.py
 
 formats:

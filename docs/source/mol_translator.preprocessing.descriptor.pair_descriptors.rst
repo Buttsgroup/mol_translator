@@ -1,5 +1,5 @@
-mol\_translator.preprocessing.descriptor.pair\_descriptors package
-==================================================================
+preprocessing.descriptor.pair\_descriptors
+==========================================
 
 Submodules
 ----------

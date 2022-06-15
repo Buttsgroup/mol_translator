@@ -22,6 +22,7 @@ def get_ob_pair_descriptos(obmol: Type) -> dict:
     """
     Gathers openbable atom-pair/bond features and stores the data inside a dictionary.
     Current openbabel pair descriptors included are:
+
         - bond order, the bond order associated with an atom-pair connection
 
     :param obmol: Type, openbabel class object
@@ -36,7 +37,7 @@ def get_ob_pair_descriptos(obmol: Type) -> dict:
     return pair_properties
 
 
-def get_bond_order_matrix_ob(obmol: Type) -> np.darray:
+def get_bond_order_matrix_ob(obmol: Type) -> np.ndarray:
     """
     Generates an NxN numpy array (N = number of atoms) containing the bond order of connected bonds,
     0 is no bonds, 1 is a single bond, 2 is a double bond, 3 is a triple bonds. 
@@ -59,7 +60,7 @@ def get_bond_order_matrix_ob(obmol: Type) -> np.darray:
     return bond_matrix
 
 
-def get_distance_matrix_ob(obmol: Type) -> np.darray:
+def get_distance_matrix_ob(obmol: Type) -> np.ndarray:
     """
     Generates an NxN numpy array (N = number of atoms) containing the distance between atoms in angstroms 
 
@@ -79,7 +80,7 @@ def get_distance_matrix_ob(obmol: Type) -> np.darray:
     return distance_matrix
 
 
-def get_angle_matrix_ob(obmol: Type) -> np.darray:
+def get_angle_matrix_ob(obmol: Type) -> np.ndarray:
     """
     Generates an NxNxN numpy array (N = number of atoms) containing the bond angle between atom triplets in degrees 
 

@@ -1,5 +1,5 @@
-mol\_translator.preprocessing package
-=====================================
+preprocessing
+=============
 
 Subpackages
 -----------

@@ -59,9 +59,9 @@ def make_gaussian_rootline(prefs: Dict[str, str]) -> str:
 def write_gaussian_com(prefs: dict, molname: str, aemol: Type, root_line: str, outfile: str) -> None:
     """
     Generates gaussian input .com files based off prefs dictionary values, requires aemol object, molecule name, root line, and outfile name as input.
-
     Example preferences:
-        prefs = {
+
+        >>> prefs = {
                  'charge' : 0,
                  'multiplicity : 1,
                  'calc_type' : 'opt',
@@ -78,11 +78,13 @@ def write_gaussian_com(prefs: dict, molname: str, aemol: Type, root_line: str, o
                  'grid' : 'ultrafine',
                  'custom_cmd_line' = False,
         }
+
     :param prefs: dictionary containing key parameters for the gaussian calculation
     :param molname: name of current molecule
     :param aemol: Aemol object of the molecule to process
     :param root_line: the output of make_gaussian_root function, passed as a string
     :param outfile: Name of the output file to write to
+
     :return: None, writes a physical file used to run gaussian calculation
     """
 
