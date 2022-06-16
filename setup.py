@@ -16,7 +16,7 @@ install_requires = ["rdkit-pypi >= 2022.3.2.1",
 
 setup(
     name='mol_translator',
-    version='0.1.8',
+    version='0.1.0',
     description='Molecule processing package for working with NMR data. Used for pipeline with DFT calculation & machine learning preprocessing',
     long_description=readme,
     author='Calvin Yiu, Will Gerrard, Butts Research Group',
