@@ -1,9 +1,6 @@
 cleaning.sanitize
 =================
 
-Submodules
-----------
-
 cleaning.sanitize.charge\_ops module
 ------------------------------------
 

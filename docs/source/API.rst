@@ -4,8 +4,8 @@ mol_translator API
 .. toctree::
    :maxdepth: 6
 
-aemol module
-------------
+mol_translator.aemol module
+---------------------------
 
 .. automodule:: mol_translator.aemol
    :members:

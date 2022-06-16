@@ -1,8 +1,8 @@
 cleaning
 ========
 
-checks module
--------------
+mol_translator.cleaning.checks module
+-------------------------------------
 
 .. automodule:: mol_translator.cleaning.checks
    :members:

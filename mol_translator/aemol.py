@@ -23,23 +23,15 @@ from rdkit.Chem import AllChem
 from rdkit.Chem import DataStructs
 from rdkit.Chem.MolStandardize import rdMolStandardize as mol_std
 
-# Conversion functions for rdkit, pybel
 from mol_translator.structure.openbabel_converter import obmol_to_aemol, aemol_to_obmol
 from mol_translator.structure.rdkit_converter import rdmol_to_aemol, aemol_to_rdmol
-
-# Structure writer
 from mol_translator.structure import structure_write as strucwrt
 
-# Property input/output
 import mol_translator.properties.property_io as prop_io
-
-# Path finder
 from mol_translator.structure import find_paths as pathfind
 
 from mol_translator.cleaning.checks import run_all_checks
-
 from mol_translator.cleaning.sanitize.charge_ops import rdkit_neutralise, openbabel_neutralise
-
 from mol_translator.util.custom_errors import raise_formaterror
 
 
