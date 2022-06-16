@@ -19,4 +19,4 @@ dependencies:
     - myst-parser==0.17.2
     - sphinx-rtd-theme==1.0.0
 
-prefix: /Users/bd20841/opt/anaconda3/envs/mol_translator-dev
+prefix: /Users/bd20841/opt/anaconda3/envs/mol_translator
