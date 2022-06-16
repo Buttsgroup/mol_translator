@@ -9,7 +9,7 @@ mol_translator.aemol module
 
 .. autoclass:: mol_translator.aemol.Aemol
    :members:
-   :undoc-members:
+   :inherited-members:
    :show-inheritance:
 
 .. automodule:: mol_translator.aemol
