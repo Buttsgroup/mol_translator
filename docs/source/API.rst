@@ -12,11 +12,6 @@ mol_translator.aemol module
    :inherited-members:
    :show-inheritance:
 
-.. automodule:: mol_translator.aemol
-   :members:
-   :undoc-members:
-   :show-inheritance:
-
 Subpackages
 -----------
 
