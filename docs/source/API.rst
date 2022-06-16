@@ -7,6 +7,11 @@ mol_translator API
 mol_translator.aemol module
 ---------------------------
 
+.. automodule:: aemol
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
 .. automodule:: mol_translator.aemol
    :members:
    :undoc-members:
