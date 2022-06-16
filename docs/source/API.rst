@@ -7,9 +7,9 @@ mol_translator API
 mol_translator.aemol module
 ---------------------------
 
-.. autoclass:: mol_translator.aemol.Aemol
+.. automodule:: mol_translator.aemol
    :members:
-   :inherited-members:
+   :undoc-members:
    :show-inheritance:
 
 Subpackages
