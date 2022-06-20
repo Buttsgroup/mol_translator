@@ -21,6 +21,7 @@ Check out the :doc:`install` section for install instructions.
    :caption: Contents:
 
    install
+   notebooks/tutorial-1
 
    API
 
