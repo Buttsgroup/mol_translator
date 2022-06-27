@@ -1,20 +1,21 @@
 # Copyright 2020 Will Gerrard, Calvin Yiu
-#This file is part of autoenrich.
+# This file is part of autoenrich.
 
-#autoenrich is free software: you can redistribute it and/or modify
-#it under the terms of the GNU General Public License as published by
-#the Free Software Foundation, either version 3 of the License, or
-#(at your option) any later version.
+# autoenrich is free software: you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation, either version 3 of the License, or
+# (at your option) any later version.
 
-#autoenrich is distributed in the hope that it will be useful,
-#but WITHOUT ANY WARRANTY; without even the implied warranty of
-#MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-#GNU General Public License for more details.
+# autoenrich is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
 
-#You should have received a copy of the GNU General Public License
-#along with autoenrich.  If not, see <https://www.gnu.org/licenses/>.
+# You should have received a copy of the GNU General Public License
+# along with autoenrich.  If not, see <https://www.gnu.org/licenses/>.
 
 import numpy as np
+
 
 def calc_pops(aemols, temp=298):
 
@@ -47,11 +48,14 @@ def boltzmann_average(aemols, pair_props=['coupling'], atom_props=['shift']):
 
     for aemol in aemols:
         for prop in atom_props:
-            new_atom_dict[prop] += aemol.atom_properties[prop] * aemol.mol_properties['pop']
+            new_atom_dict[prop] += aemol.atom_properties[prop] * \
+                aemol.mol_properties['pop']
         for prop in pair_props:
-            new_pair_dict[prop] += aemol.pair_properties[prop] * aemol.mol_properties['pop']
+            new_pair_dict[prop] += aemol.pair_properties[prop] * \
+                aemol.mol_properties['pop']
 
     return new_atom_dict, new_pair_dict
+
 
 def get_dist_array(aemols):
 
@@ -60,9 +64,11 @@ def get_dist_array(aemols):
         dist_array = np.zeros((num_atoms, num_atoms), dtype=np.float64)
         for i in range(num_atoms):
             for j in range(num_atoms):
-                dist_array[i][j] = np.absolute(np.linalg.norm(aemol.structure['xyz'][i] - aemol.structure['xyz'][j]))
+                dist_array[i][j] = np.absolute(np.linalg.norm(
+                    aemol.structure['xyz'][i] - aemol.structure['xyz'][j]))
 
         aemol.mol_properties['dist_array'] = dist_array
+
 
 def redundant_elimination(aemols, geom_threshold=0.1, e_threshold=0.1, redundant_atoms=None, achiral=False):
 
@@ -98,18 +104,24 @@ def redundant_elimination(aemols, geom_threshold=0.1, e_threshold=0.1, redundant
                         if energy_diff < e_threshold:
                             if achiral is False:
                                 elim_list.append(a)
-                                print(f"added mol {aemol_a.info['molid']} to eliminated_mol.txt due to geomtric similarity to {aemol_b.info['molid']}", file=l)
+                                print(
+                                    f"added mol {aemol_a.info['molid']} to eliminated_mol.txt due to geomtric similarity to {aemol_b.info['molid']}", file=l)
 
                             else:
                                 if a - b == 1:
-                                    print(f"energy difference between {aemol_a.info['molid']} & {aemol_b.info['molid']} detected but could be mirror images, please check manually", file=l)
-                                    print(f"{aemol_a.info['molid']} & {aemol_b.info['molid']} energy diff & geom diff = {energy_diff} kj/mol & {diff} Angstroms", file=l)
+                                    print(
+                                        f"energy difference between {aemol_a.info['molid']} & {aemol_b.info['molid']} detected but could be mirror images, please check manually", file=l)
+                                    print(
+                                        f"{aemol_a.info['molid']} & {aemol_b.info['molid']} energy diff & geom diff = {energy_diff} kj/mol & {diff} Angstroms", file=l)
                                 else:
                                     elim_list.append(a)
-                                    print(f"added mol {aemol_a.info['molid']} to eliminated_mol.txt due to geomtric similarity to {aemol_b.info['molid']} as mirror image has been found", file=l)
+                                    print(
+                                        f"added mol {aemol_a.info['molid']} to eliminated_mol.txt due to geomtric similarity to {aemol_b.info['molid']} as mirror image has been found", file=l)
                         else:
-                            print(f"geometry threshold is passed but not energy threshold, consider changing parameters after checking {aemol_a.info['molid']} & {aemol_b.info['molid']}", file=l)
-                            print(f"{aemol_a.info['molid']} & {aemol_b.info['molid']} energy diff & geom diff = {energy_diff} kj/mol & {diff} Angstroms", file=l)
+                            print(
+                                f"geometry threshold is passed but not energy threshold, consider changing parameters after checking {aemol_a.info['molid']} & {aemol_b.info['molid']}", file=l)
+                            print(
+                                f"{aemol_a.info['molid']} & {aemol_b.info['molid']} energy diff & geom diff = {energy_diff} kj/mol & {diff} Angstroms", file=l)
 
     elim_list = list(set(elim_list))
     removed_mol = []
@@ -119,4 +131,4 @@ def redundant_elimination(aemols, geom_threshold=0.1, e_threshold=0.1, redundant
 
     with open("eliminated_molecules.txt", 'w')as f:
         for id in removed_mol:
-            f.write(mol + "\n")
+            f.write(id + "\n")
