@@ -110,16 +110,18 @@ def write_gaussian_com(prefs: dict, molname: str, aemol: Type, root_line: str, o
         strings.append(f"{molname} OPT")
     if prefs['calc_type'] == ('NMR' or 'nmr'):
         strings.append(f"{molname} NMR")
+    
+    strings.append("")
+    strings.append(f"{prefs['charge']} {prefs['multiplicity']}")
+
+    periodic_table = Get_periodic_table()
+    
+    for i in range(len(aemol.structure['xyz'])):
+        atom_type = periodic_table[aemol.structure['types'][i]]
+        string = f" {atom_type:<2.2s}{aemol.structure['xyz'][i][0]:>18.6f}{aemol.structure['xyz'][i][1]:>18.6f}{aemol.structure['xyz'][i][2]:>18.6f}"
+        strings.append(string)
+    for i in range(4):
         strings.append("")
-        strings.append(f"{prefs['charge']} {prefs['multiplicity']}")
-
-        periodic_table = Get_periodic_table()
-
-        for i in range(len(aemol.structure['xyz'])):
-            atom_type = periodic_table[aemol.structure['types'][i]]
-            string = f" {atom_type:<2.2s}{aemol.structure['xyz'][i][0]:>18.6f}{aemol.structure['xyz'][i][1]:>18.6f}{aemol.structure['xyz'][i][2]:>18.6f}"
-        for i in range(4):
-            strings.append("")
 
     with open(outfile, 'w') as f:
         for string in strings:
