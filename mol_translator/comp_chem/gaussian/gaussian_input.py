@@ -98,14 +98,14 @@ def write_gaussian_com(prefs: dict, molname: str, aemol: Type, root_line: str, o
         strings.append(f"%Chk={molname}_OPT.chk")
     if prefs['calc_type'] == ('nmr' or 'NMR'):
         strings.append(f"%Chk={molname}_NMR.chk")
-        strings.append("%NoSave")
-        strings.append(f"%mem={prefs['memory']}GB")
-        strings.append(f"%NProcShared={prefs['processors']}")
+    strings.append("%NoSave")
+    strings.append(f"%mem={prefs['memory']}GB")
+    strings.append(f"%NProcShared={prefs['processors']}")
     if prefs['calc_type'] == ('optimisation' or 'opt'):
         strings.append(f"# {root_line}")
     if prefs['calc_type'] == ('nmr' or 'NMR'):
         strings.append(f"#T {root_line}")
-        strings.append("")
+    strings.append("")
     if prefs['calc_type'] == ('optimisation' or 'opt'):
         strings.append(f"{molname} OPT")
     if prefs['calc_type'] == ('NMR' or 'nmr'):
