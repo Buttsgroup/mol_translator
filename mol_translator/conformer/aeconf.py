@@ -77,15 +77,16 @@ class Aeconf(Aemol):
                 new_atom_dict[prop] += aemol.atom_properties[prop] * \
                     self.pop_array[i]
             for prop in pair_props:
-                new_pair_dict[prop] += aemol.pair_properties[prop] * \
-                    self.pop_array[i]
+                for atom in range(atoms):
+                    new_pair_dict[prop][atom] += np.array(aemol.pair_properties[prop][atom]) * \
+                        self.pop_array[i]
 
         self.averaged_shift = new_atom_dict
         self.averaged_coupling = new_pair_dict
 
     def get_dist_array(self):
 
-        for t, aemol in self.aemols:
+        for aemol in self.aemols:
             num_atoms = len(aemol.structure['types'])
             dist_array = np.zeros((num_atoms, num_atoms), dtype=np.float64)
             for i in range(num_atoms):
@@ -153,4 +154,4 @@ class Aeconf(Aemol):
 
         with open(f"{self.mol_name}_eliminated_molecules.txt", 'w')as f:
             for id in removed_mol:
-                f.write(id + "\n")
+                f.write(str(id) + "\n")
