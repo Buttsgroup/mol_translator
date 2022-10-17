@@ -14,6 +14,7 @@
 #You should have received a copy of the GNU General Public License
 #along with autoenrich.  If not, see <https://www.gnu.org/licenses/>.
 
+from datetime import date
 from mol_translator.util.periodic_table import Get_periodic_table
 
 
@@ -54,7 +55,7 @@ def write_mol_tosdf(aemol, outfile, stringsonly=False):
 	else:
 		lines.append(outfile.split('.')[0])
 	# print file and author
-	lines.append('mol_translator - 2022 - ButtsGroup')
+	lines.append(f'mol_translator - {date.today().year} - ButtsGroup')
 	lines.append('')
 
 	# Structure section
