@@ -49,8 +49,8 @@ def obmol_to_aemol(obmol):
 def aemol_to_obmol(structure, id):
     # Do this a cheat way for now, can probably do this properly
 
-    strucwrt.write_mol_toxyz(structure, f'tmp{id}.xyz')
-    obmol = next(pyb.readfile('xyz', f'tmp{id}.xyz'))
-    os.remove(f'tmp{id}.xyz')
+    strucwrt.write_mol_toxyz(structure, f'{id}_tmp.xyz')
+    obmol = next(pyb.readfile('xyz', f'{id}_tmp.xyz'))
+    os.remove(f'{id}_tmp.xyz')
 
     return obmol
