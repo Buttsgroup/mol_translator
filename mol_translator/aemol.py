@@ -215,7 +215,7 @@ class Aemol(object):
         Creates an Openbabel instance of the Aemol molecule, stored internally in self.obmol.
 
         """
-        print('WARNING - Recommended not to use this function as erroneous connectivity tables may form, instead use from_file_ob directly!')
+        #print('WARNING - Recommended not to use this function as erroneous connectivity tables may form, instead use from_file_ob directly!')
         self.obmol = aemol_to_obmol(self.structure, self.info['molid'])
         return self.obmol
 
@@ -241,12 +241,12 @@ class Aemol(object):
 
         """
 
-        print('WARNING - Recommended not to use this function as erroneous connectivity tables may form, instead use from_file_rdkit directly!')
+        #print('WARNING - Recommended not to use this function as erroneous connectivity tables may form, instead use from_file_rdkit directly!')
         self.rdmol = aemol_to_rdmol(
             self, self.info['molid'], sanitize, removeHs)
         return self.rdmol
 
-    def from_file_ob(self, file: str, ftype: str = 'xyz', to_aemol: bool = True) -> None:
+    def from_file_ob(self, file: str, ftype: str = 'sdf', to_aemol: bool = True) -> None:
         """
         Reads a file of filetype 'ftype' into an aemol object through Openbabel
 
