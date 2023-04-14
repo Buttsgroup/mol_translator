@@ -28,17 +28,17 @@ def obmol_to_aemol(obmol):
     xyz_array = np.zeros((len(obmol.atoms), 3), dtype=np.float64)
     conn_array = np.zeros((len(obmol.atoms), len(obmol.atoms)), dtype=np.int32)
 
-    for i in range(len(obmol.atoms)):
-        type_array[i] = int(obmol.atoms[i].atomicnum)
-        xyz_array[i][0] = float(obmol.atoms[i].coords[0])
-        xyz_array[i][1] = float(obmol.atoms[i].coords[1])
-        xyz_array[i][2] = float(obmol.atoms[i].coords[2])
+    for i, atom_x in enumerate(obmol.atoms):
+        type_array[i] = int(atom_x.atomicnum)
+        xyz_array[i][0] = float(atom_x.coords[0])
+        xyz_array[i][1] = float(atom_x.coords[1])
+        xyz_array[i][2] = float(atom_x.coords[2])
 
-        for j in range(len(obmol.atoms)):
+        for j, atom_y in enumerate(obmol.atoms):
             if i == j:
                 continue
 
-            bond = obmol.atoms[i].OBAtom.GetBond(obmol.atoms[j].OBAtom)
+            bond = atom_x.OBAtom.GetBond(atom_y.OBAtom)
             if bond is not None:
                 conn_array[i][j] = int(bond.GetBondOrder())
                 conn_array[j][i] = int(bond.GetBondOrder())
