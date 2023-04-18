@@ -50,7 +50,7 @@ def prop_read(aemol: Type, filename: str, prop: str, format: str) -> None:
         aemol.atom_properties['shift_var'] = shift_var
         aemol.pair_properties['coupling_var'] = coupling_var
     elif prop == 'scf':
-        scf = energy_read.energy_read(filename, prop, format)
+        scf = energy_read(filename, prop, format)
         aemol.mol_properties['energy'] = scf
     elif prop == 'ic50':
         ic50 = binding_read.pchembl_read(
