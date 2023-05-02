@@ -414,6 +414,7 @@ class Aemol(object):
         """
         if self.rdflag:
             self.to_ob()
+            self.structure['paths'] = pathfind.obmol_find_all_paths(self.obmol, maxlen)
         else:
             self.structure['paths'] = pathfind.obmol_find_all_paths(self.obmol, maxlen)
 
@@ -424,6 +425,7 @@ class Aemol(object):
         """
         if self.rdflag:
             self.to_ob()
+            self.structure['conn'] = pathfind.obmol_get_bond_table(self.obmol)
         else:
             self.structure['conn'] = pathfind.obmol_get_bond_table(self.obmol)
 
@@ -436,6 +438,7 @@ class Aemol(object):
         """
         if self.rdflag:
             self.to_ob()
+            self.structure['path_len'] = pathfind.obmol_get_path_lengths(self.obmol, maxlen)
         else:
             self.structure['path_len'] = pathfind.obmol_get_path_lengths(self.obmol, maxlen)
 
