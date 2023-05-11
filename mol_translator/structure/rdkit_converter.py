@@ -1,18 +1,18 @@
 # Copyright 2022 Will Gerrard, Calvin Yiu
-#This file is part of autoenrich.
+# This file is part of autoenrich.
 
-#autoenrich is free software: you can redistribute it and/or modify
-#it under the terms of the GNU General Public License as published by
-#the Free Software Foundation, either version 3 of the License, or
-#(at your option) any later version.
+# autoenrich is free software: you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation, either version 3 of the License, or
+# (at your option) any later version.
 
-#autoenrich is distributed in the hope that it will be useful,
-#but WITHOUT ANY WARRANTY; without even the implied warranty of
-#MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-#GNU General Public License for more details.
+# autoenrich is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
 
-#You should have received a copy of the GNU General Public License
-#along with autoenrich.  If not, see <https://www.gnu.org/licenses/>.
+# You should have received a copy of the GNU General Public License
+# along with autoenrich.  If not, see <https://www.gnu.org/licenses/>.
 
 import numpy as np
 import os
@@ -20,36 +20,73 @@ from rdkit import Chem
 from rdkit.Chem import AllChem
 
 from mol_translator.structure import structure_write as strucwrt
+from mol_translator.util.periodic_table import Get_periodic_table
 
 
 def rdmol_to_aemol(rdmol):
+    type_array = np.zeros(rdmol.GetNumAtoms(), dtype=np.int32)
+    xyz_array = np.zeros((rdmol.GetNumAtoms(), 3), dtype=np.float64)
+    conn_array = np.zeros((rdmol.GetNumAtoms(), rdmol.GetNumAtoms()), dtype=np.int32)
 
-	type_array = np.zeros(rdmol.GetNumAtoms(), dtype=np.int32)
-	xyz_array = np.zeros((rdmol.GetNumAtoms(),3), dtype=np.float64)
-	conn_array = np.zeros((rdmol.GetNumAtoms(), rdmol.GetNumAtoms()), dtype=np.int32)
+    for i, atoms in enumerate(rdmol.GetAtoms()):
+        type_array[i] = atoms.GetAtomicNum()
+        if rdmol.GetNumConformers() < 1:
+            AllChem.Compute2DCoords(rdmol)
+        xyz_array[i][0] = rdmol.GetConformer().GetAtomPosition(i).x
+        xyz_array[i][1] = rdmol.GetConformer().GetAtomPosition(i).y
+        xyz_array[i][2] = rdmol.GetConformer().GetAtomPosition(i).z
 
-	for i, atoms in enumerate(rdmol.GetAtoms()):
-		type_array[i] = atoms.GetAtomicNum()
-		xyz_array[i][0] = rdmol.GetConformer().GetAtomPosition(i).x
-		xyz_array[i][1] = rdmol.GetConformer().GetAtomPosition(i).y
-		xyz_array[i][2] = rdmol.GetConformer().GetAtomPosition(i).z
+        for j, atoms in enumerate(rdmol.GetAtoms()):
+            if i == j:
+                continue
 
-		for j, atoms in enumerate(rdmol.GetAtoms()):
-			if i == j:
-				continue
+            bond = rdmol.GetBondBetweenAtoms(i, j)
+            if bond is not None:
+                conn_array[i][j] = int(bond.GetBondTypeAsDouble())
+                conn_array[j][i] = int(bond.GetBondTypeAsDouble())
 
-			bond = rdmol.GetBondBetweenAtoms(i,j)
-			if bond is not None:
-				conn_array[i][j] = int(bond.GetBondTypeAsDouble())
-				conn_array[j][i] = int(bond.GetBondTypeAsDouble())
+    return type_array, xyz_array, conn_array
 
-	return type_array, xyz_array, conn_array
 
-def aemol_to_rdmol(aemol, molid, sanitize, removeHs):
+def old_aemol_to_rdmol(aemol, molid, sanitize, removeHs):
+    strucwrt.write_mol_tosdf(aemol, f"tmp{molid}.sdf")
+    molblock = open(f"tmp{molid}.sdf", "r").read()
+    rdmol = Chem.MolFromMolBlock(molblock, sanitize=sanitize, removeHs=removeHs)
+    os.remove(f"tmp{molid}.sdf")
 
-	strucwrt.write_mol_tosdf(aemol, f'tmp{molid}.sdf')
-	molblock = open(f'tmp{molid}.sdf', 'r').read()
-	rdmol = Chem.MolFromMolBlock(molblock, sanitize=sanitize, removeHs=removeHs)
-	os.remove(f'tmp{molid}.sdf')
+    return rdmol
 
-	return rdmol
+
+def aemol_to_rdmol(structure, sanitize=True):
+    # Create an RDKit molecule object
+    periodic_table = Get_periodic_table()
+    rdmol = Chem.RWMol()
+
+    # Add the atoms to the molecule
+    for atom in structure["types"]:
+        symbol = periodic_table[atom]
+        rdmol.AddAtom(Chem.Atom(symbol))
+
+        # Add the bonds to the molecule
+    visited = []
+    for i, bond_order_array in enumerate(structure["conn"]):
+        for j, bond_order in enumerate(bond_order_array):
+            if j in visited:
+                continue
+            elif bond_order != 0:
+                rdmol.AddBond(i, j, Chem.BondType(bond_order))
+            else:
+                continue
+        visited.append(i)
+
+        # Add the coordinates to the atoms
+    conformer = Chem.Conformer()
+    for i, coord in enumerate(structure["xyz"]):
+        conformer.SetAtomPosition(i, coord)
+    rdmol.AddConformer(conformer)
+
+    rdmol = rdmol.GetMol()
+    # Sanitize the molecule
+    if sanitize:
+        Chem.SanitizeMol(rdmol)
+    return rdmol

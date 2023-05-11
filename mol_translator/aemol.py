@@ -215,8 +215,8 @@ class Aemol(object):
         Creates an Openbabel instance of the Aemol molecule, stored internally in self.obmol.
 
         """
-        print('WARNING - Recommended not to use this function as erroneous connectivity tables may form, instead use from_file_ob directly!')
-        self.obmol = aemol_to_obmol(self.structure, self.info['molid'])
+        #print('WARNING - Recommended not to use this function as erroneous connectivity tables may form, instead use from_file_ob directly!')
+        self.obmol = aemol_to_obmol(self.structure)
         return self.obmol
 
     def from_rdkit(self, rdmol: object) -> None:
@@ -243,7 +243,7 @@ class Aemol(object):
 
         print('WARNING - Recommended not to use this function as erroneous connectivity tables may form, instead use from_file_rdkit directly!')
         self.rdmol = aemol_to_rdmol(
-            self, self.info['molid'], sanitize, removeHs)
+            self.structure)
         return self.rdmol
 
     def from_file_ob(self, file: str, ftype: str = 'xyz', to_aemol: bool = True) -> None:
@@ -376,7 +376,7 @@ class Aemol(object):
         nmr_shift = ''
         for i, shift, type, var in zip(range(len(self.structure['types'])), props['shift'], self.structure['types'], props['shift_var']):
             entry = " {atom:<5d}, {shift:<15.8f}, {type:<5d}, {variance:<15.8f}\\".format(atom=i+count_from, shift=shift, type=type, variance=var)
-            nmr_shift = nmr_shift + '\n' + entry
+            nmr_shift = nmr_shift + entry + '\n'
 
         if self.rdflag:
             self.rdmol.SetProp('NMREDATA_ASSIGNMENT', nmr_shift)
@@ -398,7 +398,7 @@ class Aemol(object):
     																									label=self.pair_properties['nmr_types'][i][j],
     																									var=props['coupling_var'][i][j])
 
-                j_coupling = j_coupling + '\n' + entry
+                j_coupling = j_coupling + entry + '\n'
 
         if self.rdflag:
             self.rdmol.SetProp('NMREDATA_J', j_coupling)
