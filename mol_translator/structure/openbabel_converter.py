@@ -27,17 +27,17 @@ def obmol_to_aemol(obmol):
     xyz_array = np.zeros((len(obmol.atoms), 3), dtype=np.float64)
     conn_array = np.zeros((len(obmol.atoms), len(obmol.atoms)), dtype=np.int32)
 
-    for i in range(len(obmol.atoms)):
-        type_array[i] = int(obmol.atoms[i].atomicnum)
-        xyz_array[i][0] = float(obmol.atoms[i].coords[0])
-        xyz_array[i][1] = float(obmol.atoms[i].coords[1])
-        xyz_array[i][2] = float(obmol.atoms[i].coords[2])
+    for i, atom_x in enumerate(obmol.atoms):
+        type_array[i] = int(atom_x.atomicnum)
+        xyz_array[i][0] = float(atom_x.coords[0])
+        xyz_array[i][1] = float(atom_x.coords[1])
+        xyz_array[i][2] = float(atom_x.coords[2])
 
-        for j in range(len(obmol.atoms)):
+        for j, atom_y in enumerate(obmol.atoms):
             if i == j:
                 continue
 
-            bond = obmol.atoms[i].OBAtom.GetBond(obmol.atoms[j].OBAtom)
+            bond = atom_x.OBAtom.GetBond(atom_y.OBAtom)
             if bond is not None:
                 conn_array[i][j] = int(bond.GetBondOrder())
                 conn_array[j][i] = int(bond.GetBondOrder())
@@ -48,9 +48,9 @@ def obmol_to_aemol(obmol):
 def old_aemol_to_obmol(structure, id):
     # Do this a cheat way for now, can probably do this properly
 
-    strucwrt.write_mol_toxyz(structure, f"tmp{id}.xyz")
-    obmol = next(pyb.readfile("xyz", f"tmp{id}.xyz"))
-    os.remove(f"tmp{id}.xyz")
+    strucwrt.write_mol_toxyz(structure, f"{id}_tmp.xyz")
+    obmol = next(pyb.readfile("xyz", f"{id}_tmp.xyz"))
+    os.remove(f"{id}_tmp.xyz")
 
     return obmol
 

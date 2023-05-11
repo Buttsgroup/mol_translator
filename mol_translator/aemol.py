@@ -31,7 +31,10 @@ import mol_translator.properties.property_io as prop_io
 from mol_translator.structure import find_paths as pathfind
 
 from mol_translator.cleaning.checks import run_all_checks
-from mol_translator.cleaning.sanitize.charge_ops import rdkit_neutralise, openbabel_neutralise
+from mol_translator.cleaning.sanitize.charge_ops import (
+    rdkit_neutralise,
+    openbabel_neutralise,
+)
 from mol_translator.util.custom_errors import raise_formaterror
 
 
@@ -111,12 +114,9 @@ class Aemol(object):
 
         """
         # object information, trying to ween off filepath usage
-        self.info = {'molid': molid,
-                     'filepath': filepath}
+        self.info = {"molid": molid, "filepath": filepath}
         # Structural information
-        self.structure = {'xyz': [],
-                          'types': [],
-                          'conn': []}
+        self.structure = {"xyz": [], "types": [], "conn": []}
         # Internal storage of rdkit/openbabel molecule objects
         self.rdmol = None
         self.rdflag = False
@@ -129,11 +129,12 @@ class Aemol(object):
         # Pair properties: Coupling constant, distances, etc
         self.pair_properties = {}
         # Mol properties: Binding affinity, energy, etc
-        self.mol_properties = {'energy': -404.404,
-                               }
+        self.mol_properties = {
+            "energy": -404.404,
+        }
 
         if filepath:
-            self.from_file_ob(filepath, ftype=filepath.split('.')[-1])
+            self.from_file_ob(filepath, ftype=filepath.split(".")[-1])
 
     def __str__(self) -> str:
         """
@@ -146,10 +147,10 @@ class Aemol(object):
 
         """
 
-        if self.info['molid'] == "":
-            id = 'UnknownMol'
+        if self.info["molid"] == "":
+            id = "UnknownMol"
         else:
-            id = self.info['molid']
+            id = self.info["molid"]
 
         return f"Aemol({id})"
 
@@ -182,12 +183,12 @@ class Aemol(object):
 
         """
 
-        if self.info['molid'] == "":
-            id = 'UnknownMol'
+        if self.info["molid"] == "":
+            id = "UnknownMol"
         else:
-            id = self.info['molid']
+            id = self.info["molid"]
 
-        return(
+        return (
             f"Aemol({id}, \n"
             f"xyz: \n {self.structure['xyz']}, \n"
             f"types: \n {self.structure['types']}, \n"
@@ -206,16 +207,16 @@ class Aemol(object):
 
         """
         types, xyz, conn = obmol_to_aemol(obmol)
-        self.structure['types'] = types
-        self.structure['xyz'] = xyz
-        self.structure['conn'] = conn
+        self.structure["types"] = types
+        self.structure["xyz"] = xyz
+        self.structure["conn"] = conn
 
     def to_ob(self) -> None:
         """
         Creates an Openbabel instance of the Aemol molecule, stored internally in self.obmol.
 
         """
-        #print('WARNING - Recommended not to use this function as erroneous connectivity tables may form, instead use from_file_ob directly!')
+        # print('WARNING - Recommended not to use this function as erroneous connectivity tables may form, instead use from_file_ob directly!')
         self.obmol = aemol_to_obmol(self.structure)
         return self.obmol
 
@@ -228,9 +229,9 @@ class Aemol(object):
         """
         # assumes rdmol is already 3D with Hs included
         types, xyz, conn = rdmol_to_aemol(rdmol)
-        self.structure['types'] = types
-        self.structure['xyz'] = xyz
-        self.structure['conn'] = conn
+        self.structure["types"] = types
+        self.structure["xyz"] = xyz
+        self.structure["conn"] = conn
 
     def to_rdkit(self, sanitize: bool = True, removeHs: bool = False) -> None:
         """
@@ -241,12 +242,13 @@ class Aemol(object):
 
         """
 
-        print('WARNING - Recommended not to use this function as erroneous connectivity tables may form, instead use from_file_rdkit directly!')
-        self.rdmol = aemol_to_rdmol(
-            self.structure)
+        # print('WARNING - Recommended not to use this function as erroneous connectivity tables may form, instead use from_file_rdkit directly!')
+        self.rdmol = aemol_to_rdmol(self.structure)
         return self.rdmol
 
-    def from_file_ob(self, file: str, ftype: str = 'xyz', to_aemol: bool = True) -> None:
+    def from_file_ob(
+        self, file: str, ftype: str = "sdf", to_aemol: bool = True
+    ) -> None:
         """
         Reads a file of filetype 'ftype' into an aemol object through Openbabel
 
@@ -271,8 +273,8 @@ class Aemol(object):
         suppl = Chem.SDMolSupplier(path, removeHs=False)
         for rdmol in suppl:
             if rdmol is not None:
-                if rdmol.GetProp('_Name') is None:
-                    rdmol.SetProp('_Name', self.info['molid'])
+                if rdmol.GetProp("_Name") is None:
+                    rdmol.SetProp("_Name", self.info["molid"])
                 self.rdmol = rdmol
             else:
                 continue
@@ -299,7 +301,7 @@ class Aemol(object):
         :param filename: str, name of the output file
 
         """
-        if format == 'xyz':
+        if format == "xyz":
             strucwrt.write_mol_toxyz(self.structure, filename)
         else:
             raise_formaterror(format)
@@ -315,7 +317,8 @@ class Aemol(object):
         if self.obflag:
             self.obmol.write(format, filename)
 
-        else: print(f'obmol not present on {self.info["molid"]}, please run from_file_ob')
+        else:
+            print(f'obmol not present on {self.info["molid"]}, please run from_file_ob')
 
     def to_file_rdkit(self, filename: str) -> None:
         """
@@ -329,9 +332,14 @@ class Aemol(object):
             w = Chem.SDWriter(filename)
             w.write(self.rdmol)
 
-        else: print(f'rdmol not present on {self.info["molid"]}, please run from_file_rdkit')
+        else:
+            print(
+                f'rdmol not present on {self.info["molid"]}, please run from_file_rdkit'
+            )
 
-    def prop_to_file(self, filename: str, prop: str = 'nmr', format: str = 'nmredata') -> None:
+    def prop_to_file(
+        self, filename: str, prop: str = "nmr", format: str = "nmredata"
+    ) -> None:
         """
         Writes NMR properties stored within aemol object into an nmredata file by default
 
@@ -342,7 +350,9 @@ class Aemol(object):
         """
         prop_io.prop_write(self, filename, prop=prop, format=format)
 
-    def prop_from_file(self, filename: str, prop: str = 'nmr', format: str = 'nmredata') -> None:
+    def prop_from_file(
+        self, filename: str, prop: str = "nmr", format: str = "nmredata"
+    ) -> None:
         """
         Reads NMR properties and stores internally into aemol object attributes
 
@@ -354,8 +364,7 @@ class Aemol(object):
         prop_io.prop_read(self, filename, prop=prop, format=format)
 
     def assign_nmr(self, write_zeros=False, count_from=0, print_predicted=False):
-
-        atoms = len(self.structure['types'])
+        atoms = len(self.structure["types"])
         props = {}
 
         for label in ["predicted_shift", "shift", "shift_var"]:
@@ -367,43 +376,54 @@ class Aemol(object):
             if label in self.pair_properties.keys():
                 props[label] = self.pair_properties[label]
             else:
-                props[label] = np.zeros((atoms,atoms), dtype=np.float64)
+                props[label] = np.zeros((atoms, atoms), dtype=np.float64)
 
         if print_predicted:
-            props['shift'] = props['predicted_shift']
-            props['coupling'] = props['predicted_coupling']
+            props["shift"] = props["predicted_shift"]
+            props["coupling"] = props["predicted_coupling"]
 
-        nmr_shift = ''
-        for i, shift, type, var in zip(range(len(self.structure['types'])), props['shift'], self.structure['types'], props['shift_var']):
-            entry = " {atom:<5d}, {shift:<15.8f}, {type:<5d}, {variance:<15.8f}\\".format(atom=i+count_from, shift=shift, type=type, variance=var)
-            nmr_shift = nmr_shift + entry + '\n'
+        nmr_shift = ""
+        for i, shift, type, var in zip(
+            range(len(self.structure["types"])),
+            props["shift"],
+            self.structure["types"],
+            props["shift_var"],
+        ):
+            entry = (
+                " {atom:<5d}, {shift:<15.8f}, {type:<5d}, {variance:<15.8f}\\".format(
+                    atom=i + count_from, shift=shift, type=type, variance=var
+                )
+            )
+            nmr_shift = nmr_shift + entry + "\n"
 
         if self.rdflag:
-            self.rdmol.SetProp('NMREDATA_ASSIGNMENT', nmr_shift)
+            self.rdmol.SetProp("NMREDATA_ASSIGNMENT", nmr_shift)
         if self.obflag:
-            self.obmol.data['NMREDATA_ASSIGNMENT'] = nmr_shift
+            self.obmol.data["NMREDATA_ASSIGNMENT"] = nmr_shift
 
-        j_coupling = ''
-        for i in range(len(self.structure['types'])):
-            for j in range(len(self.structure['types'])):
+        j_coupling = ""
+        for i in range(len(self.structure["types"])):
+            for j in range(len(self.structure["types"])):
                 if i >= j:
                     continue
-                if self.structure['path_len'][i][j] == 0:
+                if self.structure["path_len"][i][j] == 0:
                     continue
-                if props['coupling'][i][j] == 0 and not write_zeros:
+                if props["coupling"][i][j] == 0 and not write_zeros:
                     continue
-                entry = " {a1:<10d}, {a2:<10d}, {coupling:<15.8f}, {label:<10s}, {var:<15.8f}".format(a1=i+count_from,
-    																									a2=j+count_from,
-    																									coupling=props['coupling'][i][j],
-    																									label=self.pair_properties['nmr_types'][i][j],
-    																									var=props['coupling_var'][i][j])
+                entry = " {a1:<10d}, {a2:<10d}, {coupling:<15.8f}, {label:<10s}, {var:<15.8f}".format(
+                    a1=i + count_from,
+                    a2=j + count_from,
+                    coupling=props["coupling"][i][j],
+                    label=self.pair_properties["nmr_types"][i][j],
+                    var=props["coupling_var"][i][j],
+                )
 
-                j_coupling = j_coupling + entry + '\n'
+                j_coupling = j_coupling + entry + "\n"
 
         if self.rdflag:
-            self.rdmol.SetProp('NMREDATA_J', j_coupling)
+            self.rdmol.SetProp("NMREDATA_J", j_coupling)
         if self.obflag:
-            self.obmol.data['NMREDATA_J'] = j_coupling
+            self.obmol.data["NMREDATA_J"] = j_coupling
 
     def get_all_paths(self, maxlen: int = 5) -> None:
         """
@@ -414,8 +434,9 @@ class Aemol(object):
         """
         if self.rdflag:
             self.to_ob()
+            self.structure["paths"] = pathfind.obmol_find_all_paths(self.obmol, maxlen)
         else:
-            self.structure['paths'] = pathfind.obmol_find_all_paths(self.obmol, maxlen)
+            self.structure["paths"] = pathfind.obmol_find_all_paths(self.obmol, maxlen)
 
     def get_bonds(self) -> None:
         """
@@ -424,8 +445,9 @@ class Aemol(object):
         """
         if self.rdflag:
             self.to_ob()
+            self.structure["conn"] = pathfind.obmol_get_bond_table(self.obmol)
         else:
-            self.structure['conn'] = pathfind.obmol_get_bond_table(self.obmol)
+            self.structure["conn"] = pathfind.obmol_get_bond_table(self.obmol)
 
     def get_path_lengths(self, maxlen: int = 5) -> None:
         """
@@ -436,10 +458,15 @@ class Aemol(object):
         """
         if self.rdflag:
             self.to_ob()
+            self.structure["path_len"] = pathfind.obmol_get_path_lengths(
+                self.obmol, maxlen
+            )
         else:
-            self.structure['path_len'] = pathfind.obmol_get_path_lengths(self.obmol, maxlen)
+            self.structure["path_len"] = pathfind.obmol_get_path_lengths(
+                self.obmol, maxlen
+            )
 
-    def get_ob_fingerprint(self, fingerprint: str = 'ecfp4') -> None:
+    def get_ob_fingerprint(self, fingerprint: str = "ecfp4") -> None:
         """
         Generates fingerprints through openbabel mol object, stored internally under mol_properties attribute
 
@@ -448,7 +475,9 @@ class Aemol(object):
         """
         self.mol_properties[fingerprint] = self.obmol.calcfp(fingerprint)
 
-    def get_rdkit_fingerprint(self, radius: int = 2, nBits: int = 2048, to_numpy: bool = True) -> None:
+    def get_rdkit_fingerprint(
+        self, radius: int = 2, nBits: int = 2048, to_numpy: bool = True
+    ) -> None:
         """
         Generates fingerprints through RDKit mol object, stored internally under mol_properties attribute
 
@@ -458,13 +487,16 @@ class Aemol(object):
 
         """
         fp = AllChem.GetMorganFingerprintAsBitVect(
-            self.rdmol, radius=radius, nBits=nBits)
+            self.rdmol, radius=radius, nBits=nBits
+        )
         if to_numpy:
-            arr = np.zeros(0,)
+            arr = np.zeros(
+                0,
+            )
             DataStructs.ConvertToNumpyArray(fp, arr)
-            self.mol_properties['ecfp4'] = arr
+            self.mol_properties["ecfp4"] = arr
         else:
-            self.mol_properties['ecfp4'] = fp
+            self.mol_properties["ecfp4"] = fp
 
     def get_rdkit_3D(self, opt: bool = True, to_aemol: bool = True) -> None:
         """
@@ -532,11 +564,11 @@ class Aemol(object):
 
         if clean:
             lfc = mol_std.LargestFragmentChooser()
-            idx = self.rdmol.GetProp('_Name')
+            idx = self.rdmol.GetProp("_Name")
 
             self.rdmol = lfc.choose(self.rdmol)
             mol_std.Cleanup(self.rdmol)
-            self.rdmol.SetProp('_Name', idx)
+            self.rdmol.SetProp("_Name", idx)
 
     def rd_neutralise(self, opt: bool = False) -> None:
         """
