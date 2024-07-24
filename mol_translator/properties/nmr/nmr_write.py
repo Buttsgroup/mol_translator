@@ -48,7 +48,7 @@ def write_nmredata(outfile, aemol, write_zeros=False,
 	lines.append('')
 	lines.append('> <NMREDATA_ASSIGNMENT>')
 	# Print chemical shifts with variance
-	for i, type, shift, var in zip(enumerate(aemol.structure['types']), props['shift'], props['shift_var']):
+	for i, (type, shift, var) in enumerate(zip(aemol.structure['types'], props['shift'], props['shift_var'])):
 		string = " {atom:<5d}, {shift:<15.8f}, {type:<5d}, {variance:<15.8f}\\".format(atom=i+count_from, shift=shift, type=type, variance=var)
 		lines.append(string)
 
