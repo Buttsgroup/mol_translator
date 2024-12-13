@@ -1,11 +1,11 @@
-from mol_translator.aemol import Aemol
-from mol_translator.preprocessing.dataframe_converter import dataframe_read, dataframe_write, dataframe_prep
-import numpy as np
-import glob
 import sys
 import os
 import pandas as pd
 sys.path.append(os.path.realpath(os.path.dirname(__file__))+'/../')
+from mol_translator.aemol import Aemol
+from mol_translator.preprocessing.dataframe_converter import dataframe_read, dataframe_write, dataframe_prep
+import numpy as np
+import glob
 
 
 '''

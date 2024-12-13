@@ -1,3 +1,8 @@
+import sys
+import os
+from pathlib import Path
+sys.path.append(os.path.realpath(os.path.dirname(__file__))+'/../')
+
 from mol_translator.properties.nmr.nmr_ops import get_coupling_types
 from mol_translator.structure.openbabel_converter import obmol_to_aemol, aemol_to_obmol
 import numpy as np
@@ -5,10 +10,6 @@ from rdkit.Chem import AllChem
 from rdkit import Chem
 import openbabel.pybel as pyb
 from mol_translator.aemol import Aemol
-import sys
-import os
-from pathlib import Path
-sys.path.append(os.path.realpath(os.path.dirname(__file__))+'/../')
 
 
 '''

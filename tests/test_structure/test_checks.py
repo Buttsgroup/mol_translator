@@ -1,3 +1,7 @@
+import sys
+import os
+from pathlib import Path
+sys.path.append(os.path.realpath(os.path.dirname(__file__))+'/../')
 from mol_translator.aemol import Aemol
 from mol_translator.cleaning.checks import run_all_checks
 

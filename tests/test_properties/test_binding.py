@@ -1,10 +1,10 @@
+import sys
+import os
+sys.path.append(os.path.realpath(os.path.dirname(__file__))+'/../')
 import numpy as np
 import glob
 from mol_translator.preprocessing.dataframe_converter import dataframe_write, dataframe_prep
 from mol_translator.aemol import Aemol
-import sys
-import os
-sys.path.append(os.path.realpath(os.path.dirname(__file__))+'/../')
 
 
 def test_getpchembl():

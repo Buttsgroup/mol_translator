@@ -1,9 +1,9 @@
-import mol_translator.structure.find_paths as fpaths
-from mol_translator.aemol import Aemol
-import numpy as np
 import sys
 import os
 sys.path.append(os.path.realpath(os.path.dirname(__file__))+'/../')
+import mol_translator.structure.find_paths as fpaths
+from mol_translator.aemol import Aemol
+import numpy as np
 
 
 def test_findallpaths():

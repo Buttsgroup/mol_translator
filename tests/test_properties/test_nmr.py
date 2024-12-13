@@ -1,8 +1,8 @@
-from mol_translator.aemol import Aemol
-import mol_translator.properties.nmr as nmr
 import sys
 import os
 sys.path.append(os.path.realpath(os.path.dirname(__file__))+'/../')
+from mol_translator.aemol import Aemol
+import mol_translator.properties.nmr as nmr
 
 
 '''
